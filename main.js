@@ -22,10 +22,13 @@ document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 async function ensureRound(date) {
 
   const { data } = await supabase
-    .from('rounds')
-    .select('*')
-    .eq('round_date', date)
-    .single();
+  .from('votes')
+  .select(`
+  score,
+  player_id,
+  players:player_id(name)
+  `)
+  .gte('created_at', start.toISOString());
 
   if (!data) {
 
@@ -178,13 +181,15 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  for (let player of players) {
+  const voter = players.find(p => p.name === voterName);
 
-    const voter = players.find(p => p.name === voterName);
+  for (let player of players) {
 
     const input = document.getElementById(
       voter.id + '_' + player.id
     );
+
+    if (!input) continue;
 
     if (!input.value) continue;
 
@@ -202,6 +207,8 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
+  await loadMonthlyRanking();
+  await loadVotesStatus();
 
 };
 
@@ -303,6 +310,10 @@ async function init() {
   await loadVotesStatus();
   
   await loadPlayers();
+  
+  await loadMonthlyRanking();
+  
+  await loadVotesStatus();
 
   await loadMonthlyRanking();
 
