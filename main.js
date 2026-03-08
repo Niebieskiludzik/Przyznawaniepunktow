@@ -218,6 +218,80 @@ async function addPlayer() {
   await loadPlayers();
 }
 
+async function loadMonthlyRanking(){
+
+const start = new Date();
+start.setDate(1);
+
+const { data } = await supabase
+.from('votes')
+.select(`
+score,
+player_id,
+players(name)
+`)
+.gte('created_at', start.toISOString());
+
+const map = {};
+
+data?.forEach(v => {
+
+if(!map[v.player_id]){
+
+map[v.player_id] = {
+name:v.players.name,
+scores:[]
+};
+
+}
+
+map[v.player_id].scores.push(v.score);
+
+});
+
+const result = Object.values(map).map(p=>{
+
+const avg = p.scores.reduce((a,b)=>a+b,0)/p.scores.length;
+
+return {
+name:p.name,
+score:avg
+};
+
+});
+
+result.sort((a,b)=>b.score-a.score);
+
+renderMonthly(result);
+
+}
+
+function renderMonthly(players){
+
+const table = document.getElementById("monthlyRanking");
+
+table.innerHTML=`
+<tr>
+<th>#</th>
+<th>Gracz</th>
+<th>Średnia</th>
+</tr>
+`;
+
+players.forEach((p,i)=>{
+
+table.innerHTML+=`
+<tr>
+<td>${i+1}</td>
+<td>${p.name}</td>
+<td>${p.score.toFixed(2)}</td>
+</tr>
+`;
+
+});
+
+}
+
 async function init() {
 
   console.log('INIT START');
@@ -229,6 +303,8 @@ async function init() {
   await loadVotesStatus();
   
   await loadPlayers();
+
+  await loadMonthlyRanking();
 
 }
 
