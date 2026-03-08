@@ -8,6 +8,7 @@ const supabase = window.supabase.createClient(
 let players = [];
 let currentRoundId = null;
 let yesterdayRatings = {};
+let votersDone = new Set();
 
 const datePicker = document.getElementById('datePicker');
 const rankingTable = document.getElementById('rankingTable');
@@ -54,6 +55,17 @@ async function loadPlayers() {
 
   renderRanking();
   renderPanels();
+}
+
+async function loadVotesStatus() {
+
+  const { data } = await supabase
+    .from('votes')
+    .select('voter_name')
+    .eq('round_id', currentRoundId);
+
+  votersDone = new Set(data?.map(v => v.voter_name));
+
 }
 
 async function loadYesterdayRatings() {
@@ -112,8 +124,14 @@ function renderPanels() {
     const card = document.createElement('div');
     card.className = 'card center';
 
-    let html = `<h3>${voter.name} ocenia:</h3>`;
+    let voted = votersDone.has(voter.name);
 
+    let html = `
+    <h3>
+    ${voter.name} ocenia
+    ${voted ? "✅" : "❌"}
+    </h3>`;
+    
     players.forEach((player) => {
 
     if(player.id === voter.id) return;
@@ -208,6 +226,8 @@ async function init() {
 
   await loadYesterdayRatings();
 
+  await loadVotesStatus();
+  
   await loadPlayers();
 
 }
