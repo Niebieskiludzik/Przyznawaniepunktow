@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 const supabase = window.supabase.createClient(
   'https://wzanqzcjrpbhocrfcciy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1Ni'
 );
 
 let players = [];
 let currentRoundId = null;
 let yesterdayRatings = {};
+let absentPlayers = [];
 
 const datePicker = document.getElementById('datePicker');
 const rankingTable = document.getElementById('rankingTable');
@@ -41,6 +42,17 @@ async function ensureRound(date) {
     currentRoundId = data.id;
 
   }
+}
+
+async function loadAbsences(){
+
+  const { data } = await supabase
+    .from('absences')
+    .select('player_id')
+    .eq('round_id', currentRoundId);
+
+  absentPlayers = data?.map(a => a.player_id) || [];
+
 }
 
 async function loadPlayers() {
@@ -109,25 +121,36 @@ function renderPanels() {
 
   players.forEach((voter) => {
 
+    const isAbsent = absentPlayers.includes(voter.id);
+
     const card = document.createElement('div');
     card.className = 'card center';
+
+    if(isAbsent){
+      card.style.opacity = "0.4";
+    }
 
     let html = `<h3>${voter.name} ocenia:</h3>`;
 
     players.forEach((player) => {
 
+      if(absentPlayers.includes(player.id)) return;
+
       html += `
         <div class="vote-row">
           <div>${player.name}</div>
           <input type="number" min="1" max="10"
-          id="${voter.id}_${player.id}" />
+          id="${voter.id}_${player.id}"
+          ${isAbsent ? 'disabled' : ''}/>
         </div>
       `;
 
     });
 
     html += `
-      <button onclick="saveVotes('${voter.name}')">Zapisz oceny</button>
+      <button onclick="saveVotes('${voter.name}')" ${isAbsent ? 'disabled' : ''}>
+      Zapisz oceny
+      </button>
       <button class="absence-btn"
       onclick="markAbsent('${voter.id}')">
       Nieobecność
@@ -148,21 +171,17 @@ window.markAbsent = async function (playerId) {
     round_id: currentRoundId,
   });
 
-  const player = players.find((p) => p.id === playerId);
-
-  await supabase
-    .from('players')
-    .update({ rating: player.rating - 0 })
-    .eq('id', playerId);
-
   alert('Dodano nieobecność');
 
-  await loadPlayers();
+  await loadAbsences();
+  renderPanels();
 };
 
 window.saveVotes = async function (voterName) {
 
   for (let player of players) {
+
+    if(absentPlayers.includes(player.id)) continue;
 
     const voter = players.find(p => p.name === voterName);
 
@@ -170,7 +189,7 @@ window.saveVotes = async function (voterName) {
       voter.id + '_' + player.id
     );
 
-    if (!input.value) continue;
+    if (!input || !input.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
@@ -204,11 +223,11 @@ async function addPlayer() {
 
 async function init() {
 
-  console.log('INIT START');
-
   await ensureRound(datePicker.value);
 
   await loadYesterdayRatings();
+
+  await loadAbsences();
 
   await loadPlayers();
 
