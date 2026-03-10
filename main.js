@@ -90,7 +90,11 @@ function renderRanking() {
     const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
 
     rankingTable.innerHTML += `
-      <tr class="${i === 0 ? 'leader' : ''}">
+      <tr class="${
+          i === 0 ? 'leader gold' :
+          i === 1 ? 'silver' :
+          i === 2 ? 'bronze' : ''
+      }">
         <td>${medal || i + 1}</td>
         <td>${p.name}</td>
         <td>${Math.round(p.rating)}</td>
