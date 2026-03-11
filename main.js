@@ -118,17 +118,21 @@ function renderPanels() {
 
     let html = `<h3>${voter.name} ocenia:</h3>`;
 
+    html += `<div class="vote-row-container">`;
+
     players.forEach((player) => {
 
       html += `
         <div class="vote-row">
           <div>${player.name}</div>
-          <input type="number" min="1" max="10" step="0.1"
+          <input type="number" min="1" max="10"
           id="${voter.id}_${player.id}" />
         </div>
       `;
 
     });
+
+html += `</div>`;
 
     html += `
       <button onclick="saveVotes('${voter.name}')">Zapisz oceny</button>
