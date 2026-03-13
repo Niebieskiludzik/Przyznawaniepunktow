@@ -108,17 +108,31 @@ function renderRanking() {
 
 }
 
-function renderPanels() {
+async function renderPanels() {
 
   panelsDiv.innerHTML = '';
 
-  players.forEach((voter) => {
+  const { data } = await supabase.auth.getUser();
+  const userEmail = data.user?.email;
+
+  const currentPlayer = players.find(p => p.email === userEmail);
+
+  if (!currentPlayer) return;
+
+  let voters = [];
+
+  if (currentPlayer.role === "admin") {
+    voters = players;
+  } else {
+    voters = [currentPlayer];
+  }
+
+  voters.forEach((voter) => {
 
     const card = document.createElement('div');
     card.className = 'card center';
 
     let html = `<h3>${voter.name} ocenia:</h3>`;
-
     html += `<div class="vote-row-container">`;
 
     players.forEach((player) => {
