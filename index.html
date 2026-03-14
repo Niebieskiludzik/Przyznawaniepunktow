@@ -15,9 +15,15 @@
   <div class="nav-right">
 
     <div id="loginBox">
+
       <input id="email" placeholder="email">
+
       <input id="password" type="password" placeholder="hasło">
-      <button onclick="login()">Zaloguj</button>
+
+      <button id="loginBtn" onclick="login()">Zaloguj</button>
+
+      <div id="loginError"></div>
+
     </div>
 
     <div id="logoutBox" style="display:none;">
