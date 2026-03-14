@@ -239,8 +239,6 @@ window.markAbsent = async function (playerId) {
     .update({ rating: player.rating })
     .eq('id', playerId);
 
-  alert('Dodano nieobecność');
-
   await loadPlayers();
 };
 
@@ -288,16 +286,12 @@ window.login = async function () {
     return;
   }
 
-  alert("Zalogowano!");
-
   init();
 };
 
 window.logout = async function () {
 
   await supabase.auth.signOut();
-
-  alert("Wylogowano");
 
   location.reload();
 
