@@ -116,7 +116,10 @@ function renderRanking() {
           i === 2 ? 'bronze' : ''
       }">
         <td>${medal || i + 1}</td>
-        <td>${p.name}</td>
+        <td>
+        <span class="avatar">${p.avatar || "👤"}</span>
+        ${p.name}
+        </td>
         <td>${Math.round(p.rating)}</td>
         <td class="${diff >= 0 ? 'positive' : 'negative'}">
           ${diff >= 0 ? '+' : ''}${diff}
