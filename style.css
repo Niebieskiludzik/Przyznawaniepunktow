@@ -197,6 +197,34 @@ button:hover {
 
 }
 
+.navbar{
+
+  position:sticky;
+  top:0;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 40px;
+
+  background:#0f172a;
+  border-bottom:1px solid #334155;
+
+  font-size:26px;
+  font-weight:bold;
+
+  z-index:100;
+
+}
+
+.nav-right button{
+
+  font-size:18px;
+  padding:10px 20px;
+
+}
+
 
 
 .absence-btn {
