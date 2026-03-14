@@ -353,6 +353,21 @@ login();
 
 });  
 
+function updateNavbarDate(){
+
+const date = new Date(datePicker.value);
+
+const formatted = date.toLocaleDateString("pl-PL", {
+day:"numeric",
+month:"long",
+year:"numeric"
+});
+
+document.getElementById("navbarDate").innerText =
+"📅 " + formatted;
+
+}
+
 async function init() {
 
   console.log('INIT START');
@@ -360,7 +375,8 @@ async function init() {
   const { data } = await supabase.auth.getUser();
 
   const addPlayerSection = document.getElementById("newPlayerName").parentElement;
-  const logoutBox = document.getElementById("logoutBox");
+  const userBox = document.getElementById("userBox");
+  const userName = document.getElementById("userName");
   const loginBox = document.getElementById("loginBox");
   const dateCard = document.getElementById("dateCard");
 
@@ -370,7 +386,7 @@ async function init() {
 
     addPlayerSection.style.display = "none";
 
-    logoutBox.style.display = "none";
+    userBox.style.display = "none";
     loginBox.style.display = "flex";
 
     dateCard.style.display = "none";
@@ -379,7 +395,7 @@ async function init() {
 
     panelsDiv.style.display = "block";
 
-    logoutBox.style.display = "block";
+    userBox.style.display = "flex";
     loginBox.style.display = "none";
 
     dateCard.style.display = "block";
@@ -390,21 +406,30 @@ async function init() {
       .eq('email', data.user.email)
       .single();
 
-    if (player && player.role === "admin") {
+    if (player) {
 
-      addPlayerSection.style.display = "block";
+      userName.innerText = "👤 " + player.name;
 
-    } else {
+      if (player.role === "admin") {
 
-      addPlayerSection.style.display = "none";
+        addPlayerSection.style.display = "block";
+
+      } else {
+
+        addPlayerSection.style.display = "none";
+
+      }
 
     }
 
   }
 
   await ensureRound(datePicker.value);
-  updateDateDisplay();
+
+  updateNavbarDate();
+
   await loadYesterdayRatings();
+
   await loadPlayers();
 
 }
