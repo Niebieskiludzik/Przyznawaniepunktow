@@ -58,6 +58,24 @@ async function loadPlayers() {
   renderPanels();
 }
 
+function updateDateDisplay(){
+
+  const dateDisplay = document.getElementById("currentDateDisplay");
+
+  const date = new Date(datePicker.value);
+
+  const formatted =
+    date.toLocaleDateString("pl-PL", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    });
+
+  dateDisplay.innerHTML = "📅 Runda: <b>" + formatted + "</b>";
+
+}
+
 async function loadYesterdayRatings() {
 
   const { data } = await supabase
@@ -341,6 +359,7 @@ async function init() {
   }
 
   await ensureRound(datePicker.value);
+  updateDateDisplay();
   await loadYesterdayRatings();
   await loadPlayers();
 
