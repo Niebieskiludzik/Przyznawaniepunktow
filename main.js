@@ -13,6 +13,7 @@ const datePicker = document.getElementById('datePicker');
 const rankingTable = document.getElementById('rankingTable');
 const panelsDiv = document.getElementById('panels');
 const loginCard = document.getElementById('loginCard');
+const dateCard = document.getElementById("dateCard");
 
 datePicker.value = new Date().toISOString().split('T')[0];
 
@@ -311,7 +312,8 @@ async function init() {
     addPlayerSection.style.display = "none";
     logoutBox.style.display = "none";
 
-    datePicker.disabled = true;
+    dateCard.style.display = "none";
+    
 
   } else {
 
@@ -319,6 +321,8 @@ async function init() {
     loginCard.style.display = "none";
 
     logoutBox.style.display = "block";
+
+    dateCard.style.display = "block";
 
     datePicker.disabled = false;
 
