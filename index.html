@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Tabela punktów chwały</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="navbar">
@@ -44,7 +44,7 @@
 
   <a href="boisko.html" class="boiskoButton">
 
-  ⚽ Umawianie na boisko  
+  Umawianie na boisko  
   <span id="boiskoCounter"></span>
 
   </a>
@@ -63,7 +63,7 @@
     <h2>📜 Instrukcja</h2>
 
     <p><b>1. Logowanie</b><br>
-    Zaloguj się swoim kontem. Każdy gracz może oceniać tylko jako siebie.</p>
+    Zaloguj się swoim kontem. Każdy gracz może oceniać tylko jako on.</p>
 
     <p><b>2. Wybór daty</b><br>
     Wybierz datę rundy w polu <b>„Wybierz datę”</b>.  
@@ -71,13 +71,13 @@
 
     <p><b>3. Ocenianie</b><br>
     Wpisz punkty dla każdego gracza w skali od <b>1 do 10</b>.  
-    Można używać liczb dziesiętnych, np. <b>8.5</b lub <b>7,8</b>.</p>
+    Można używać liczb <b>dziesiętnych</b>, np. <b>6</b>, <b>8.5</b> lub <b>7,8</b>.</p>
 
     <p><b>4. Nieobecność</b><br>
-    Jeśli gracz jest nieobecny, pozostaw jego pola ocen puste.</p>
+    Jeśli gracz jest nieobecny, pozostaw jego pole oceny <b>puste</b>.</p>
 
     <p><b>5. Zapis</b><br>
-    Po wpisaniu ocen kliknij <b>Zapisz oceny</b> (głosów nie da się zmieniać!).</p>
+    Po wpisaniu ocen kliknij <b>Zapisz oceny</b> <i>(głosów nie da się zmieniać!)</i>.</p>
 
     <p><b>6. Ranking</b><br>
     Ranking aktualizuje się automatycznie po zapisaniu ocen.</p>
@@ -85,7 +85,7 @@
     <hr>
 
     <p>
-    📄 <a href="https://docs.google.com/document/d/1xy8n06AoJNB0FLi36zaHDms9U6YEKvTMJPJVTuS3lkk/edit?usp=sharing" target="_blank">
+    📄 <a href="https://docs.google.com/document/d/11Wibtg98KUgT6J1Nrx6LTu8EGNZYKEsiITr8nMX6XK0/edit?usp=sharing" target="_blank" style="background-color: white;">
     Regulamin systemu ocen
     </a>
     </p>
@@ -111,10 +111,26 @@
       <input type="text" id="newPlayerName" placeholder="Imię gracza" />
       <button id="addPlayerBtn">Dodaj</button>
     </div>
+
+    <div class="card" id="adminPenaltyBox">
+    <h2>⚖️ Kary / Bonusy</h2>
+
+    <select id="penaltyPlayer"></select>
+
+    <div style="margin-top:10px;">
+    <input type="number" id="penaltyPoints" placeholder="Punkty do odjęcia">
+    <button onclick="givePenalty()">Odejmij</button>
+    </div>
+
+    <div style="margin-top:10px;">
+    <input type="number" id="bonusPoints" placeholder="Punkty bonusowe">
+    <button onclick="giveBonus()">Dodaj bonus</button>
+    </div>
+
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabaseClient.js"></script>
-  <script src="js/main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
