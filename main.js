@@ -534,6 +534,6 @@ async function init() {
 
 }
 
-await init();
+init();
 
 });
