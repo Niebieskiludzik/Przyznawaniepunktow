@@ -13,9 +13,13 @@ const datePicker = document.getElementById('datePicker');
 const rankingTable = document.getElementById('rankingTable');
 const panelsDiv = document.getElementById('panels');
 
+if(datePicker){
 datePicker.value = new Date().toISOString().split('T')[0];
+}
 
+if(datePicker){
 datePicker.addEventListener('change', init);
+}
 document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
 document.getElementById("email").addEventListener("keypress",e=>{
