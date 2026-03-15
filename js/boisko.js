@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
+const supabase = window.supabaseClient;
 const daysContainer = document.getElementById("daysContainer");
 
 function getDays(){
@@ -41,9 +42,6 @@ const {data}=await supabase
 .select("*")
 .eq("date",day);
 
-const yes=data?.filter(x=>x.status==="yes")||[];
-const no=data?.filter(x=>x.status==="no")||[];
-
 const list=document.createElement("div");
 
 if(!data || data.length===0){
@@ -52,12 +50,13 @@ list.innerHTML="pusto";
 
 }else{
 
-yes.forEach(p=>{
+data.forEach(p=>{
 
 list.innerHTML+=`
-<div class="field-entry">
+
+<div>
 <span class="avatar">${p.avatar||"👤"}</span>
-<b>${p.player_name}</b><br>
+${p.player_name}<br>
 od ${p.from_time||"-:-"} do ${p.to_time||"-:-"}<br>
 ${p.description||""}
 </div>
@@ -68,7 +67,6 @@ ${p.description||""}
 }
 
 card.appendChild(list);
-
 daysContainer.appendChild(card);
 
 }
