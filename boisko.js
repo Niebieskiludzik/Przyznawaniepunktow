@@ -1,5 +1,3 @@
-// używamy supabase z main.js
-
 document.addEventListener("DOMContentLoaded", async () => {
 
 const daysContainer = document.getElementById("daysContainer");
@@ -20,9 +18,7 @@ days.push(d.toISOString().split("T")[0]);
 
 return days;
 
-};
-
-})
+}
 
 async function loadDays(){
 
@@ -50,23 +46,23 @@ const no=data?.filter(x=>x.status==="no")||[];
 
 const list=document.createElement("div");
 
-if(data.length===0){
+if(!data || data.length===0){
 
 list.innerHTML="pusto";
 
 }else{
 
 yes.forEach(p=>{
+
 list.innerHTML+=`
-<div>
+<div class="field-entry">
 <span class="avatar">${p.avatar||"👤"}</span>
-${p.player_name}
-od ${p.from_time||"-:-"}
-do ${p.to_time||"-:-"}
-<br>
+<b>${p.player_name}</b><br>
+od ${p.from_time||"-:-"} do ${p.to_time||"-:-"}<br>
 ${p.description||""}
 </div>
 `;
+
 });
 
 }
@@ -80,3 +76,5 @@ daysContainer.appendChild(card);
 }
 
 loadDays();
+
+});
