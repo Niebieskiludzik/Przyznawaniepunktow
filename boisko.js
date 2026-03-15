@@ -1,4 +1,4 @@
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
 'https://wzanqzcjrpbhocrfcciy.supabase.co',
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
@@ -39,7 +39,7 @@ await renderDay(day);
 
 async function renderDay(date){
 
-const {data} = await supabase
+const {data} = await supabaseClient
 .from("field_meetups")
 .select("*")
 .eq("date",date);
@@ -137,13 +137,13 @@ currentStatus=status;
 
 async function save(date){
 
-const {data:userData}=await supabase.auth.getUser();
+const {data:userData}=await supabaseClient.auth.getUser();
 
 if(!userData.user) return;
 
 const email=userData.user.email;
 
-const {data:player}=await supabase
+const {data:player}=await supabaseClient
 .from("players")
 .select("*")
 .eq("email",email)
@@ -159,7 +159,7 @@ if(toInput.dataset.sunset) to="sunset";
 
 const note=document.getElementById("note_"+date).value;
 
-await supabase
+await supabaseClient
 .from("field_meetups")
 .upsert({
 player_id:player.id,
