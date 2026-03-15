@@ -95,6 +95,13 @@ align-items:center;
 gap:10px;
 }
 
+.navbar input{
+width:140px;
+padding:8px;
+border-radius:8px;
+border:none;
+}
+
 .avatar{
 width:36px;
 height:36px;
