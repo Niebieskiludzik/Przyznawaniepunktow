@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Profil gracza</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="nav-left">🏆 Ranking Chwały</div>
+  <div class="nav-center"><span id="navbarDate"></span></div>
+  <div class="nav-right">
+    <div id="loginBox">
+      <input id="email" placeholder="email">
+      <input id="password" type="password" placeholder="hasło">
+      <button id="loginBtn" onclick="login()">Zaloguj</button>
+      <div id="loginError"></div>
+    </div>
+    <div id="userBox" style="display:none;">
+      <span id="userName"></span>
+      <button onclick="logout()">Wyloguj</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <a href="index.html" class="backButton">⬅ Powrót do rankingu</a>
+
+  <div class="card center">
+    <h1 id="playerName">Profil gracza</h1>
+    <p id="averageRating"></p>
+  </div>
+
+  <div class="card">
+    <h2>Historia punktów</h2>
+    <table id="historyTable">
+      <tr>
+        <th>Data rundy</th>
+        <th>Punkty</th>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Wykres formy</h2>
+    <canvas id="ratingChart" height="200"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="player.js"></script>
+
+</body>
+</html>
