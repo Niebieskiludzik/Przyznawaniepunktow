@@ -64,6 +64,7 @@ async function loadPlayers() {
 
   renderRanking();
   renderPanels();
+  loadPenaltyPlayers();
 }
 
 function updateDateDisplay(){
@@ -371,6 +372,72 @@ document.getElementById("navbarDate").innerText =
 
 }
 
+function loadPenaltyPlayers(){
+
+const select=document.getElementById("penaltyPlayer");
+
+if(!select) return;
+
+select.innerHTML="";
+
+players.forEach(p=>{
+
+const opt=document.createElement("option");
+
+opt.value=p.id;
+opt.textContent=p.name;
+
+select.appendChild(opt);
+
+});
+
+}
+
+window.givePenalty=async function(){
+
+const playerId=document.getElementById("penaltyPlayer").value;
+const points=parseFloat(document.getElementById("penaltyPoints").value);
+
+if(!points) return;
+
+const player=players.find(p=>p.id==playerId);
+
+await supabase
+.from("players")
+.update({
+manual_points:(player.manual_points||0)-points
+})
+.eq("id",playerId);
+
+document.getElementById("penaltyPoints").value="";
+
+await loadPlayers();
+
+}
+
+window.giveBonus=async function(){
+
+const playerId=document.getElementById("penaltyPlayer").value;
+const points=parseFloat(document.getElementById("bonusPoints").value);
+
+if(!points) return;
+
+const player=players.find(p=>p.id==playerId);
+
+await supabase
+.from("players")
+.update({
+manual_points:(player.manual_points||0)+points
+})
+.eq("id",playerId);
+
+document.getElementById("bonusPoints").value="";
+
+await loadPlayers();
+
+}
+
+
 async function loadBoiskoCounter(){
 
 const today=new Date().toISOString().split("T")[0];
@@ -397,6 +464,7 @@ async function init() {
   const { data } = await supabase.auth.getUser();
 
   const addPlayerSection = document.getElementById("newPlayerName").parentElement;
+  const penaltyBox = document.getElementById("adminPenaltyBox");
   const userBox = document.getElementById("userBox");
   const userName = document.getElementById("userName");
   const loginBox = document.getElementById("loginBox");
@@ -435,8 +503,15 @@ async function init() {
 
       if (player.role === "admin") {
 
-        addPlayerSection.style.display = "block";
+      addPlayerSection.style.display = "block";
+      penaltyBox.style.display = "block";
 
+      } else {
+
+      addPlayerSection.style.display = "none";
+      penaltyBox.style.display = "none";
+
+      }
       } else {
 
         addPlayerSection.style.display = "none";
