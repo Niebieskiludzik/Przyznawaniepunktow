@@ -25,7 +25,10 @@ const dateCard = document.getElementById("dateCard");
 
 datePicker.value = new Date().toISOString().split('T')[0];
 
-datePicker.addEventListener('change', init);
+datePicker.addEventListener('change', () => {
+  updateDateDisplay();
+  init();
+});
 document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
 async function ensureRound(date) {
@@ -503,20 +506,15 @@ async function init() {
 
       if (player.role === "admin") {
 
-      addPlayerSection.style.display = "block";
-      penaltyBox.style.display = "block";
+  addPlayerSection.style.display = "block";
+  penaltyBox.style.display = "block";
 
-      } else {
+} else {
 
-      addPlayerSection.style.display = "none";
-      penaltyBox.style.display = "none";
+  addPlayerSection.style.display = "none";
+  penaltyBox.style.display = "none";
 
-      
-      } else {
-
-        addPlayerSection.style.display = "none";
-
-      }
+}
 
     }
 
@@ -527,6 +525,8 @@ async function init() {
   updateNavbarDate();
 
   loadBoiskoCounter();
+  
+  updateDateDisplay();
 
   await loadYesterdayRatings();
 
