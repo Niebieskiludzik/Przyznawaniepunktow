@@ -129,8 +129,8 @@ function renderRanking() {
       }">
         <td>${medal || i + 1}</td>
         <td>
-        <span class="avatar">${p.avatar || "👤"}</span>
-        ${p.name}
+          <span class="avatar">${p.avatar || "👤"}</span>
+          <a href="player.html?id=${p.id}" class="player-link">${p.name}</a>
         </td>
         <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
         <td class="${diff >= 0 ? 'positive' : 'negative'}">
@@ -493,7 +493,8 @@ async function init() {
       .single();
 
     if (player) {
-      userName.innerHTML = `<span class="avatar">${player.avatar || "👤"}</span> ${player.name}`;
+      userName.innerHTML = `<span class="avatar">${player.avatar || "👤"}</span>
+      <a href="player.html?id=${player.id}" class="player-link">${player.name}</a>`;
 
       if (player.role === "admin") {
         addPlayerSection.style.display = "block";
