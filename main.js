@@ -499,6 +499,14 @@ async function init() {
       .eq('email', data.user.email)
       .single();
 
+    const penaltyBox = document.getElementById("adminPenaltyBox");
+
+      if (!player || player.role !== "admin") {
+        penaltyBox.style.display = "none"; // ukryj panel jeśli wylogowany lub nie admin
+      } else {
+        penaltyBox.style.display = "block"; // tylko dla admina
+    }
+
     if (player) {
 
       userName.innerHTML =
