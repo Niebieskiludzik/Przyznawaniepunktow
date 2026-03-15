@@ -1,13 +1,14 @@
+// player.js
 const supabase = window.supabase.createClient(
   'https://wzanqzcjrpbhocrfcciy.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
-// pobranie id gracza z URL
+// pobranie ID gracza z URL
 const params = new URLSearchParams(window.location.search);
 const playerId = params.get("id");
 
-if(!playerId){
+if (!playerId) {
   alert("Brak ID gracza w URL!");
   throw new Error("Brak ID gracza w URL");
 }
@@ -19,7 +20,8 @@ const ratingChartCtx = document.getElementById("ratingChart").getContext("2d");
 
 let ratingChart;
 
-async function initProfile(){
+// inicjalizacja profilu
+async function initProfile() {
 
   // pobranie danych gracza
   const { data: player } = await supabase
@@ -28,48 +30,60 @@ async function initProfile(){
     .eq("id", playerId)
     .single();
 
-  if(!player){
+  if (!player) {
     alert("Nie znaleziono gracza");
     return;
   }
 
   playerNameEl.textContent = player.name;
 
-  // pobranie historii punktów
-  const { data: rounds } = await supabase
+  // pobranie głosów gracza
+  const { data: votes } = await supabase
     .from("votes")
-    .select(`
-      round_id,
-      round:rounds(round_date),
-      score
-    `)
+    .select("score, round_id")
     .eq("player_id", playerId)
-    .order("round.round_date", { ascending: true });
+    .order("round_id", { ascending: true });
 
-  if(!rounds || rounds.length === 0){
+  if (!votes || votes.length === 0) {
     historyTable.innerHTML += `<tr><td colspan="2">Brak danych</td></tr>`;
+    averageRatingEl.textContent = "Brak ocen";
     return;
   }
 
-  // wypełnianie tabeli i przygotowanie danych do wykresu
+  // pobranie dat rund
+  const roundIds = votes.map(v => v.round_id);
+  const { data: rounds } = await supabase
+    .from("rounds")
+    .select("id, round_date")
+    .in("id", roundIds);
+
+  // mapa round_id -> round_date
+  const roundMap = {};
+  rounds.forEach(r => roundMap[r.id] = r.round_date);
+
+  // wypełnienie tabeli historii i przygotowanie danych do wykresu
   const labels = [];
   const scores = [];
   let total = 0;
 
-  rounds.forEach(r => {
-    const date = new Date(r.round.round_date).toLocaleDateString("pl-PL");
-    historyTable.innerHTML += `<tr><td>${date}</td><td>${r.score}</td></tr>`;
+  votes.forEach(v => {
+    const date = roundMap[v.round_id]
+      ? new Date(roundMap[v.round_id]).toLocaleDateString("pl-PL")
+      : "Brak daty";
+
+    historyTable.innerHTML += `<tr><td>${date}</td><td>${v.score}</td></tr>`;
+
     labels.push(date);
-    scores.push(r.score);
-    total += r.score;
+    scores.push(v.score);
+    total += v.score;
   });
 
   // średnia ocena
-  const avg = total / rounds.length;
+  const avg = total / votes.length;
   averageRatingEl.innerHTML = `<b>Średnia ocena:</b> ${avg.toFixed(2)} pkt`;
 
   // wykres formy
-  if(ratingChart) ratingChart.destroy(); // odświeżenie wykresu
+  if (ratingChart) ratingChart.destroy(); // odświeżenie wykresu
   ratingChart = new Chart(ratingChartCtx, {
     type: "line",
     data: {
@@ -86,15 +100,8 @@ async function initProfile(){
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          suggestedMax: 10
-        }
-      }
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, suggestedMax: 10 } }
     }
   });
 }
