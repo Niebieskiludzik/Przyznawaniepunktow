@@ -375,3 +375,23 @@ gap:8px;
   background:#662929;
 
 }
+
+#daysContainer{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+
+}
+
+.card h3{
+
+margin-top:10px;
+
+}
+
+.card input{
+
+margin-top:5px;
+
+}
