@@ -511,7 +511,7 @@ async function init() {
       addPlayerSection.style.display = "none";
       penaltyBox.style.display = "none";
 
-      }
+      
       } else {
 
         addPlayerSection.style.display = "none";
