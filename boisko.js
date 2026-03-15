@@ -1,9 +1,11 @@
 const supabaseClient = window.supabase.createClient(
 'https://wzanqzcjrpbhocrfcciy.supabase.co',
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
+'YOUR_KEY'
 );
 
 const daysContainer = document.getElementById("daysContainer");
+
+let currentStatus = {};
 
 function getNextDays(){
 
@@ -12,7 +14,6 @@ const days=[];
 for(let i=0;i<3;i++){
 
 const d=new Date();
-
 d.setDate(d.getDate()+i);
 
 days.push(d.toISOString().split("T")[0]);
@@ -39,7 +40,10 @@ await renderDay(day);
 
 async function renderDay(date){
 
-const {data} = await supabaseClient
+const {data:userData}=await supabaseClient.auth.getUser();
+const logged=userData.user;
+
+const {data}=await supabaseClient
 .from("field_meetups")
 .select("*")
 .eq("date",date);
@@ -63,44 +67,66 @@ html+=`<p>Pusto</p>`;
 const yes=data.filter(x=>x.status==="yes");
 const no=data.filter(x=>x.status==="no");
 
-html+=`<h3>Będą:</h3>`;
+html+=`<h3>Będą</h3>`;
 
 yes.forEach(p=>{
 
 html+=`<div>${p.player_name} ${formatTime(p)}</div>`;
 
+if(p.note){
+html+=`<div class="note">${p.note}</div>`;
+}
+
 });
 
-html+=`<h3>Nie będą:</h3>`;
+html+=`<h3>Nie będą</h3>`;
 
 no.forEach(p=>{
 
 html+=`<div>${p.player_name}</div>`;
 
+if(p.note){
+html+=`<div class="note">${p.note}</div>`;
+}
+
 });
 
 }
+
+if(logged){
 
 html+=`
 
 <hr>
 
-Od <input type="time" id="from_${date}">
-Do <input type="time" id="to_${date}">
-<button onclick="sunset('${date}')">Do zachodu</button>
+<div class="meet-row">
 
-<br><br>
+Od <input type="time" id="from_${date}">
+
+Do <input type="time" id="to_${date}">
+
+<label class="sunsetBox">
+<input type="checkbox" id="sunset_${date}">
+do zachodu
+</label>
+
+</div>
 
 <input id="note_${date}" maxlength="100" placeholder="opis (opcjonalnie)">
 
-<br><br>
+<div class="status-row">
 
-<button onclick="setStatus('${date}','yes')">Będę</button>
-<button onclick="setStatus('${date}','no')">Nie będę</button>
+<button class="statusBtn" onclick="setStatus('${date}','yes',this)">Będę</button>
 
-<button onclick="save('${date}')">Zapisz</button>
+<button class="statusBtn" onclick="setStatus('${date}','no',this)">Nie będę</button>
+
+</div>
+
+<button class="saveBtn" onclick="save('${date}')">Zapisz</button>
 
 `;
+
+}
 
 card.innerHTML=html;
 
@@ -113,25 +139,23 @@ function formatTime(p){
 let from=p.time_from||"-:-";
 let to=p.time_to||"-:-";
 
-if(to==="sunset") to="do zachodu słońca";
+if(to==="sunset"){
+to="zachodu słońca";
+}
 
 return `od ${from} do ${to}`;
 
 }
 
-function sunset(date){
+function setStatus(date,status,btn){
 
-document.getElementById("to_"+date).value="";
+currentStatus[date]=status;
 
-document.getElementById("to_"+date).dataset.sunset=true;
+const buttons=btn.parentElement.querySelectorAll(".statusBtn");
 
-}
+buttons.forEach(b=>b.classList.remove("active"));
 
-let currentStatus=null;
-
-function setStatus(date,status){
-
-currentStatus=status;
+btn.classList.add("active");
 
 }
 
@@ -151,11 +175,11 @@ const {data:player}=await supabaseClient
 
 const from=document.getElementById("from_"+date).value;
 
-const toInput=document.getElementById("to_"+date);
+let to=document.getElementById("to_"+date).value;
 
-let to=toInput.value;
+const sunset=document.getElementById("sunset_"+date).checked;
 
-if(toInput.dataset.sunset) to="sunset";
+if(sunset) to="sunset";
 
 const note=document.getElementById("note_"+date).value;
 
@@ -165,7 +189,7 @@ await supabaseClient
 player_id:player.id,
 player_name:player.name,
 date:date,
-status:currentStatus,
+status:currentStatus[date],
 time_from:from,
 time_to:to,
 note:note
