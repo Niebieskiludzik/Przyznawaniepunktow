@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-const supabase = window.supabase.createClient(
-'https://wzanqzcjrpbhocrfcciy.supabase.co',
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
-);
+const supabase = window.supabaseClient;
 
 let players = [];
 let currentRoundId = null;
@@ -15,20 +12,28 @@ const panelsDiv = document.getElementById('panels');
 
 if(datePicker){
 datePicker.value = new Date().toISOString().split('T')[0];
-}
-
-if(datePicker){
 datePicker.addEventListener('change', init);
 }
-document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
-document.getElementById("email").addEventListener("keypress",e=>{
+const addPlayerBtn = document.getElementById('addPlayerBtn');
+if(addPlayerBtn){
+addPlayerBtn.addEventListener('click', addPlayer);
+}
+
+const emailInput = document.getElementById("email");
+const passInput = document.getElementById("password");
+
+if(emailInput){
+emailInput.addEventListener("keypress",e=>{
 if(e.key==="Enter") login();
 });
+}
 
-document.getElementById("password").addEventListener("keypress",e=>{
+if(passInput){
+passInput.addEventListener("keypress",e=>{
 if(e.key==="Enter") login();
 });
+}
 
 async function ensureRound(date){
 
@@ -65,8 +70,8 @@ const {data}=await supabase
 
 players=data||[];
 
-renderRanking();
-renderPanels();
+if(rankingTable) renderRanking();
+if(panelsDiv) renderPanels();
 loadBoiskoCounter();
 
 }
@@ -88,6 +93,7 @@ yesterdayRatings[p.id]=p.rating;
 function renderRanking(){
 
 rankingTable.innerHTML=`
+
 <tr>
 <th>#</th>
 <th>Gracz</th>
@@ -106,16 +112,12 @@ if(i===2) medal='🥉';
 const diff=Math.round(p.rating-(yesterdayRatings[p.id]||p.rating));
 
 rankingTable.innerHTML+=`
-<tr class="${
-i===0?'leader gold':
-i===1?'silver':
-i===2?'bronze':''}">
+
+<tr>
 <td>${medal||i+1}</td>
 <td><span class="avatar">${p.avatar||"👤"}</span> ${p.name}</td>
 <td>${Math.round(p.rating)}</td>
-<td class="${diff>=0?'positive':'negative'}">
-${diff>=0?'+':''}${diff}
-</td>
+<td>${diff>=0?'+':''}${diff}</td>
 </tr>
 `;
 
@@ -134,114 +136,23 @@ const currentPlayer=players.find(p=>p.email===userEmail);
 
 if(!currentPlayer) return;
 
-const selectedDate=new Date(datePicker.value);
-const today=new Date();
-
-selectedDate.setHours(0,0,0,0);
-today.setHours(0,0,0,0);
-
-const threeDaysBefore=new Date(selectedDate);
-threeDaysBefore.setDate(selectedDate.getDate()-3);
-
-let votingAllowed=true;
-
-if(currentPlayer.role!=="admin"){
-
-if(today>selectedDate||today<threeDaysBefore){
-votingAllowed=false;
-}
-
-}
-
-let voters=[];
-
-if(currentPlayer.role==="admin"){
-voters=players;
-}else{
-voters=[currentPlayer];
-}
-
-voters.forEach((voter)=>{
-
-const card=document.createElement('div');
-card.className='card center';
-
-let html=`<h3>${voter.name} ocenia:</h3>`;
-
-html+=`<div class="vote-row-container">`;
-
 players.forEach((player)=>{
 
-html+=`
+const card=document.createElement('div');
+card.className='card';
+
+card.innerHTML=`
+
 <div class="vote-row">
-<div>
 <span class="avatar">${player.avatar||"👤"}</span>
 ${player.name}
-</div>
-<input type="number" min="1" max="10"
-${!votingAllowed?"disabled":""}
-id="${voter.id}_${player.id}" />
+<input type="number" id="${player.id}">
 </div>
 `;
 
-});
-
-html+=`</div>`;
-
-html+=`
-<div class="panel-buttons">
-<button onclick="saveVotes('${voter.name}')">Zapisz oceny</button>
-<button class="absence-btn"
-onclick="markAbsent('${voter.id}')">
-Nieobecność
-</button>
-</div>
-`;
-
-card.innerHTML=html;
 panelsDiv.appendChild(card);
 
 });
-
-}
-
-window.markAbsent=async function(playerId){
-
-await supabase.from('absences').insert({
-player_id:playerId,
-round_id:currentRoundId
-});
-
-await loadPlayers();
-
-}
-
-window.saveVotes=async function(voterName){
-
-for(let player of players){
-
-const voter=players.find(p=>p.name===voterName);
-
-const input=document.getElementById(
-voter.id+'_'+player.id
-);
-
-if(!input.value) continue;
-
-await supabase.from('votes').upsert({
-round_id:currentRoundId,
-player_id:player.id,
-voter_name:voterName,
-score:parseFloat(input.value.replace(",","."))
-});
-
-}
-
-await supabase.rpc('calculate_round',{
-p_round_id:currentRoundId
-});
-
-await loadPlayers();
 
 }
 
@@ -250,8 +161,6 @@ window.login=async function(){
 const email=document.getElementById("email").value;
 const password=document.getElementById("password").value;
 
-document.getElementById("loginBtn").innerText="Logowanie...";
-
 const {error}=await supabase.auth.signInWithPassword({
 email:email,
 password:password
@@ -259,7 +168,6 @@ password:password
 
 if(error){
 alert("Błąd logowania");
-document.getElementById("loginBtn").innerText="Zaloguj";
 return;
 }
 
@@ -292,6 +200,9 @@ await loadPlayers();
 
 async function loadBoiskoCounter(){
 
+const counter=document.getElementById("boiskoCounter");
+if(!counter) return;
+
 const today=new Date().toISOString().split("T")[0];
 
 const {data}=await supabase
@@ -303,8 +214,7 @@ const {data}=await supabase
 const willCome=data?data.length:0;
 const totalPlayers=players.length;
 
-document.getElementById("boiskoCounter").innerText=
-`dziś będzie ${willCome}/${totalPlayers} osób`;
+counter.innerText=`dziś będzie ${willCome}/${totalPlayers} osób`;
 
 }
 
@@ -315,29 +225,16 @@ const {data}=await supabase.auth.getUser();
 const loginBox=document.getElementById("loginBox");
 const userBox=document.getElementById("userBox");
 const userName=document.getElementById("userName");
-const panelsDiv=document.getElementById("panels");
-const dateBox=document.getElementById("dateBox");
-const newPlayerName=document.getElementById("newPlayerName");
-
-const lastEmail=localStorage.getItem("lastEmail");
-if(lastEmail && document.getElementById("email")){
-document.getElementById("email").value=lastEmail;
-}
 
 if(!data.user){
 
-if(panelsDiv) panelsDiv.style.display="none";
 if(loginBox) loginBox.style.display="block";
 if(userBox) userBox.style.display="none";
-if(dateBox) dateBox.style.display="none";
-if(newPlayerName) newPlayerName.parentElement.style.display="none";
 
 }else{
 
-if(panelsDiv) panelsDiv.style.display="block";
 if(loginBox) loginBox.style.display="none";
 if(userBox) userBox.style.display="block";
-if(dateBox) dateBox.style.display="block";
 
 const {data:player}=await supabase
 .from('players')
@@ -350,12 +247,6 @@ if(userName && player){
 userName.innerHTML=
 `<span class="avatar">${player.avatar||"👤"}</span> ${player.name}`;
 
-}
-
-if(player && player.role==="admin"){
-if(newPlayerName) newPlayerName.parentElement.style.display="block";
-}else{
-if(newPlayerName) newPlayerName.parentElement.style.display="none";
 }
 
 }
