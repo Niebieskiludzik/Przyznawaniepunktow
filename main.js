@@ -462,8 +462,6 @@ willCome+" / "+totalPlayers+" osób będzie dziś";
 
 async function init() {
 
-  console.log('INIT START');
-
   const { data } = await supabase.auth.getUser();
 
   const addPlayerSection = document.getElementById("newPlayerName").parentElement;
@@ -474,23 +472,18 @@ async function init() {
   const dateCard = document.getElementById("dateCard");
 
   if (!data.user) {
-
+    // Wylogowany użytkownik
     panelsDiv.style.display = "none";
-
     addPlayerSection.style.display = "none";
-
     userBox.style.display = "none";
     loginBox.style.display = "flex";
-
     dateCard.style.display = "none";
-
+    penaltyBox.style.display = "none";  // <-- ukryj panel admina
   } else {
-
+    // Zalogowany użytkownik
     panelsDiv.style.display = "block";
-
     userBox.style.display = "flex";
     loginBox.style.display = "none";
-
     dateCard.style.display = "block";
 
     const { data: player } = await supabase
@@ -499,47 +492,28 @@ async function init() {
       .eq('email', data.user.email)
       .single();
 
-    const penaltyBox = document.getElementById("adminPenaltyBox");
-
-      if (!player || player.role !== "admin") {
-        penaltyBox.style.display = "none"; // ukryj panel jeśli wylogowany lub nie admin
-      } else {
-        penaltyBox.style.display = "block"; // tylko dla admina
-    }
-
     if (player) {
-
-      userName.innerHTML =
-      `<span class="avatar">${player.avatar || "👤"}</span> ${player.name}`;
+      userName.innerHTML = `<span class="avatar">${player.avatar || "👤"}</span> ${player.name}`;
 
       if (player.role === "admin") {
-
-  addPlayerSection.style.display = "block";
-  penaltyBox.style.display = "block";
-
-} else {
-
-  addPlayerSection.style.display = "none";
-  penaltyBox.style.display = "none";
-
-}
-
+        addPlayerSection.style.display = "block";
+        penaltyBox.style.display = "block"; // tylko admin widzi panel
+      } else {
+        addPlayerSection.style.display = "none";
+        penaltyBox.style.display = "none"; // player lub inna rola nie widzi panelu
+      }
+    } else {
+      // użytkownik nie ma przypisanego rekordu w tabeli players
+      addPlayerSection.style.display = "none";
+      penaltyBox.style.display = "none";
     }
-
   }
 
   await ensureRound(datePicker.value);
-
   updateNavbarDate();
-
   loadBoiskoCounter();
-  
-  updateDateDisplay();
-
   await loadYesterdayRatings();
-
   await loadPlayers();
-
 }
 
 init();
