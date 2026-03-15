@@ -71,7 +71,7 @@ html+=`<h3>Będą</h3>`;
 
 yes.forEach(p=>{
 
-html+=`<div>${p.player_name} ${formatTime(p)}</div>`;
+html+=`<div><span class="avatar">${p.avatar || "👤"}</span>${p.player_name} ${formatTime(p)}</div>`;
 
 if(p.note){
 html+=`<div class="note">${p.note}</div>`;
@@ -83,7 +83,7 @@ html+=`<h3>Nie będą</h3>`;
 
 no.forEach(p=>{
 
-html+=`<div>${p.player_name}</div>`;
+html+=`<div><span class="avatar">${p.avatar || "👤"}</span>${p.player_name}</div>`;
 
 if(p.note){
 html+=`<div class="note">${p.note}</div>`;
