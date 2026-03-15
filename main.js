@@ -188,7 +188,10 @@ async function renderPanels() {
 
       html += `
         <div class="vote-row">
-          <div>${player.name}</div>
+          <div>
+          <span class="avatar">${player.avatar || "👤"}</span>
+          ${player.name}
+          </div>
           <input 
             type="number"
             step="0.1"
@@ -427,7 +430,8 @@ async function init() {
 
     if (player) {
 
-      userName.innerText = "👤 " + player.name;
+      userName.innerHTML =
+      `<span class="avatar">${player.avatar || "👤"}</span> ${player.name}`;
 
       if (player.role === "admin") {
 
