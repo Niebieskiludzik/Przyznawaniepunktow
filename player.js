@@ -1,8 +1,5 @@
 // player.js
-const supabase = window.supabase.createClient(
-  'https://wzanqzcjrpbhocrfcciy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
-);
+const supabaseClient = window.supabase; // używamy już istniejącej instancji
 
 // pobranie ID gracza z URL
 const params = new URLSearchParams(window.location.search);
@@ -24,7 +21,7 @@ let ratingChart;
 async function initProfile() {
 
   // pobranie danych gracza
-  const { data: player } = await supabase
+  const { data: player } = await supabaseClient
     .from("players")
     .select("*")
     .eq("id", playerId)
@@ -38,7 +35,7 @@ async function initProfile() {
   playerNameEl.textContent = player.name;
 
   // pobranie głosów gracza
-  const { data: votes } = await supabase
+  const { data: votes } = await supabaseClient
     .from("votes")
     .select("score, round_id")
     .eq("player_id", playerId)
@@ -52,7 +49,7 @@ async function initProfile() {
 
   // pobranie dat rund
   const roundIds = votes.map(v => v.round_id);
-  const { data: rounds } = await supabase
+  const { data: rounds } = await supabaseClient
     .from("rounds")
     .select("id, round_date")
     .in("id", roundIds);
