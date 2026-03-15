@@ -313,7 +313,7 @@ async function init(){
 const {data}=await supabase.auth.getUser();
 
 const loginBox=document.getElementById("loginBox");
-const logoutBox=document.getElementById("logoutBox");
+const userBox=document.getElementById("userBox");
 const userName=document.getElementById("userName");
 const panelsDiv=document.getElementById("panels");
 const dateBox=document.getElementById("dateBox");
@@ -328,7 +328,7 @@ if(!data.user){
 
 if(panelsDiv) panelsDiv.style.display="none";
 if(loginBox) loginBox.style.display="block";
-if(logoutBox) logoutBox.style.display="none";
+if(userBox) userBox.style.display="none";
 if(dateBox) dateBox.style.display="none";
 if(newPlayerName) newPlayerName.parentElement.style.display="none";
 
@@ -336,7 +336,7 @@ if(newPlayerName) newPlayerName.parentElement.style.display="none";
 
 if(panelsDiv) panelsDiv.style.display="block";
 if(loginBox) loginBox.style.display="none";
-if(logoutBox) logoutBox.style.display="block";
+if(userBox) userBox.style.display="block";
 if(dateBox) dateBox.style.display="block";
 
 const {data:player}=await supabase
