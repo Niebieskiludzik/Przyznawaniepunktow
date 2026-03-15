@@ -1,5 +1,7 @@
 // player.js
-const supabaseClient = window.supabase; // używamy już istniejącej instancji
+
+// używamy już istniejącej instancji Supabase
+const supabaseClient = window.supabase;
 
 // pobranie ID gracza z URL
 const params = new URLSearchParams(window.location.search);
@@ -10,6 +12,7 @@ if (!playerId) {
   throw new Error("Brak ID gracza w URL");
 }
 
+// elementy w DOM
 const playerNameEl = document.getElementById("playerName");
 const averageRatingEl = document.getElementById("averageRating");
 const historyTable = document.getElementById("historyTable");
@@ -42,7 +45,7 @@ async function initProfile() {
     .order("round_id", { ascending: true });
 
   if (!votes || votes.length === 0) {
-    historyTable.innerHTML += `<tr><td colspan="2">Brak danych</td></tr>`;
+    historyTable.innerHTML = `<tr><td colspan="2">Brak danych</td></tr>`;
     averageRatingEl.textContent = "Brak ocen";
     return;
   }
@@ -62,6 +65,8 @@ async function initProfile() {
   const labels = [];
   const scores = [];
   let total = 0;
+
+  historyTable.innerHTML = ""; // czyścimy tabelę przed wypełnieniem
 
   votes.forEach(v => {
     const date = roundMap[v.round_id]
@@ -103,4 +108,5 @@ async function initProfile() {
   });
 }
 
+// uruchomienie
 initProfile();
