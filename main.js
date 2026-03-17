@@ -1,35 +1,67 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-const savedEmail = localStorage.getItem("savedEmail");
-
-if(savedEmail){
-
-document.getElementById("email").value = savedEmail;
-
-}
-  
 const supabase = window.supabase.createClient(
   'https://wzanqzcjrpbhocrfcciy.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
 let players = [];
-let currentRoundId = null;
 let yesterdayRatings = {};
+let currentRoundId = null;
 
-const datePicker = document.getElementById('datePicker');
-const rankingTable = document.getElementById('rankingTable');
-const panelsDiv = document.getElementById('panels');
-const loginCard = document.getElementById('loginCard');
-const dateCard = document.getElementById("dateCard");
+// ELEMENTY
+const rankingList = document.getElementById("rankingList");
+const panelsDiv = document.getElementById("panels");
+const datePicker = document.getElementById("datePicker");
 
-datePicker.value = new Date().toISOString().split('T')[0];
+// =============================
+// 🌙 THEME
 
-datePicker.addEventListener('change', () => {
+function toggleTheme() {
+  document.body.classList.toggle("light");
+
+  const isLight = document.body.classList.contains("light");
+
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+
+  document.querySelector(".icon-btn").innerText = isLight ? "☀️" : "🌙";
+}
+
+window.toggleTheme = toggleTheme;
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  const btn = document.querySelector(".icon-btn");
+  if (btn) btn.innerText = "☀️";
+}
+
+// =============================
+// 📅 DATA
+
+datePicker.value = new Date().toISOString().split("T")[0];
+
+function updateDateDisplay() {
+  const el = document.getElementById("navbarDate");
+  if (!el) return;
+
+  const date = new Date(datePicker.value);
+
+  el.innerText = date.toLocaleDateString("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+}
+
+datePicker.addEventListener("change", async () => {
   updateDateDisplay();
-  init();
+  await init();
 });
-document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
+
+// =============================
+// 🔄 ROUND
 
 async function ensureRound(date) {
 
@@ -40,7 +72,6 @@ async function ensureRound(date) {
     .single();
 
   if (!data) {
-
     const { data: newRound } = await supabase
       .from('rounds')
       .insert({ round_date: date })
@@ -50,11 +81,12 @@ async function ensureRound(date) {
     currentRoundId = newRound.id;
 
   } else {
-
     currentRoundId = data.id;
-
   }
 }
+
+// =============================
+// 📊 DANE
 
 async function loadPlayers() {
 
@@ -67,25 +99,7 @@ async function loadPlayers() {
 
   renderRanking();
   renderPanels();
-  loadPenaltyPlayers();
-}
-
-function updateDateDisplay(){
-
-  const dateDisplay = document.getElementById("currentDateDisplay");
-
-  const date = new Date(datePicker.value);
-
-  const formatted =
-    date.toLocaleDateString("pl-PL", {
-      weekday:"long",
-      year:"numeric",
-      month:"long",
-      day:"numeric"
-    });
-
-  dateDisplay.innerHTML = "📅 Runda: <b>" + formatted + "</b>";
-
+  loadBoiskoCounter();
 }
 
 async function loadYesterdayRatings() {
@@ -101,12 +115,14 @@ async function loadYesterdayRatings() {
   });
 }
 
+// =============================
+// 🏆 RANKING (NOWY UI)
+
 function renderRanking() {
 
-  const container = document.getElementById("rankingList");
-  if (!container) return;
+  if (!rankingList) return;
 
-  container.innerHTML = "";
+  rankingList.innerHTML = "";
 
   players.forEach((p, i) => {
 
@@ -134,161 +150,70 @@ function renderRanking() {
       alert("Profil gracza: " + p.name);
     };
 
-    container.appendChild(row);
-
+    rankingList.appendChild(row);
   });
-
 }
+
+// =============================
+// 🧠 PANELS
 
 async function renderPanels() {
 
-  panelsDiv.innerHTML = '';
+  if (!panelsDiv) return;
 
-  const { data: userData } = await supabase.auth.getUser();
-  const userEmail = userData.user?.email;
+  panelsDiv.innerHTML = "";
+
+  const { data } = await supabase.auth.getUser();
+  const userEmail = data.user?.email;
 
   const currentPlayer = players.find(p => p.email === userEmail);
 
   if (!currentPlayer) return;
 
-  const selectedDate = new Date(datePicker.value);
-  const today = new Date();
+  const card = document.createElement("div");
+  card.className = "section";
 
-  selectedDate.setHours(0,0,0,0);
-  today.setHours(0,0,0,0);
+  let html = `<h2>Oceń graczy</h2>`;
 
-  const threeDaysBefore = new Date(selectedDate);
-  threeDaysBefore.setDate(selectedDate.getDate() - 3);
-
-  let votingAllowed = true;
-
-  if (currentPlayer.role !== "admin") {
-
-    if (today > selectedDate || today < threeDaysBefore) {
-      votingAllowed = false;
-    }
-
-  }
-
-  let voters = [];
-
-  if (currentPlayer.role === "admin") {
-    voters = players;
-  } else {
-    voters = [currentPlayer];
-  }
-
-  voters.forEach((voter) => {
-
-    const card = document.createElement('div');
-    card.className = 'card center';
-
-    let html = `<h3>${voter.name} ocenia:</h3>`;
-    html += `<div class="vote-row-container">`;
-
-    players.forEach((player) => {
-
-      html += `
-        <div class="vote-row">
-          <div>
-          <span class="avatar">${player.avatar || "👤"}</span>
-          ${player.name}
-          </div>
-          <input 
-            type="number"
-            step="0.1"
-            min="1"
-            max="10"
-            ${!votingAllowed ? "disabled" : ""}
-            id="${voter.id}_${player.id}"
-          />
-        </div>
-      `;
-
-    });
-
-    html += `</div>`;
+  players.forEach(player => {
 
     html += `
-      <div class="panel-buttons">
-        <button ${!votingAllowed ? "disabled" : ""} onclick="saveVotes('${voter.name}')">
-          Zapisz oceny
-        </button>
-        <button class="absence-btn"
-        onclick="markAbsent('${voter.id}')">
-        Nieobecność
-        </button>
+      <div style="margin-bottom:12px;">
+        ${player.name}
+        <input type="number" min="1" max="10" id="vote_${player.id}">
       </div>
     `;
-
-    if (!votingAllowed) {
-
-      html += `
-        <p style="margin-top:20px;opacity:0.7;">
-        Głosowanie dostępne tylko od 3 dni przed datą rundy do dnia rundy.
-        </p>
-      `;
-
-    }
-
-    card.innerHTML = html;
-    panelsDiv.appendChild(card);
-
   });
 
+  html += `<button onclick="saveVotes()">Zapisz</button>`;
+
+  card.innerHTML = html;
+  panelsDiv.appendChild(card);
 }
 
-function toggleTheme() {
-  document.body.classList.toggle("light");
+// =============================
+// 💾 ZAPIS
 
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("light") ? "light" : "dark"
-  );
-}
+window.saveVotes = async function () {
 
-// zapisany motyw
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "light") {
-  document.body.classList.add("light");
-}
+  const { data } = await supabase.auth.getUser();
+  const userEmail = data.user?.email;
 
-window.markAbsent = async function (playerId) {
-
-  await supabase.from('absences').insert({
-    player_id: playerId,
-    round_id: currentRoundId,
-  });
-
-  const player = players.find((p) => p.id === playerId);
-
-  await supabase
-    .from('players')
-    .update({ rating: player.rating })
-    .eq('id', playerId);
-
-  await loadPlayers();
-};
-
-window.saveVotes = async function (voterName) {
+  const voter = players.find(p => p.email === userEmail);
+  if (!voter) return;
 
   for (let player of players) {
 
-    const voter = players.find(p => p.name === voterName);
+    const input = document.getElementById("vote_" + player.id);
 
-    const input = document.getElementById(
-      voter.id + '_' + player.id
-    );
-
-    if (!input.value) continue;
+    if (!input || !input.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
       player_id: player.id,
-      voter_name: voterName,
-      score: parseFloat(input.value.replace(",", "."))
+      voter_name: voter.name,
+      score: parseFloat(input.value)
     });
-
   }
 
   await supabase.rpc('calculate_round', {
@@ -296,283 +221,62 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
-
 };
 
-
-window.addEventListener("scroll", () => {
-  const navbar = document.querySelector(".navbar");
-
-  if (window.scrollY > 50) {
-    navbar.classList.add("shrink");
-  } else {
-    navbar.classList.remove("shrink");
-  }
-});
-
-
-window.login = async function () {
-
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const errorBox = document.getElementById("loginError");
-
-const email = emailInput.value;
-const password = passwordInput.value;
-
-errorBox.innerText = "";
-
-loginBtn.innerText = "Logowanie...";
-loginBtn.classList.add("loading");
-
-const { error } = await supabase.auth.signInWithPassword({
-email: email,
-password: password
-});
-
-loginBtn.innerText = "Zaloguj";
-loginBtn.classList.remove("loading");
-
-if (error) {
-
-errorBox.innerText = "❌ Nieprawidłowy email lub hasło";
-
-return;
-
-}
-
-localStorage.setItem("savedEmail", email);
-
-init();
-
-};
-window.logout = async function () {
-
-  await supabase.auth.signOut();
-
-  location.reload();
-
-};
-
-async function addPlayer() {
-
-  const name = document.getElementById('newPlayerName').value;
-
-  if (!name) return;
-
-  await supabase.from('players').insert({ name });
-
-  document.getElementById('newPlayerName').value = '';
-
-  await loadPlayers();
-}
-
-document.addEventListener("keydown", function(e){
-
-if(e.key === "Enter"){
-
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-
-if(document.activeElement === email || document.activeElement === password){
-
-login();
-
-}
-
-}
-
-});  
-
-function updateNavbarDate(){
-
-const date = new Date(datePicker.value);
-
-const formatted = date.toLocaleDateString("pl-PL", {
-day:"numeric",
-month:"long",
-year:"numeric"
-});
-
-document.getElementById("navbarDate").innerText =
-"📅 " + formatted;
-
-}
-
-function loadPenaltyPlayers(){
-
-const select=document.getElementById("penaltyPlayer");
-
-if(!select) return;
-
-select.innerHTML="";
-
-players.forEach(p=>{
-
-const opt=document.createElement("option");
-
-opt.value=p.id;
-opt.textContent=p.name;
-
-select.appendChild(opt);
-
-});
-
-}
-
-window.givePenalty=async function(){
-
-const playerId=document.getElementById("penaltyPlayer").value;
-const points=parseFloat(document.getElementById("penaltyPoints").value);
-
-if(!points) return;
-
-const player=players.find(p=>p.id==playerId);
-
-await supabase
-.from("players")
-.update({
-manual_points:(player.manual_points||0)-points
-})
-.eq("id",playerId);
-
-document.getElementById("penaltyPoints").value="";
-
-await loadPlayers();
-
-}
-
-window.giveBonus=async function(){
-
-const playerId=document.getElementById("penaltyPlayer").value;
-const points=parseFloat(document.getElementById("bonusPoints").value);
-
-if(!points) return;
-
-const player=players.find(p=>p.id==playerId);
-
-await supabase
-.from("players")
-.update({
-manual_points:(player.manual_points||0)+points
-})
-.eq("id",playerId);
-
-document.getElementById("bonusPoints").value="";
-
-await loadPlayers();
-
-}
-
+// =============================
+// ⚽ BOISKO
 
 async function loadBoiskoCounter(){
 
-const today=new Date().toISOString().split("T")[0];
+  const today=new Date().toISOString().split("T")[0];
 
-const {data}=await supabase
-.from("field_meetups")
-.select("*")
-.eq("date",today)
-.eq("status","yes");
+  const {data}=await supabase
+    .from("field_meetups")
+    .select("*")
+    .eq("date",today)
+    .eq("status","yes");
 
-const willCome=data.length;
+  const el = document.getElementById("boiskoCounter");
 
-const totalPlayers=players.length;
-
-document.getElementById("boiskoCounter").innerText=
-willCome+" / "+totalPlayers+" osób będzie dziś";
-
+  if (el) {
+    el.innerText = data.length + " osób dziś";
+  }
 }
 
-function setDynamicColor() {
-  const colors = [
-    "#8ab4f8",
-    "#f28b82",
-    "#81c995",
-    "#fdd663",
-    "#c58af9"
-  ];
+// =============================
+// 🔐 LOGIN
 
-  const random = colors[Math.floor(Math.random() * colors.length)];
+window.login = async function () {
 
-  document.documentElement.style.setProperty("--primary", random);
-}
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-setDynamicColor();
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
-function toggleTheme() {
-  document.body.classList.toggle("light");
+  if (error) {
+    document.getElementById("loginError").innerText = "Błąd logowania";
+    return;
+  }
 
-  const isLight = document.body.classList.contains("light");
+  init();
+};
 
-  localStorage.setItem("theme", isLight ? "light" : "dark");
+window.logout = async function () {
+  await supabase.auth.signOut();
+  location.reload();
+};
 
-  document.querySelector(".icon-btn").innerText = isLight ? "☀️" : "🌙";
-}
-
-// INIT (tylko raz!)
-const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme === "light") {
-  document.body.classList.add("light");
-  document.querySelector(".icon-btn").innerText = "☀️";
-}
-
+// =============================
+// 🚀 INIT
 
 async function init() {
 
-  const { data } = await supabase.auth.getUser();
-
-  const addPlayerSection = document.getElementById("newPlayerName").parentElement;
-  const penaltyBox = document.getElementById("adminPenaltyBox");
-  const userBox = document.getElementById("userBox");
-  const userName = document.getElementById("userName");
-  const loginBox = document.getElementById("loginBox");
-  const dateCard = document.getElementById("dateCard");
-
-  if (!data.user) {
-    // Wylogowany użytkownik
-    panelsDiv.style.display = "none";
-    addPlayerSection.style.display = "none";
-    userBox.style.display = "none";
-    loginBox.style.display = "flex";
-    dateCard.style.display = "none";
-    penaltyBox.style.display = "none";  // <-- ukryj panel admina
-  } else {
-    // Zalogowany użytkownik
-    panelsDiv.style.display = "block";
-    userBox.style.display = "flex";
-    loginBox.style.display = "none";
-    dateCard.style.display = "block";
-
-    const { data: player } = await supabase
-      .from('players')
-      .select('*')
-      .eq('email', data.user.email)
-      .single();
-
-    if (player) {
-      userName.innerHTML = `<span class="avatar">${player.avatar || "👤"}</span>
-      <a href="player.html?id=${player.id}" class="player-link">${player.name}</a>`;
-
-      if (player.role === "admin") {
-        addPlayerSection.style.display = "block";
-        penaltyBox.style.display = "block"; // tylko admin widzi panel
-      } else {
-        addPlayerSection.style.display = "none";
-        penaltyBox.style.display = "none"; // player lub inna rola nie widzi panelu
-      }
-    } else {
-      // użytkownik nie ma przypisanego rekordu w tabeli players
-      addPlayerSection.style.display = "none";
-      penaltyBox.style.display = "none";
-    }
-  }
+  updateDateDisplay();
 
   await ensureRound(datePicker.value);
-  updateNavbarDate();
-  loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
 }
