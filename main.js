@@ -277,6 +277,8 @@ window.logout = async function () {
   location.reload();
 };
 
+const datePicker = document.getElementById("datePicker");
+  
 // =============================
 // 🚀 INIT
 
@@ -291,6 +293,15 @@ async function init() {
 
   datePicker.value = new Date().toISOString().split("T")[0];
 
+  const loginSection = document.getElementById("loginSection");
+  const userSection = document.getElementById("userSection");
+
+  if (currentUser) {
+    loginSection.style.display = "none";
+    userSection.style.display = "block";
+    document.getElementById("userEmail").innerText = currentUser.email;
+  }
+  
   await ensureRound(datePicker.value);
   await loadPlayers();
 
