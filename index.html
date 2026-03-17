@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ranking Chwały</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -13,12 +14,14 @@
 <div class="topbar">
   <div class="title">🏆 Ranking</div>
 
-  <div class="top-actions">
+  <div style="display:flex; gap:10px;">
+    <button class="icon-btn" onclick="location.href='index.html'">🏠</button>
+    <button class="icon-btn" onclick="location.href='boisko.html'">⚽</button>
     <button class="icon-btn" onclick="toggleTheme()">🌙</button>
   </div>
 </div>
 
-<!-- MAIN -->
+<!-- APP -->
 <div class="app">
 
   <!-- DATA -->
@@ -28,7 +31,7 @@
 
   <!-- BOISKO -->
   <button class="primary-btn" onclick="location.href='boisko.html'">
-    ⚽ Umawianie na boisko  
+    ⚽ Umawianie na boisko
     <div class="sub" id="boiskoCounter"></div>
   </button>
 
@@ -38,34 +41,36 @@
     <div id="rankingList"></div>
   </div>
 
-  <!-- DATE PICKER -->
+  <!-- DATA RUNDY -->
   <div class="section" id="dateCard">
     <h2>Data rundy</h2>
     <input type="date" id="datePicker">
   </div>
 
-  <!-- PANELS -->
+  <!-- GŁOSOWANIE + ADMIN -->
   <div id="panels"></div>
 
   <!-- LOGIN -->
-  <div class="section" id="loginBox">
+  <div class="section" id="loginSection">
     <h2>Logowanie</h2>
     <input id="email" placeholder="email">
     <input id="password" type="password" placeholder="hasło">
-    <button onclick="login()">Zaloguj</button>
-    <div id="loginError"></div>
+    <button class="primary-btn" onclick="login()">Zaloguj</button>
   </div>
 
   <!-- USER -->
-  <div class="section" id="userBox" style="display:none;">
-    <div id="userName"></div>
-    <button onclick="logout()">Wyloguj</button>
+  <div class="section" id="userSection" style="display:none;">
+    <div id="userEmail"></div>
+    <button class="primary-btn" onclick="logout()">Wyloguj</button>
   </div>
 
 </div>
 
-</body>
-
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- JS -->
 <script src="main.js"></script>
+
+</body>
 </html>
