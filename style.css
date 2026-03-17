@@ -1,10 +1,10 @@
 /* ============================= */
 /* GOOGLE FONT */
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 /* ============================= */
-/* ROOT (kolory Material You dark) */
+/* MATERIAL YOU TOKENS */
 
 :root {
   --bg: #121212;
@@ -12,15 +12,27 @@
   --surface-2: #2a2a2a;
 
   --primary: #8ab4f8;
-  --primary-hover: #a1c2fa;
+  --primary-strong: #aecbfa;
 
   --text: #e8eaed;
   --text-secondary: #9aa0a6;
 
-  --success: #34a853;
-  --danger: #ea4335;
+  --border: #2c2c2c;
 
-  --border: #2f2f2f;
+  --radius: 20px;
+}
+
+/* LIGHT MODE */
+
+.light {
+  --bg: #f1f3f4;
+  --surface: #ffffff;
+  --surface-2: #e8eaed;
+
+  --text: #202124;
+  --text-secondary: #5f6368;
+
+  --border: #dadce0;
 }
 
 /* ============================= */
@@ -31,40 +43,11 @@ body {
   background: var(--bg);
   color: var(--text);
   margin: 0;
-  font-size: 16px;
+  transition: 0.3s;
 }
 
 /* ============================= */
-/* CONTAINER */
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 24px;
-}
-
-/* ============================= */
-/* TYPOGRAFIA */
-
-h1 {
-  font-size: 32px;
-  font-weight: 500;
-  margin-bottom: 24px;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: 500;
-  margin-bottom: 16px;
-}
-
-h3 {
-  font-size: 18px;
-  font-weight: 500;
-}
-
-/* ============================= */
-/* NAVBAR */
+/* NAVBAR (kurczący się) */
 
 .navbar {
   position: sticky;
@@ -74,254 +57,199 @@ h3 {
   justify-content: space-between;
   align-items: center;
 
-  padding: 12px 24px;
+  padding: 18px 20px;
+  font-size: 20px;
 
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
 
+  transition: all 0.3s ease;
   z-index: 100;
 }
 
-.nav-left {
-  font-size: 20px;
-  font-weight: 500;
-}
+/* zmniejszanie przy scroll */
 
-.nav-center {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.navbar.shrink {
+  padding: 10px 20px;
+  font-size: 16px;
 }
 
 /* ============================= */
-/* KARTY */
+/* CONTAINER */
+
+.container {
+  padding: 16px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ============================= */
+/* KARTY (Material You) */
 
 .card {
   background: var(--surface);
-  border-radius: 16px;
+  border-radius: var(--radius);
   padding: 20px;
   margin-bottom: 20px;
 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+
+  transition: transform 0.2s;
 }
 
-.center {
-  text-align: center;
+.card:active {
+  transform: scale(0.98);
 }
 
 /* ============================= */
-/* INPUTY */
+/* TYPO */
+
+h1 {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+/* ============================= */
+/* INPUTY (duże mobile) */
 
 input, select {
-  background: var(--surface-2);
+  width: 100%;
+  font-size: 18px;
+
+  padding: 14px;
+  border-radius: 14px;
+
   border: 1px solid var(--border);
+  background: var(--surface-2);
   color: var(--text);
-
-  padding: 10px 12px;
-  border-radius: 10px;
-
-  font-size: 14px;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--primary);
 }
 
 /* ============================= */
-/* BUTTONY */
+/* BUTTON (Material You) */
 
 button {
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+  padding: 16px;
+
+  border-radius: 16px;
+  border: none;
+
+  font-size: 18px;
+  font-weight: 500;
+
   background: var(--primary);
   color: black;
-
-  border: none;
-  border-radius: 12px;
-
-  padding: 10px 16px;
-  font-weight: 500;
 
   cursor: pointer;
   transition: 0.2s;
 }
 
 button:hover {
-  background: var(--primary-hover);
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: var(--primary-strong);
 }
 
 /* ============================= */
-/* TABELA */
+/* RIPPLE EFFECT */
+
+button::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+button:active::after {
+  transform: scale(4);
+  opacity: 1;
+  transition: 0.4s;
+}
+
+/* ============================= */
+/* TABELA (mobile friendly) */
 
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th {
-  text-align: left;
-  padding: 12px;
-  color: var(--text-secondary);
-  font-weight: 400;
-  font-size: 14px;
+td, th {
+  padding: 16px 10px;
+  font-size: 16px;
 }
 
-td {
-  padding: 14px 12px;
-  border-top: 1px solid var(--border);
-}
-
-/* hover jak w Google */
-
-tr:hover {
-  background: rgba(255,255,255,0.03);
-}
-
-/* ============================= */
-/* PODIUM */
-
-tr.gold td {
-  color: #ffd700;
-  font-weight: 500;
-}
-
-tr.silver td {
-  color: #c0c0c0;
-}
-
-tr.bronze td {
-  color: #cd7f32;
+tr {
+  border-bottom: 1px solid var(--border);
 }
 
 /* ============================= */
 /* AVATAR */
 
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+  background: var(--surface-2);
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  background: var(--surface-2);
-  border-radius: 50%;
-
-  margin-right: 8px;
-}
-
-/* ============================= */
-/* LINKI */
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
 }
 
 /* ============================= */
 /* STATUS */
 
 .positive {
-  color: var(--success);
+  color: #34a853;
 }
 
 .negative {
-  color: var(--danger);
+  color: #ea4335;
 }
 
 /* ============================= */
-/* PANEL GŁOSOWANIA */
+/* VOTING GRID */
 
 .vote-row-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.vote-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ============================= */
-/* PRZYCISKI PANELU */
-
-.panel-buttons {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
+  grid-template-columns: repeat(2,1fr);
   gap: 12px;
 }
 
-.absence-btn {
-  background: #5f2a2a;
-  color: white;
-}
-
-.absence-btn:hover {
-  background: #7a3a3a;
-}
-
 /* ============================= */
-/* BOISKO */
+/* MOBILE (duże elementy) */
 
-.boiskoButton {
-  display: inline-block;
-  padding: 16px 28px;
+@media (max-width: 600px) {
 
-  background: var(--surface);
-  border-radius: 14px;
+  h1 {
+    font-size: 22px;
+  }
 
-  color: var(--text);
-  text-decoration: none;
+  button {
+    font-size: 20px;
+    padding: 18px;
+  }
 
-  transition: 0.2s;
-}
+  input {
+    font-size: 20px;
+  }
 
-.boiskoButton:hover {
-  background: var(--surface-2);
-}
+  .card {
+    padding: 16px;
+  }
 
-/* ============================= */
-/* BACK BUTTON */
-
-.backButton {
-  display: inline-block;
-  margin-bottom: 16px;
-
-  padding: 8px 14px;
-
-  background: var(--surface-2);
-  border-radius: 10px;
-
-  color: var(--text);
-}
-
-.backButton:hover {
-  background: var(--surface);
-}
-
-/* ============================= */
-/* NOTE */
-
-.note {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-top: 4px;
 }
