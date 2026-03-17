@@ -104,12 +104,16 @@ async function loadYesterdayRatings() {
 function renderRanking() {
 
   const container = document.getElementById("rankingList");
+  if (!container) return;
+
   container.innerHTML = "";
 
   players.forEach((p, i) => {
 
     const row = document.createElement("div");
     row.className = "player-row";
+
+    const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
 
     row.innerHTML = `
       <div class="player-left">
@@ -118,11 +122,16 @@ function renderRanking() {
         <div>${p.name}</div>
       </div>
 
-      <div>${Math.round(p.rating)}</div>
+      <div>
+        ${Math.round(p.rating + (p.manual_points || 0))}
+        <div class="${diff >= 0 ? 'positive' : 'negative'}">
+          ${diff >= 0 ? '+' : ''}${diff}
+        </div>
+      </div>
     `;
 
     row.onclick = () => {
-      alert("Profil gracza: " + p.name); // później podmienimy na profil popup
+      alert("Profil gracza: " + p.name);
     };
 
     container.appendChild(row);
@@ -502,7 +511,7 @@ function toggleTheme() {
   document.querySelector(".icon-btn").innerText = isLight ? "☀️" : "🌙";
 }
 
-// init
+// INIT (tylko raz!)
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "light") {
