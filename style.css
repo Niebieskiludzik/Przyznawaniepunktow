@@ -6,7 +6,7 @@ body {
   background: #0f172a;
   color: #e2e8f0;
   margin: 0;
-  font-size: 20px;
+  font-size: 30px;
 }
 
 /* ============================= */
@@ -274,4 +274,186 @@ button:active {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ============================= */
+/* GLOBAL SCALE (x3 vibe) */
+
+body {
+  font-size: 28px;
+}
+
+/* ============================= */
+/* NAVBAR BIG GOOGLE STYLE */
+
+.navbar {
+
+  padding: 45px 80px;
+  font-size: 60px;
+  height: 140px;
+
+}
+
+.nav-left {
+  font-size: 60px;
+}
+
+.nav-center {
+  font-size: 32px;
+}
+
+.nav-right {
+  gap: 20px;
+  align-items: center;
+}
+
+/* login inputs */
+.nav-right input {
+  width: 220px;
+  font-size: 26px;
+  padding: 14px;
+}
+
+/* profil fix */
+#userBox {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  transform: translateY(10px); /* lekko niżej */
+  margin-right: 40px; /* bardziej w lewo */
+}
+
+/* ============================= */
+/* TYPOGRAPHY x3 */
+
+h1 {
+  font-size: 90px;
+}
+
+h2 {
+  font-size: 60px;
+}
+
+h3 {
+  font-size: 48px;
+}
+
+/* ============================= */
+/* BUTTONS x3 + GOOGLE ANIMATION */
+
+button,
+.boiskoButton {
+
+  padding: 40px 70px;
+  font-size: 40px;
+  border-radius: 24px;
+
+  transition: all 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+/* hover jak Google / Pixel */
+button:hover,
+.boiskoButton:hover {
+
+  transform: scale(1.08);
+  filter: brightness(1.15);
+}
+
+/* click (material feel) */
+button:active,
+.boiskoButton:active {
+
+  transform: scale(0.96);
+}
+
+/* ============================= */
+/* BOISKO BUTTON CENTER */
+
+.boiskoButtonBox {
+  text-align: center;
+}
+
+.boiskoButton {
+  display: inline-block;
+  text-align: center;
+}
+
+/* tekst pod spodem */
+#boiskoCounter::before {
+  content: "Dziś na boisku będzie ";
+}
+
+/* ============================= */
+/* INPUTY (OCENY x3) */
+
+.vote-row input {
+
+  width: 220px;
+  height: 140px;
+  font-size: 60px;
+  border-radius: 20px;
+
+}
+
+/* ============================= */
+/* RANKING x3 BOLD */
+
+td {
+  font-size: 60px;
+  font-weight: 900;
+}
+
+th {
+  font-size: 50px;
+  font-weight: 900;
+}
+
+/* avatar większy */
+.avatar {
+
+  width: 70px;
+  height: 70px;
+  font-size: 40px;
+
+}
+
+/* ============================= */
+/* PANEL ANIMATION (Pixel style) */
+
+.card {
+
+  transition: transform 0.3s ease, opacity 0.3s ease;
+
+}
+
+/* efekt „zanikania przy scrollu” */
+.card {
+
+  transform-origin: center;
+}
+
+/* ============================= */
+/* GOOGLE SCROLL EFFECT (pseudo) */
+
+@media (min-width: 768px) {
+
+  .card {
+    will-change: transform;
+  }
+
+}
+
+/* ============================= */
+/* CONTAINER spacing */
+
+.container {
+  padding: 80px;
+}
+
+/* ============================= */
+/* LOGIN */
+
+#loginError {
+  font-size: 20px;
 }
