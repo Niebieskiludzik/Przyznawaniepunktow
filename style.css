@@ -1,171 +1,277 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-:root {
-  --bg:#121212;
-  --surface:#1e1e1e;
-  --primary:#8ab4f8;
-  --text:#e8eaed;
-  --radius:20px;
-}
-
-.light {
-  --bg:#f1f3f4;
-  --surface:#fff;
-  --text:#202124;
-}
-
-/* BASE */
+/* ============================= */
+/* GOOGLE STYLE BASE */
 
 body {
-  margin:0;
-  font-family:'Roboto';
-  background:var(--bg);
-  color:var(--text);
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  margin: 0;
+  font-size: 20px;
 }
 
-/* TOP BAR */
+/* ============================= */
+/* CONTAINER */
 
-.topbar {
-  position:sticky;
-  top:0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-  background:var(--surface);
-  font-size:20px;
+.container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 40px;
 }
 
-.title {
-  font-weight:500;
+/* ============================= */
+/* NAVBAR */
+
+.navbar {
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 16px 30px;
+
+  background: rgba(15,23,42,0.8);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+
+  z-index: 100;
 }
 
-.icon-btn {
-  background:none;
-  border:none;
-  font-size:22px;
+/* ============================= */
+/* KARTY (Material) */
+
+.card {
+  background: #1e293b;
+
+  border-radius: 28px;
+  padding: 30px;
+  margin: 25px 0;
+
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+
+  transition: all 0.25s ease;
 }
 
-/* APP */
+/* hover jak Google */
 
-.app {
-  padding:16px;
-  max-width:600px;
-  margin:auto;
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 10px 40px rgba(0,0,0,0.5);
 }
 
-/* DATE */
+/* ============================= */
+/* HEADERS */
 
-.date-box {
-  text-align:center;
-  margin-bottom:16px;
-  opacity:0.7;
+h1 {
+  text-align: center;
+  font-size: 42px;
 }
 
-/* BUTTON */
-
-.primary-btn {
-  width:100%;
-  padding:18px;
-  border:none;
-  border-radius:16px;
-  font-size:18px;
-  background:var(--primary);
-  margin-bottom:20px;
+h2 {
+  font-size: 30px;
 }
 
-.sub {
-  font-size:14px;
-  opacity:0.7;
+/* ============================= */
+/* TABELA */
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 14px;
 }
 
-/* SECTION */
-
-.section {
-  background:var(--surface);
-  padding:18px;
-  border-radius:20px;
-  margin-bottom:20px;
-}
-
-/* INPUT */
-
-input {
-  width:100%;
-  padding:16px;
-  font-size:18px;
-  margin-top:10px;
-  border-radius:14px;
-  border:none;
-  background:#2a2a2a;
-  color:white;
-}
-
-/* RANKING LIST */
-
-.player-right {
-  text-align:right;
-}
-
-.player-diff {
-  font-size:14px;
-  opacity:0.7;
-}
-
-.player-left {
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.avatar {
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#2a2a2a;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* MOBILE BOOST */
-
-@media (max-width:600px){
-  body {
-    font-size:18px;
-  }
-
-  button {
-    font-size:20px;
-  }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.section {
-  overflow: hidden;
-}
-
-input {
-  max-width: 100%;
-}
-
-button, .player-row, .icon-btn {
+tr {
+  background: #0f172a;
+  border-radius: 16px;
   transition: all 0.2s ease;
 }
 
-button:hover, .icon-btn:hover {
-  filter: brightness(0.85);
-  transform: scale(0.98);
+tr:hover {
+  transform: scale(1.01);
+  background: #1e293b;
 }
 
-.player-row:hover {
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px;
+td, th {
+  padding: 18px;
+  text-align: center;
 }
+
+/* podium glow soft */
+
+tr.gold {
+  background: linear-gradient(90deg,#facc15,#fbbf24);
+  color: black;
+}
+
+tr.silver {
+  background: linear-gradient(90deg,#e5e7eb,#9ca3af);
+  color: black;
+}
+
+tr.bronze {
+  background: linear-gradient(90deg,#cd7f32,#92400e);
+}
+
+/* ============================= */
+/* INPUT */
+
+input {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+
+  font-size: 20px;
+
+  background: #0f172a;
+  color: white;
+
+  transition: 0.2s;
+}
+
+input:focus {
+  outline: none;
+  background: #1e293b;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* ============================= */
+/* BUTTON (PIXEL STYLE) */
 
 button {
-  all: unset;
+
+  padding: 14px 24px;
+  border-radius: 16px;
+  border: none;
+
+  background: #334155;
+  color: white;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* hover */
+
+button:hover {
+  transform: scale(1.08);
+  filter: brightness(1.2);
+}
+
+/* klik */
+
+button:active {
+  transform: scale(0.96);
+}
+
+/* ============================= */
+/* AVATAR */
+
+.avatar {
+  width: 34px;
+  height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #334155;
+  border-radius: 12px;
+
+  margin-right: 8px;
+}
+
+/* ============================= */
+/* STATUS */
+
+.positive {
+  color: #22c55e;
+}
+
+.negative {
+  color: #ef4444;
+}
+
+/* ============================= */
+/* GRID */
+
+.vote-row-container {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+/* ============================= */
+/* PANEL BUTTONS */
+
+.panel-buttons {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+/* ============================= */
+/* BOISKO BUTTON */
+
+.boiskoButton {
+  display: inline-block;
+
+  padding: 18px 36px;
+  font-size: 20px;
+
+  border-radius: 20px;
+
+  background: #1e293b;
+
+  text-decoration: none;
+  color: white;
+
+  transition: all 0.2s ease;
+}
+
+.boiskoButton:hover {
+  transform: scale(1.07);
+  background: #334155;
+}
+
+/* ============================= */
+/* NAV RIGHT */
+
+.nav-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ============================= */
+/* LOGIN */
+
+#loginBox input {
+  width: 120px;
+}
+
+/* ============================= */
+/* ADMIN SELECT */
+
+#penaltyPlayer {
+  width: 260px;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* ============================= */
+/* SCROLL SMOOTH */
+
+html {
+  scroll-behavior: smooth;
 }
