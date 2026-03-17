@@ -138,9 +138,9 @@ function renderRanking() {
         <div>${p.name}</div>
       </div>
 
-      <div>
-        ${Math.round(p.rating + (p.manual_points || 0))}
-        <div class="${diff >= 0 ? 'positive' : 'negative'}">
+      <div class="player-right">
+        <div>${Math.round(p.rating)}</div>
+        <div class="player-diff ${diff >= 0 ? 'positive':'negative'}">
           ${diff >= 0 ? '+' : ''}${diff}
         </div>
       </div>
@@ -269,6 +269,33 @@ window.logout = async function () {
   location.reload();
 };
 
+async function renderAuth() {
+
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+
+  const box = document.getElementById("authSection");
+
+  if (!box) return;
+
+  if (!user) {
+    box.innerHTML = `
+      <div class="section">
+        <input id="email" placeholder="email">
+        <input id="password" type="password" placeholder="hasło">
+        <button onclick="login()">Zaloguj</button>
+      </div>
+    `;
+  } else {
+    box.innerHTML = `
+      <div class="section">
+        <div>Zalogowany jako ${user.email}</div>
+        <button onclick="logout()">Wyloguj</button>
+      </div>
+    `;
+  }
+}
+
 // =============================
 // 🚀 INIT
 
@@ -279,6 +306,16 @@ async function init() {
   await ensureRound(datePicker.value);
   await loadYesterdayRatings();
   await loadPlayers();
+  await renderAuth();
+  
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
+
+  const dateCard = document.getElementById("dateCard");
+
+  if (!user && dateCard) {
+    dateCard.style.display = "none";
+}
 }
 
 init();
