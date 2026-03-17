@@ -103,13 +103,13 @@ input {
 
 /* RANKING LIST */
 
-.player-row {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-  border-bottom:1px solid #2a2a2a;
-  font-size:18px;
+.player-right {
+  text-align:right;
+}
+
+.player-diff {
+  font-size:14px;
+  opacity:0.7;
 }
 
 .player-left {
@@ -138,4 +138,34 @@ input {
   button {
     font-size:20px;
   }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.section {
+  overflow: hidden;
+}
+
+input {
+  max-width: 100%;
+}
+
+button, .player-row, .icon-btn {
+  transition: all 0.2s ease;
+}
+
+button:hover, .icon-btn:hover {
+  filter: brightness(0.85);
+  transform: scale(0.98);
+}
+
+.player-row:hover {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+}
+
+button {
+  all: unset;
 }
