@@ -1,76 +1,154 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ranking</title>
-
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Tabela punktów chwały</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
+<script>
+window.addEventListener("scroll", () => {
+  document.querySelectorAll(".card").forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (rect.top < 0 || rect.bottom > windowHeight) {
+      card.style.transform = "scale(0.97)";
+      card.style.opacity = "0.85";
+    } else {
+      card.style.transform = "scale(1)";
+      card.style.opacity = "1";
+    }
+  });
+});
+</script>
+
 <body>
+  <div class="navbar">
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="title">🏆 Ranking</div>
+    <div class="nav-left">
+    🏆 Ranking Chwały
+    </div>
 
-  <div style="display:flex; gap:10px;">
-    <button class="icon-btn" onclick="location.href='index.html'">🏠</button>
-    <button class="icon-btn" onclick="location.href='boisko.html'">⚽</button>
-    <button class="icon-btn" onclick="toggleTheme()">🌙</button>
-  </div>
-</div>
-
-<!-- APP -->
-<div class="app">
-
-  <!-- DATA -->
-  <div class="date-box">
+    <div class="nav-center">
     <span id="navbarDate"></span>
-  </div>
+    </div>
 
-  <!-- BOISKO -->
-  <button class="primary-btn" onclick="location.href='boisko.html'">
-    ⚽ Umawianie na boisko
-    <div class="sub" id="boiskoCounter"></div>
-  </button>
+    <div class="nav-right">
 
-  <!-- RANKING -->
-  <div class="section">
-    <h2>Ranking</h2>
-    <div id="rankingList"></div>
-  </div>
-
-  <!-- DATA RUNDY -->
-  <div class="section" id="dateCard">
-    <h2>Data rundy</h2>
-    <input type="date" id="datePicker">
-  </div>
-
-  <!-- GŁOSOWANIE + ADMIN -->
-  <div id="panels"></div>
-
-  <!-- LOGIN -->
-  <div class="section" id="loginSection">
-    <h2>Logowanie</h2>
+    <div id="loginBox">
     <input id="email" placeholder="email">
     <input id="password" type="password" placeholder="hasło">
-    <button class="primary-btn" onclick="login()">Zaloguj</button>
+    <button id="loginBtn" onclick="login()">Zaloguj</button>
+    <div id="loginError"></div>
+    </div>
+
+    <div id="userBox" style="display:none;">
+    <span id="userName"></span>
+    <button onclick="logout()">Wyloguj</button>
+    </div>
+
+    </div>
+
+  </div>
+  <div class="container">
+    <h1>🏆 Tabela punktów chwały</h1>
+
+  <div class="center" id="logoutBox" style="display:none;">
+    <button onclick="logout()">Wyloguj</button>
   </div>
 
-  <!-- USER -->
-  <div class="section" id="userSection" style="display:none;">
-    <div id="userEmail"></div>
-    <button class="primary-btn" onclick="logout()">Wyloguj</button>
+  <div class="boiskoButtonBox">
+
+  <a href="boisko.html" class="boiskoButton">
+
+  Umawianie na boisko  
+  <span id="boiskoCounter"></span>
+
+  </a>
+
+  </div>
+    
+    
+    <!-- RANKING -->
+    <div class="card">
+      <h2>Ranking</h2>
+      <p id="currentDateDisplay"></p>
+      <table id="rankingTable"></table>
+    </div>
+
+    <div class="card">
+    <h2>📜 Instrukcja</h2>
+
+    <p><b>1. Logowanie</b><br>
+    Zaloguj się swoim kontem. Każdy gracz może oceniać tylko jako on.</p>
+
+    <p><b>2. Wybór daty</b><br>
+    Wybierz datę rundy w polu <b>„Wybierz datę”</b>.  
+    Jeśli głosujesz za dzień wcześniejszy, wybierz w kalendarzu datę tego dnia.</p>
+
+    <p><b>3. Ocenianie</b><br>
+    Wpisz punkty dla każdego gracza w skali od <b>1 do 10</b>.  
+    Można używać liczb <b>dziesiętnych</b>, np. <b>6</b>, <b>8.5</b> lub <b>7,8</b>.</p>
+
+    <p><b>4. Nieobecność</b><br>
+    Jeśli gracz jest nieobecny, pozostaw jego pole oceny <b>puste</b>.</p>
+
+    <p><b>5. Zapis</b><br>
+    Po wpisaniu ocen kliknij <b>Zapisz oceny</b> <i>(głosów nie da się zmieniać!)</i>.</p>
+
+    <p><b>6. Ranking</b><br>
+    Ranking aktualizuje się automatycznie po zapisaniu ocen.</p>
+
+    <hr>
+
+    <p>
+    📄 <a href="https://docs.google.com/document/d/11Wibtg98KUgT6J1Nrx6LTu8EGNZYKEsiITr8nMX6XK0/edit?usp=sharing" target="_blank" style="background-color: white;">
+    Regulamin systemu ocen
+    </a>
+    </p>
+
+    <p style="opacity:0.7;font-size:14px;">
+    Ostatnia aktualizacja regulaminu: <b>21.02.2026</b>
+    </p>
+
+    </div>
+    
+    <!-- DATA (wyśrodkowana) -->
+    <div class="card center" id="dateCard">
+      <h2>Wybierz datę</h2>
+      <input type="date" id="datePicker" />
+    </div>
+
+    <!-- PANELE -->
+    <div id="panels"></div>
+
+    <!-- DODAJ GRACZA -->
+    <div class="card">
+      <h2>Dodaj gracza</h2>
+      <input type="text" id="newPlayerName" placeholder="Imię gracza" />
+      <button id="addPlayerBtn">Dodaj</button>
+    </div>
+
+    <div class="card" id="adminPenaltyBox">
+    <h2>⚖️ Kary / Bonusy</h2>
+
+    <select id="penaltyPlayer"></select>
+
+    <div style="margin-top:10px;">
+    <input type="number" id="penaltyPoints" placeholder="Punkty do odjęcia">
+    <button onclick="givePenalty()">Odejmij</button>
+    </div>
+
+    <div style="margin-top:10px;">
+    <input type="number" id="bonusPoints" placeholder="Punkty bonusowe">
+    <button onclick="giveBonus()">Dodaj bonus</button>
+    </div>
+
+    </div>
   </div>
 
-</div>
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- JS -->
-<script src="main.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="main.js"></script>
 </body>
 </html>
