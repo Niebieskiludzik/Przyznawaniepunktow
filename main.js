@@ -103,41 +103,30 @@ async function loadYesterdayRatings() {
 
 function renderRanking() {
 
-  rankingTable.innerHTML = `
-    <tr>
-      <th>#</th>
-      <th>Gracz</th>
-      <th>Punkty</th>
-      <th>Zmiana</th>
-    </tr>
-  `;
+  const container = document.getElementById("rankingList");
+  container.innerHTML = "";
 
   players.forEach((p, i) => {
 
-    let medal = '';
-    if (i === 0) medal = '🥇';
-    if (i === 1) medal = '🥈';
-    if (i === 2) medal = '🥉';
+    const row = document.createElement("div");
+    row.className = "player-row";
 
-    const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
+    row.innerHTML = `
+      <div class="player-left">
+        <div>${i+1}</div>
+        <div class="avatar">${p.avatar || "👤"}</div>
+        <div>${p.name}</div>
+      </div>
 
-    rankingTable.innerHTML += `
-      <tr class="${
-          i === 0 ? 'leader gold' :
-          i === 1 ? 'silver' :
-          i === 2 ? 'bronze' : ''
-      }">
-        <td>${medal || i + 1}</td>
-        <td>
-          <span class="avatar">${p.avatar || "👤"}</span>
-          <a href="player.html?id=${p.id}" class="player-link">${p.name}</a>
-        </td>
-        <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
-        <td class="${diff >= 0 ? 'positive' : 'negative'}">
-          ${diff >= 0 ? '+' : ''}${diff}
-        </td>
-      </tr>
+      <div>${Math.round(p.rating)}</div>
     `;
+
+    row.onclick = () => {
+      alert("Profil gracza: " + p.name); // później podmienimy na profil popup
+    };
+
+    container.appendChild(row);
+
   });
 
 }
@@ -502,6 +491,25 @@ function setDynamicColor() {
 }
 
 setDynamicColor();
+
+function toggleTheme() {
+  document.body.classList.toggle("light");
+
+  const isLight = document.body.classList.contains("light");
+
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+
+  document.querySelector(".icon-btn").innerText = isLight ? "☀️" : "🌙";
+}
+
+// init
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  document.querySelector(".icon-btn").innerText = "☀️";
+}
+
 
 async function init() {
 
