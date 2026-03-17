@@ -487,6 +487,22 @@ willCome+" / "+totalPlayers+" osób będzie dziś";
 
 }
 
+function setDynamicColor() {
+  const colors = [
+    "#8ab4f8",
+    "#f28b82",
+    "#81c995",
+    "#fdd663",
+    "#c58af9"
+  ];
+
+  const random = colors[Math.floor(Math.random() * colors.length)];
+
+  document.documentElement.style.setProperty("--primary", random);
+}
+
+setDynamicColor();
+
 async function init() {
 
   const { data } = await supabase.auth.getUser();
