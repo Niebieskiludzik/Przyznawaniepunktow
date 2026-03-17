@@ -5,14 +5,21 @@ const supabase = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
+// =============================
+// STATE
+
 let players = [];
-let yesterdayRatings = {};
+let currentUser = null;
+let currentPlayer = null;
 let currentRoundId = null;
 
+// =============================
 // ELEMENTY
+
 const rankingList = document.getElementById("rankingList");
 const panelsDiv = document.getElementById("panels");
 const datePicker = document.getElementById("datePicker");
+const dateCard = document.getElementById("dateCard");
 
 // =============================
 // 🌙 THEME
@@ -23,45 +30,35 @@ function toggleTheme() {
   const isLight = document.body.classList.contains("light");
 
   localStorage.setItem("theme", isLight ? "light" : "dark");
-
-  document.querySelector(".icon-btn").innerText = isLight ? "☀️" : "🌙";
 }
 
 window.toggleTheme = toggleTheme;
 
 const savedTheme = localStorage.getItem("theme");
-
 if (savedTheme === "light") {
   document.body.classList.add("light");
-  const btn = document.querySelector(".icon-btn");
-  if (btn) btn.innerText = "☀️";
 }
 
 // =============================
-// 📅 DATA
+// 🔐 AUTH
 
-datePicker.value = new Date().toISOString().split("T")[0];
+async function loadUser() {
+  const { data } = await supabase.auth.getUser();
+  currentUser = data.user || null;
 
-function updateDateDisplay() {
-  const el = document.getElementById("navbarDate");
-  if (!el) return;
+  if (!currentUser) return;
 
-  const date = new Date(datePicker.value);
+  const { data: player } = await supabase
+    .from("players")
+    .select("*")
+    .eq("email", currentUser.email)
+    .single();
 
-  el.innerText = date.toLocaleDateString("pl-PL", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
+  currentPlayer = player;
 }
 
-datePicker.addEventListener("change", async () => {
-  updateDateDisplay();
-  await init();
-});
-
 // =============================
-// 🔄 ROUND
+// 📅 ROUND
 
 async function ensureRound(date) {
 
@@ -86,7 +83,7 @@ async function ensureRound(date) {
 }
 
 // =============================
-// 📊 DANE
+// 📊 PLAYERS
 
 async function loadPlayers() {
 
@@ -96,27 +93,10 @@ async function loadPlayers() {
     .order('rating', { ascending: false });
 
   players = data || [];
-
-  renderRanking();
-  renderPanels();
-  loadBoiskoCounter();
-}
-
-async function loadYesterdayRatings() {
-
-  const { data } = await supabase
-    .from('players')
-    .select('id,rating');
-
-  yesterdayRatings = {};
-
-  data?.forEach(p => {
-    yesterdayRatings[p.id] = p.rating;
-  });
 }
 
 // =============================
-// 🏆 RANKING (NOWY UI)
+// 🏆 RANKING
 
 function renderRanking() {
 
@@ -129,8 +109,6 @@ function renderRanking() {
     const row = document.createElement("div");
     row.className = "player-row";
 
-    const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
-
     row.innerHTML = `
       <div class="player-left">
         <div>${i+1}</div>
@@ -139,46 +117,40 @@ function renderRanking() {
       </div>
 
       <div class="player-right">
-        <div>${Math.round(p.rating)}</div>
-        <div class="player-diff ${diff >= 0 ? 'positive':'negative'}">
-          ${diff >= 0 ? '+' : ''}${diff}
-        </div>
+        <div>${Math.round(p.rating + (p.manual_points || 0))}</div>
       </div>
     `;
 
-    row.onclick = () => {
-      alert("Profil gracza: " + p.name);
-    };
+    // 👉 TU będzie popup profil
+    row.onclick = () => openProfile(p);
 
     rankingList.appendChild(row);
   });
 }
 
 // =============================
-// 🧠 PANELS
+// 🧠 PANELS (VOTING + ADMIN)
 
-async function renderPanels() {
+function renderPanels() {
 
   if (!panelsDiv) return;
 
   panelsDiv.innerHTML = "";
 
-  const { data } = await supabase.auth.getUser();
-  const userEmail = data.user?.email;
-
-  const currentPlayer = players.find(p => p.email === userEmail);
-
+  // ❌ niezalogowany → nic
   if (!currentPlayer) return;
+
+  const isAdmin = currentPlayer.role === "admin";
 
   const card = document.createElement("div");
   card.className = "section";
 
-  let html = `<h2>Oceń graczy</h2>`;
+  let html = `<h2>Głosowanie</h2>`;
 
   players.forEach(player => {
 
     html += `
-      <div style="margin-bottom:12px;">
+      <div style="margin-bottom:10px;">
         ${player.name}
         <input type="number" min="1" max="10" id="vote_${player.id}">
       </div>
@@ -187,40 +159,69 @@ async function renderPanels() {
 
   html += `<button onclick="saveVotes()">Zapisz</button>`;
 
+  // ================= ADMIN
+
+  if (isAdmin) {
+    html += `<h2>Admin</h2>`;
+
+    players.forEach(player => {
+      html += `
+        <div>
+          ${player.name}
+          <input type="number" placeholder="bonus/kara" id="admin_${player.id}">
+        </div>
+      `;
+    });
+
+    html += `<button onclick="saveAdmin()">Zapisz kary/bonusy</button>`;
+  }
+
   card.innerHTML = html;
   panelsDiv.appendChild(card);
 }
 
 // =============================
-// 💾 ZAPIS
+// 💾 SAVE VOTES
 
 window.saveVotes = async function () {
 
-  const { data } = await supabase.auth.getUser();
-  const userEmail = data.user?.email;
-
-  const voter = players.find(p => p.email === userEmail);
-  if (!voter) return;
+  if (!currentPlayer) return;
 
   for (let player of players) {
 
     const input = document.getElementById("vote_" + player.id);
-
     if (!input || !input.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
       player_id: player.id,
-      voter_name: voter.name,
+      voter_name: currentPlayer.name,
       score: parseFloat(input.value)
     });
   }
 
-  await supabase.rpc('calculate_round', {
-    p_round_id: currentRoundId,
-  });
+  alert("Zapisano");
+};
 
+// =============================
+// 🛠 ADMIN SAVE
+
+window.saveAdmin = async function () {
+
+  for (let player of players) {
+
+    const input = document.getElementById("admin_" + player.id);
+    if (!input || !input.value) continue;
+
+    await supabase
+      .from("players")
+      .update({ manual_points: parseFloat(input.value) })
+      .eq("id", player.id);
+  }
+
+  alert("Zapisano kary/bonusy");
   await loadPlayers();
+  renderRanking();
 };
 
 // =============================
@@ -228,19 +229,26 @@ window.saveVotes = async function () {
 
 async function loadBoiskoCounter(){
 
-  const today=new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
 
-  const {data}=await supabase
+  const { data } = await supabase
     .from("field_meetups")
     .select("*")
-    .eq("date",today)
-    .eq("status","yes");
+    .eq("date", today)
+    .eq("status", "yes");
 
   const el = document.getElementById("boiskoCounter");
 
   if (el) {
-    el.innerText = data.length + " osób dziś";
+    el.innerText = (data?.length || 0) + " osób dziś";
   }
+}
+
+// =============================
+// 👤 PROFIL (NA RAZIE PROSTY)
+
+function openProfile(player) {
+  alert("Profil: " + player.name);
 }
 
 // =============================
@@ -257,11 +265,11 @@ window.login = async function () {
   });
 
   if (error) {
-    document.getElementById("loginError").innerText = "Błąd logowania";
+    alert("Błąd logowania");
     return;
   }
 
-  init();
+  location.reload();
 };
 
 window.logout = async function () {
@@ -269,53 +277,26 @@ window.logout = async function () {
   location.reload();
 };
 
-async function renderAuth() {
-
-  const { data } = await supabase.auth.getUser();
-  const user = data.user;
-
-  const box = document.getElementById("authSection");
-
-  if (!box) return;
-
-  if (!user) {
-    box.innerHTML = `
-      <div class="section">
-        <input id="email" placeholder="email">
-        <input id="password" type="password" placeholder="hasło">
-        <button onclick="login()">Zaloguj</button>
-      </div>
-    `;
-  } else {
-    box.innerHTML = `
-      <div class="section">
-        <div>Zalogowany jako ${user.email}</div>
-        <button onclick="logout()">Wyloguj</button>
-      </div>
-    `;
-  }
-}
-
 // =============================
 // 🚀 INIT
 
 async function init() {
 
-  updateDateDisplay();
+  await loadUser();
+
+  // ukrycie dla niezalogowanych
+  if (!currentPlayer && dateCard) {
+    dateCard.style.display = "none";
+  }
+
+  datePicker.value = new Date().toISOString().split("T")[0];
 
   await ensureRound(datePicker.value);
-  await loadYesterdayRatings();
   await loadPlayers();
-  await renderAuth();
-  
-  const { data } = await supabase.auth.getUser();
-  const user = data.user;
 
-  const dateCard = document.getElementById("dateCard");
-
-  if (!user && dateCard) {
-    dateCard.style.display = "none";
-}
+  renderRanking();
+  renderPanels();
+  loadBoiskoCounter();
 }
 
 init();
