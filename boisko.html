@@ -1,56 +1,60 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Boisko</title>
-  <link rel="stylesheet" href="style.css" />
+
+<meta charset="UTF-8">
+<title>Umów się!</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
 <div class="navbar">
-  <div class="nav-left">
-    <a href="index.html" class="backButton">⬅ Powrót</a>
-  </div>
 
-  <div class="nav-center">
-    ⚽ Boisko
-  </div>
-
-  <div></div>
+<div class="nav-left">
+🏆 Ranking Chwały
 </div>
 
+<div class="nav-center">
+<span id="navbarDate"></span>
+</div>
+
+<div class="nav-right">
+
+<div id="loginBox">
+<input id="email" placeholder="email">
+<input id="password" type="password" placeholder="hasło">
+<button id="loginBtn" onclick="login()">Zaloguj</button>
+<div id="loginError"></div>
+</div>
+
+<div id="userBox" style="display:none;">
+<span id="userName"></span>
+<button onclick="logout()">Wyloguj</button>
+</div>
+
+</div>
+
+</div>
+  
 <div class="container">
 
-  <div class="card">
-    <h2>Dzisiaj</h2>
+<h1>Umów się!</h1>
 
-    <div class="status-row">
-      <button class="statusBtn">Będę</button>
-      <button class="statusBtn">Nie będzie mnie</button>
-    </div>
+<a href="index.html" class="backButton">
+⬅ Powrót do rankingu
+</a>
 
-    <div class="meet-row">
-      <input type="time">
-      <span>-</span>
-      <input type="time">
-    </div>
-
-    <div class="meet-row">
-      <input type="text" placeholder="Notatka (opcjonalnie)">
-    </div>
-
-    <button class="saveBtn">Zapisz</button>
-  </div>
-
-  <div class="card">
-    <h2>Kto dziś gra</h2>
-
-    <div id="playersList">
-      <!-- JS będzie wstawiał -->
-    </div>
-  </div>
+<div id="daysContainer"></div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="boisko.js"></script>
+
 </body>
+
 </html>
