@@ -456,7 +456,7 @@ const willCome=data.length;
 const totalPlayers=players.length;
 
 document.getElementById("boiskoCounter").innerText =
-willCome" osób";
+willCome+" osób";
 
 }
 
