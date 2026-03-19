@@ -176,8 +176,8 @@ button:active {
 /* AVATAR */
 
 .avatar {
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
 
   display: inline-flex;
   align-items: center;
@@ -295,7 +295,7 @@ body {
 }
 
 .nav-left {
-  font-size: 60px;
+  font-size: 14px;
 }
 
 .nav-center {
@@ -321,7 +321,7 @@ body {
   gap: 20px;
 
   transform: translateY(10px); /* lekko niżej */
-  margin-right: 40px; /* bardziej w lewo */
+  margin-right: 50px; /* bardziej w lewo */
 }
 
 /* ============================= */
@@ -412,9 +412,9 @@ th {
 /* avatar większy */
 .avatar {
 
-  width: 121px;
-  height: 121px;
-  font-size: 60px;
+  width: 64px;
+  height: 64px;
+  font-size: 40px;
 
 }
 
