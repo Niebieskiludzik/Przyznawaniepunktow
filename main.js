@@ -455,8 +455,8 @@ const willCome=data.length;
 
 const totalPlayers=players.length;
 
-document.getElementById("boiskoCounter").innerText=
-willCome+" / "+totalPlayers+" osób będzie dziś";
+document.getElementById("boiskoCounter").innerText =
+willCome" osób";
 
 }
 
