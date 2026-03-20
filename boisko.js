@@ -1,6 +1,6 @@
-const supabase = window.supabase.createClient(
-'https://wzanqzcjrpbhocrfcciy.supabase.co',
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
+const sb = window.supabase.createClient(
+  'https://wzanqzcjrpbhocrfcciy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
 const daysContainer = document.getElementById("daysContainer");
@@ -38,7 +38,7 @@ init();
 };
 
 window.logout = async function () {
-await supabase.auth.signOut();
+await supabaseClient.auth.signOut();
 location.reload();
 };
 
@@ -47,7 +47,7 @@ location.reload();
 
 async function initNavbar(){
 
-const { data } = await supabase.auth.getUser();
+const { data } = await supabaseClient.auth.getUser();
 
 const loginBox = document.getElementById("loginBox");
 const userBox = document.getElementById("userBox");
@@ -63,7 +63,7 @@ userBox.style.display="none";
 loginBox.style.display="none";
 userBox.style.display="flex";
 
-const {data:player}=await supabase
+const {data:player}=await supabaseClient
 .from("players")
 .select("*")
 .eq("email",data.user.email)
@@ -133,10 +133,10 @@ await renderDay(day);
 
 async function renderDay(date){
 
-const {data:userData}=await supabase.auth.getUser();
+const {data:userData}=await supabaseClient.auth.getUser();
 const logged=userData.user;
 
-const {data}=await supabase
+const {data}=await supabaseClient
 .from("field_meetups")
 .select("*")
 .eq("date",date);
@@ -259,16 +259,16 @@ btn.classList.add("active");
 
 window.save=async function(date){
 
-const {data:userData}=await supabase.auth.getUser();
+const {data:userData}=await supabaseClient.auth.getUser();
 if(!userData.user) return;
 
-const {data:player}=await supabase
+const {data:player}=await supabaseClient
 .from("players")
 .select("*")
 .eq("email",userData.user.email)
 .single();
 
-await supabase
+await supabaseClient
 .from("field_meetups")
 .upsert({
 player_id:player.id,
