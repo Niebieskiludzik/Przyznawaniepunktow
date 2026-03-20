@@ -9,8 +9,6 @@ if(savedEmail){
 document.getElementById("email").value = savedEmail;
 
 }
-  
-const supabase = window.supabaseClient;
 
 let players = [];
 let currentRoundId = null;
