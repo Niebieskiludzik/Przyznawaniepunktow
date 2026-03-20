@@ -45,22 +45,58 @@ window.logout = async function () {
 };
 
 // 👤 INIT NAVBAR (NAJWAŻNIEJSZE)
-window.initAuthUI = async function () {
+window.initAuthUI = async function() {
+    const supabase = window.supabaseClient;
 
-  const supabase = window.supabaseClient; // lokalny klient w funkcji
-  const { data: { user } } = await supabase.auth.getUser(); // destrukturyzacja
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) console.log(error);
+        if (user) {
+            console.log("Zalogowany jako:", user.email);
+        } else {
+            console.log("Nie zalogowany");
+        }
+    } catch (err) {
+        console.error("Błąd initAuthUI:", err);
+    }
+};
 
-  const userBox = document.getElementById("userBox");
-  const loginBox = document.getElementById("loginBox");
-  const userName = document.getElementById("userName");
+window.login = async function() {
+    const supabase = window.supabaseClient;
 
-  if (!data.user) {
-    // ❌ NIEZALOGOWANY
-    if(userBox) userBox.style.display = "none";
-    if(loginBox) loginBox.style.display = "flex";
-    return;
-  }
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
+    const errorBox = document.getElementById("loginError");
 
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    errorBox.innerText = "";
+    loginBtn.innerText = "Logowanie...";
+    loginBtn.classList.add("loading");
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) {
+            errorBox.innerText = "❌ Nieprawidłowy email lub hasło";
+            console.log(error);
+        } else {
+            localStorage.setItem("savedEmail", email);
+            init(); // funkcja z main.js odświeża UI
+        }
+    } catch (err) {
+        console.error("Błąd logowania:", err);
+        errorBox.innerText = "❌ Błąd logowania";
+    } finally {
+        loginBtn.innerText = "Zaloguj";
+        loginBtn.classList.remove("loading");
+    }
+};
   // ✅ ZALOGOWANY
   if(userBox) userBox.style.display = "flex";
   if(loginBox) loginBox.style.display = "none";
