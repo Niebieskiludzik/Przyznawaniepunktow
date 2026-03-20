@@ -47,7 +47,8 @@ window.logout = async function () {
 // 👤 INIT NAVBAR (NAJWAŻNIEJSZE)
 window.initAuthUI = async function () {
 
-  const { data } = await supabase.auth.getUser();
+  const supabase = window.supabaseClient; // lokalny klient w funkcji
+  const { data: { user } } = await supabase.auth.getUser(); // destrukturyzacja
 
   const userBox = document.getElementById("userBox");
   const loginBox = document.getElementById("loginBox");
