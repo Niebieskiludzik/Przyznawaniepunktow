@@ -14,29 +14,25 @@
 
 <div class="navbar">
 
-<div class="nav-left">
-🏆 Ranking Chwały
-</div>
+  <div class="nav-left">
+    <span id="navbarDate"></span>
+  </div>
 
-<div class="nav-center">
-<span id="navbarDate"></span>
-</div>
+  <div class="nav-right">
 
-<div class="nav-right">
+    <div id="loginBox">
+      <input id="email" placeholder="email">
+      <input id="password" type="password" placeholder="hasło">
+      <button id="loginBtn" onclick="login()">Zaloguj</button>
+      <div id="loginError"></div>
+    </div>
 
-<div id="loginBox">
-<input id="email" placeholder="email">
-<input id="password" type="password" placeholder="hasło">
-<button id="loginBtn" onclick="login()">Zaloguj</button>
-<div id="loginError"></div>
-</div>
+    <div id="userBox" style="display:none;">
+      <span id="userName"></span>
+      <button onclick="logout()">Wyloguj</button>
+    </div>
 
-<div id="userBox" style="display:none;">
-<span id="userName"></span>
-<button onclick="logout()">Wyloguj</button>
-</div>
-
-</div>
+  </div>
 
 </div>
   
@@ -44,7 +40,7 @@
 
 <h1>Umów się!</h1>
 
-<a href="index.html" class="backButton">
+<button onclick="location.href='index.html'" class="backButton">
 ⬅ Powrót do rankingu
 </a>
 
