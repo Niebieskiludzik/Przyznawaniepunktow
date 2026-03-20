@@ -293,6 +293,12 @@ updateDate();
 await initNavbar();
 await loadDays();
 
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof init === "function") {
+    init();
+  }
+});
+  
 }
 
 init();
