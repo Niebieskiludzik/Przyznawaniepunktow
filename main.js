@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   
 const supabase = window.supabaseClient;
 
-if(savedEmail){
+const savedEmail = localStorage.getItem("savedEmail");
 
-document.getElementById("email").value = savedEmail;
-
+  if (savedEmail) {
+    document.getElementById("email").value = savedEmail;
 }
 
 let players = [];
