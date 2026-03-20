@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   initAuthUI();
   
-const savedEmail = localStorage.getItem("savedEmail");
+const supabase = window.supabaseClient;
 
 if(savedEmail){
 
