@@ -33,25 +33,30 @@ document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
 async function ensureRound(date) {
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('rounds')
     .select('*')
     .eq('round_date', date)
-    .single();
+    .maybeSingle();
 
   if (!data) {
 
-    const { data: newRound } = await supabase
-      .from('rounds')
-      .insert({ round_date: date })
-      .select()
-      .single();
+  const { data: newRound, error: insertError } = await supabase
+    .from('rounds')
+    .insert({ round_date: date })
+    .select()
+    .single();
 
-    currentRoundId = newRound.id;
+  if(insertError){
+    console.error("INSERT ROUND ERROR:", insertError);
+    return;
+  }
 
-  } else {
+  currentRoundId = newRound.id;
 
-    currentRoundId = data.id;
+} else {
+
+  currentRoundId = data.id;
 
   }
 }
