@@ -1,79 +1,50 @@
 /* ============================= */
-/* GOOGLE STYLE BASE */
+/* SKALA STRONY */
 
 body {
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(45deg, #0f172a, #0e0f21);
+  color: #f1f5f9;
   margin: 0;
-  font-size: 22px;
+  font-size: 20px; /* większy tekst */
 }
 
 /* ============================= */
 /* CONTAINER */
 
 .container {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: auto;
-  padding: 40px;
+  padding: 50px;
 }
-
-/* ============================= */
-/* NAVBAR */
-
-.navbar {
-  position: sticky;
-  top: 0;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 16px 30px;
-
-  background: rgba(15,23,42,0.8);
-  backdrop-filter: blur(12px);
-
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-
-  z-index: 100;
-}
-
-/* ============================= */
-/* KARTY (Material) */
-
-.card {
-  background: #1e293b;
-
-  border-radius: 20px;
-  padding: 20px;
-  margin: 16px 0;
-
-  box-shadow: 
-    0 4px 20px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.03);
-
-  transition: all 0.25s ease;
-}
-
-/* hover jak Google */
-
-.card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 
-    0 10px 40px rgba(0,0,0,0.5);
-}
-
-/* ============================= */
-/* HEADERS */
 
 h1 {
   text-align: center;
-  font-size: 42px;
+  margin-bottom: 40px;
+  font-size: 48px;
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 36px;
+}
+
+h3 {
+  font-size: 32px;
+}
+
+/* ============================= */
+/* KARTY */
+
+.card {
+  background: linear-gradient(45deg, #1e293b, #1d3254);
+  padding: 40px;
+  margin: 30px 0;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+
+.center {
+  text-align: center;
 }
 
 /* ============================= */
@@ -82,30 +53,34 @@ h2 {
 table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 14px;
+  border-spacing: 0 18px;
 }
+
+th {
+  font-size: 28px;
+  padding: 16px;
+}
+
+td {
+  padding: 22px;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  background: transparent;
+}
+
+/* wiersze */
 
 tr {
-  background: #0f172a;
-  border-radius: 16px;
-  transition: all 0.2s ease;
+  background: linear-gradient(45deg,#1e293b,#1d3254);
 }
 
-tr:hover {
-  transform: scale(1.01);
-  background: #1e293b;
-}
-
-td, th {
-  padding: 18px;
-  text-align: center;
-}
-
-/* podium glow soft */
+/* podium */
 
 tr.gold {
-  background: linear-gradient(90deg,#facc15,#fbbf24);
+  background: linear-gradient(90deg,#ffd700,#ffb700);
   color: black;
+  animation: goldGlow 2.5s infinite;
 }
 
 tr.silver {
@@ -115,443 +90,436 @@ tr.silver {
 
 tr.bronze {
   background: linear-gradient(90deg,#cd7f32,#92400e);
-}
-
-/* ============================= */
-/* INPUT */
-
-input {
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-
-  font-size: 20px;
-
-  background: #0f172a;
   color: white;
-
-  transition: 0.2s;
 }
 
-input:focus {
-  outline: none;
-  background: #1e293b;
-  box-shadow: 0 0 0 2px #3b82f6;
-}
+@keyframes goldGlow {
 
-/* ============================= */
-/* BUTTON (PIXEL STYLE) */
+  0% { box-shadow:0 0 12px rgba(255,215,0,0.5); }
 
-button {
+  50% { box-shadow:0 0 40px rgba(255,215,0,1); }
 
-  padding: 14px 24px;
-  border-radius: 16px;
-  border: none;
+  100% { box-shadow:0 0 12px rgba(255,215,0,0.5); }
 
-  background: #334155;
-  color: white;
-
-  font-size: 18px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-}
-
-/* hover */
-
-button:hover {
-  transform: scale(1.08);
-  filter: brightness(1.2);
-}
-
-/* klik */
-
-button:active {
-  transform: scale(0.96);
 }
 
 /* ============================= */
-/* AVATAR */
-
-.avatar {
-  width: 52px;
-  height: 52px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #334155;
-  border-radius: 12px;
-
-  margin-right: 8px;
-}
-
-/* ============================= */
-/* STATUS */
+/* ZMIANA PUNKTÓW */
 
 .positive {
-  color: #22c55e;
+  color:#22c55e;
+  font-weight:bold;
 }
 
 .negative {
-  color: #ef4444;
+  color:#ef4444;
+  font-weight:bold;
 }
 
 /* ============================= */
-/* GRID */
+/* INPUTY */
+
+input {
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  margin:8px 0;
+  font-size:22px;
+}
+
+/* ============================= */
+/* PRZYCISKI */
+
+button {
+
+  padding:16px 26px;
+  border-radius:14px;
+  border:none;
+  background:#72898f;
+  color:white;
+  cursor:pointer;
+  font-size:22px;
+  font-weight:bold;
+  transition:all .2s ease;
+}
+
+button:hover {
+
+  background:#51808f;
+  transform:scale(1.05);
+
+}
+
+/* ============================= */
+/* PANELE OCENIANIA */
 
 .vote-row-container {
-  display: grid;
+
+  display:grid;
   grid-template-columns: repeat(3,1fr);
-  gap: 20px;
-}
-
-/* ============================= */
-/* PANEL BUTTONS */
-
-.panel-buttons {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-}
-
-/* ============================= */
-/* BOISKO BUTTON */
-
-.boiskoButton {
-  display: inline-block;
-
-  padding: 18px 36px;
-  font-size: 20px;
-
-  border-radius: 20px;
-
-  background: #1e293b;
-
-  text-decoration: none;
-  color: white;
-
-  transition: all 0.2s ease;
-}
-
-.boiskoButton:hover {
-  transform: scale(1.07);
-  background: #334155;
-}
-
-/* ============================= */
-/* NAV RIGHT */
-
-.nav-right {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* ============================= */
-/* LOGIN */
-
-#loginBox input {
-  width: 120px;
-}
-
-/* ============================= */
-/* ADMIN SELECT */
-
-#penaltyPlayer {
-  width: 260px;
-  font-size: 20px;
-  padding: 8px;
-  border-radius: 10px;
-}
-
-/* ============================= */
-/* SCROLL SMOOTH */
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* ============================= */
-/* GLOBAL SCALE (x3 vibe) */
-
-body {
-  font-size: 28px;
-}
-
-/* ============================= */
-/* NAVBAR BIG GOOGLE STYLE */
-
-.navbar {
-
-  padding: 35px 60px;
-  font-size: 50px;
-  height: auto;
+  gap:28px;
+  margin-top:20px;
+  margin-bottom:40px; /* dodatkowa przestrzeń */
 
 }
 
-.nav-left {
-  font-size: 14px;
-}
-
-.nav-center {
-  font-size: 32px;
-}
-
-.nav-right {
-  gap: 20px;
-  align-items: center;
-}
-
-/* login inputs */
-.nav-right input {
-  width: 220px;
-  font-size: 26px;
-  padding: 14px;
-}
-
-/* profil fix */
-#userBox {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-  transform: translateY(10px); /* lekko niżej */
-  margin-right: 50px; /* bardziej w lewo */
-}
-
-/* ============================= */
-/* TYPOGRAPHY x3 */
-
-h1 {
-  font-size: 90px;
-}
-
-h2 {
-  font-size: 60px;
-}
-
-h3 {
-  font-size: 48px;
-}
-
-/* ============================= */
-/* BUTTONS x3 + GOOGLE ANIMATION */
-
-button,
-.boiskoButton {
-
-  padding: 40px 70px;
-  font-size: 40px;
-  border-radius: 24px;
-
-  transition: all 0.25s cubic-bezier(.4,0,.2,1);
-}
-
-/* hover jak Google / Pixel */
-button:hover,
-.boiskoButton:hover {
-
-  transform: scale(1.08);
-  filter: brightness(1.15);
-}
-
-/* click (material feel) */
-button:active,
-.boiskoButton:active {
-
-  transform: scale(0.96);
-}
-
-/* ============================= */
-/* BOISKO BUTTON CENTER */
-
-.boiskoButtonBox {
-  text-align: center;
-}
-
-.boiskoButton {
-  display: inline-block;
-  text-align: center;
-}
-
-/* tekst pod spodem */
-#boiskoCounter::before {
-  content: "Dziś na boisku będzie ";
-}
-
-/* ============================= */
-/* INPUTY (OCENY x3) */
-
-.vote-row input {
-
-  width: 220px;
-  height: 140px;
-  font-size: 60px;
-  border-radius: 20px;
-
-}
-
-/* ============================= */
-/* RANKING x3 BOLD */
-
-td {
-  font-size: 35px;
-  font-weight: 900;
-}
-
-th {
-  font-size: 30px;
-  font-weight: 900;
-}
-
-/* avatar większy */
-.avatar {
-
-  width: 64px;
-  height: 64px;
-  font-size: 40px;
-
-}
-
-/* ============================= */
-/* PANEL ANIMATION (Pixel style) */
-
-.card {
-
-  transition: transform 0.3s ease, opacity 0.3s ease;
-
-}
-
-/* efekt „zanikania przy scrollu” */
-.card {
-
-  transform-origin: center;
-}
-
-/* ============================= */
-/* GOOGLE SCROLL EFFECT (pseudo) */
-
-@media (min-width: 768px) {
-
-  .card {
-    will-change: transform;
-  }
-
-}
-
-/* ============================= */
-/* CONTAINER spacing */
-
-.container {
-  padding: 80px;
-}
-
-/* ============================= */
-/* LOGIN */
-
-#loginError {
-  font-size: 20px;
-}
-
-/* ============================= */
-/* BOISKO SPACING */
-
-.meet-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 10px 0;
-}
-
-/* większe inputy */
-.meet-row input {
-  padding: 12px;
-  font-size: 18px;
-}
-
-/* większy opis */
-.note {
-  margin-left: 40px;
-  opacity: 0.8;
-  font-size: 16px;
-}
-
-/* status */
-.status-row {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.statusBtn.active {
-  background: #22c55e;
-}
-
-/* save */
-.saveBtn {
-  margin-top: 10px;
-}
-
-/* form spacing */
-.formBox {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* back button jako button */
-.backButton {
-  margin-bottom: 20px;
-}
-
-/* LEPSZE ODSTĘPY */
+/* pojedynczy gracz */
 
 .vote-row {
-  margin-bottom: 20px;
-}
 
-.panel-buttons {
-  margin-top: 40px;
-}
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  font-size:24px;
 
-/* WIĘKSZE INPUTY */
+}
 
 .vote-row input {
-  width: 100%;
-  max-width: 120px;
-  height: 60px;
-  font-size: 24px;
+
+  width:120px;
+  height:60px;
+  font-size:26px;
+  text-align:center;
+  border-radius:14px;
+
 }
 
-/* BOISKO SPACING */
+/* ============================= */
+/* PRZYCISKI PANELU */
 
-.meet-row,
-.status-row {
-  margin-top: 20px;
-  gap: 20px;
+.panel-buttons {
+
+  margin-top:80px; /* duża przestrzeń od pól ocen */
+  display:flex;
+  justify-content:center;
+  gap:40px;
+
 }
 
-.saveBtn {
-  margin-top: 20px;
+.navbar{
+
+  position:sticky;
+  top:0;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:18px 40px;
+
+  background:#0f172a;
+  border-bottom:1px solid #334155;
+
+  font-size:26px;
+  font-weight:bold;
+
+  z-index:100;
+
 }
 
-/* BACK BUTTON JAK BUTTON */
+.nav-right button{
 
-.backButton {
-  display: inline-block;
-  padding: 14px 24px;
-  background: #334155;
+  font-size:18px;
+  padding:10px 20px;
+
+}
+
+.avatar{
+
+  font-size:28px;
+  margin-right:10px;
+
+}
+.avatar{
+
+  width:38px;
+  height:38px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#1e293b;
+  border-radius:10px;
+
+  font-size:22px;
+
+  margin-right:10px;
+
+}
+
+
+
+.nav-left{
+
+  font-size:26px;
+  font-weight:bold;
+
+}
+
+.nav-right{
+
+  display:flex;
+  gap:10px;
+  align-items:center;
+
+}
+
+.nav-right input{
+
+  width:130px;
+
+}
+
+#loginError{
+
+color:#ef4444;
+font-size:14px;
+
+margin-top:6px;
+
+}
+
+.loading{
+
+opacity:0.7;
+pointer-events:none;
+
+}
+
+.navbar{
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:18px 40px;
+
+background:#0f172a;
+border-bottom:1px solid #334155;
+
+position:sticky;
+top:0;
+
+z-index:100;
+
+}
+
+.nav-center{
+
+font-size:18px;
+opacity:0.9;
+
+}
+
+#userBox{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+font-size:18px;
+
+}
+
+#loginBox{
+
+display:flex;
+align-items:center;
+gap:8px;
+
+}
+
+.absence-btn {
+
+  background:#7d4040;
+  font-size:22px;
+  padding:16px 26px;
+
+}
+
+.absence-btn:hover {
+
+  background:#662929;
+
+}
+
+#daysContainer{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+
+}
+
+.card h3{
+
+margin-top:10px;
+
+}
+
+.card input{
+
+margin-top:5px;
+
+}
+
+#daysContainer{
+
+display:flex;
+flex-direction:column;
+gap:20px;
+
+}
+
+.meet-row{
+
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:10px;
+
+}
+
+.sunsetBox{
+
+display:flex;
+align-items:center;
+gap:5px;
+font-size:14px;
+
+}
+
+.status-row{
+
+margin-top:10px;
+display:flex;
+gap:10px;
+
+}
+
+.statusBtn{
+
+padding:10px 20px;
+border:none;
+border-radius:8px;
+background:#475569;
+color:white;
+cursor:pointer;
+
+}
+
+.statusBtn.active{
+
+background:#22c55e;
+
+}
+
+.saveBtn{
+
+margin-top:10px;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+
+}
+
+.note{
+
+font-size:14px;
+opacity:0.8;
+margin-left:10px;
+
+}
+
+.boiskoButtonBox{
+
+text-align:center;
+margin-bottom:20px;
+
+}
+
+.boiskoButton{
+
+display:inline-block;
+padding:20px 40px;
+
+font-size:22px;
+font-weight:bold;
+
+border-radius:14px;
+
+background:linear-gradient(45deg,#1e293b,#1d3254);
+
+color:white;
+text-decoration:none;
+
+transition:0.2s;
+
+}
+
+.boiskoButton:hover{
+
+transform:scale(1.05);
+
+}
+
+#boiskoCounter{
+
+display:block;
+font-size:16px;
+margin-top:6px;
+opacity:0.8;
+
+}
+
+.backButton{
+
+display:inline-block;
+margin-bottom:20px;
+
+padding:10px 20px;
+
+background:#334155;
+color:white;
+
+border-radius:10px;
+text-decoration:none;
+
+}
+
+.backButton:hover{
+
+background:#475569;
+
+}
+
+.avatar{
+
+width:32px;
+height:32px;
+
+display:inline-flex;
+align-items:center;
+justify-content:center;
+
+background:#1e293b;
+border-radius:8px;
+
+margin-right:8px;
+
+font-size:18px;
+
+}
+
+#penaltyPlayer{
+  width: 250px;   /* większa szerokość */
+  font-size: 22px; /* większy tekst */
+  padding: 8px 12px; 
   border-radius: 12px;
-  text-decoration: none;
-  font-size: 18px;
-}
-
-.backButton:hover {
-  background: #475569;
+  margin-bottom: 8px;
 }
