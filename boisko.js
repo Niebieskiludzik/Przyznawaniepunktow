@@ -1,104 +1,11 @@
-const sb = window.supabase.createClient(
-  'https://wzanqzcjrpbhocrfcciy.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
+const supabaseClient = window.supabase.createClient(
+'https://wzanqzcjrpbhocrfcciy.supabase.co',
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
 const daysContainer = document.getElementById("daysContainer");
 
 let currentStatus = {};
-
-/* ============================= */
-/* LOGIN SYSTEM (jak index) */
-
-window.login = async function () {
-
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-const btn = document.getElementById("loginBtn");
-const errorBox = document.getElementById("loginError");
-
-errorBox.innerText = "";
-btn.innerText = "Logowanie...";
-
-const { error } = await supabase.auth.signInWithPassword({
-email, password
-});
-
-btn.innerText = "Zaloguj";
-
-if (error) {
-errorBox.innerText = "❌ Błąd logowania";
-return;
-}
-
-localStorage.setItem("savedEmail", email);
-
-init();
-};
-
-window.logout = async function () {
-await supabaseClient.auth.signOut();
-location.reload();
-};
-
-/* ============================= */
-/* INIT NAVBAR */
-
-async function initNavbar(){
-
-const { data } = await supabaseClient.auth.getUser();
-
-const loginBox = document.getElementById("loginBox");
-const userBox = document.getElementById("userBox");
-const userName = document.getElementById("userName");
-
-if(!data.user){
-
-loginBox.style.display="flex";
-userBox.style.display="none";
-
-}else{
-
-loginBox.style.display="none";
-userBox.style.display="flex";
-
-const {data:player}=await supabaseClient
-.from("players")
-.select("*")
-.eq("email",data.user.email)
-.single();
-
-if(player){
-
-userName.innerHTML = `
-<span class="avatar">${player.avatar || "👤"}</span>
-${player.name}
-`;
-
-}
-
-}
-
-}
-
-/* ============================= */
-/* DATA W NAVBAR */
-
-function updateDate(){
-
-const now=new Date();
-
-document.getElementById("navbarDate").innerText =
-now.toLocaleDateString("pl-PL",{
-day:"numeric",
-month:"long"
-});
-
-}
-
-/* ============================= */
-/* BOISKO LOGIKA */
 
 function getNextDays(){
 
@@ -164,13 +71,7 @@ html+=`<h3>Będą</h3>`;
 
 yes.forEach(p=>{
 
-html+=`
-<div class="meet-row">
-<span class="avatar">${p.avatar || "👤"}</span>
-${p.player_name}
-<span class="time">${formatTime(p)}</span>
-</div>
-`;
+html+=`<div><span class="avatar">${p.avatar || "👤"}</span>${p.player_name} ${formatTime(p)}</div>`;
 
 if(p.note){
 html+=`<div class="note">${p.note}</div>`;
@@ -182,12 +83,7 @@ html+=`<h3>Nie będą</h3>`;
 
 no.forEach(p=>{
 
-html+=`
-<div class="meet-row">
-<span class="avatar">${p.avatar || "👤"}</span>
-${p.player_name}
-</div>
-`;
+html+=`<div><span class="avatar">${p.avatar || "👤"}</span>${p.player_name}</div>`;
 
 if(p.note){
 html+=`<div class="note">${p.note}</div>`;
@@ -197,37 +93,43 @@ html+=`<div class="note">${p.note}</div>`;
 
 }
 
-/* FORM */
-
 if(logged){
 
 html+=`
 
 <hr>
 
-<div class="formBox">
-
 <div class="meet-row">
-<input type="time" id="from_${date}">
-<input type="time" id="to_${date}">
+
+Od <input type="time" id="from_${date}">
+
+Do <input type="time" id="to_${date}">
+
+<label class="sunsetBox">
+<input type="checkbox" id="sunset_${date}">
+do zachodu
+</label>
+
 </div>
 
-<input id="note_${date}" placeholder="Opis (opcjonalnie)">
+<input id="note_${date}" maxlength="100" placeholder="opis (opcjonalnie)">
 
 <div class="status-row">
+
 <button class="statusBtn" onclick="setStatus('${date}','yes',this)">Będę</button>
+
 <button class="statusBtn" onclick="setStatus('${date}','no',this)">Nie będę</button>
+
 </div>
 
 <button class="saveBtn" onclick="save('${date}')">Zapisz</button>
-
-</div>
 
 `;
 
 }
 
 card.innerHTML=html;
+
 daysContainer.appendChild(card);
 
 }
@@ -238,14 +140,14 @@ let from=p.time_from||"-:-";
 let to=p.time_to||"-:-";
 
 if(to==="sunset"){
-to="zachodu";
+to="zachodu słońca";
 }
 
-return `(${from} - ${to})`;
+return `od ${from} do ${to}`;
 
 }
 
-window.setStatus=function(date,status,btn){
+function setStatus(date,status,btn){
 
 currentStatus[date]=status;
 
@@ -257,16 +159,29 @@ btn.classList.add("active");
 
 }
 
-window.save=async function(date){
+async function save(date){
 
 const {data:userData}=await supabaseClient.auth.getUser();
+
 if(!userData.user) return;
+
+const email=userData.user.email;
 
 const {data:player}=await supabaseClient
 .from("players")
 .select("*")
-.eq("email",userData.user.email)
+.eq("email",email)
 .single();
+
+const from=document.getElementById("from_"+date).value;
+
+let to=document.getElementById("to_"+date).value;
+
+const sunset=document.getElementById("sunset_"+date).checked;
+
+if(sunset) to="sunset";
+
+const note=document.getElementById("note_"+date).value;
 
 await supabaseClient
 .from("field_meetups")
@@ -275,30 +190,13 @@ player_id:player.id,
 player_name:player.name,
 date:date,
 status:currentStatus[date],
-time_from:document.getElementById("from_"+date).value,
-time_to:document.getElementById("to_"+date).value,
-note:document.getElementById("note_"+date).value
+time_from:from,
+time_to:to,
+note:note
 });
 
 loadDays();
 
-};
-
-/* ============================= */
-/* INIT */
-
-async function init(){
-
-updateDate();
-await initNavbar();
-await loadDays();
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof init === "function") {
-    init();
-  }
-});
-  
 }
 
-init();
+loadDays();
