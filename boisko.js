@@ -1,5 +1,10 @@
-initAuthUI();
-const supabaseClient = window.supabaseClient;
+document.addEventListener("DOMContentLoaded", async () => {
+    
+  initAuthUI(); // teraz auth.js musi być załadowany PRZED main.js/boisko.js
+    
+  const supabase = window.supabaseClient; // lokalnie w funkcji — OK
+
+});
 
 const daysContainer = document.getElementById("daysContainer");
 
