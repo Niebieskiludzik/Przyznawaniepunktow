@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
+  initAuthUI();
+  
 const savedEmail = localStorage.getItem("savedEmail");
 
 if(savedEmail){
