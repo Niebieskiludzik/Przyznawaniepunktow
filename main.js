@@ -470,6 +470,36 @@ window.addEventListener("DOMContentLoaded", ()=>{
   window.loadDecorations(saved);
 });
 
+// ==== DEKORACJE W TLE ====
+function initDecorations() {
+  const decorContainer = document.createElement('div');
+  decorContainer.className = 'theme-decoration';
+  document.body.appendChild(decorContainer);
+
+  // przykładowe dekoracje: liście/wiosenne kule
+  for (let i = 0; i < 20; i++) {
+    const div = document.createElement('div');
+    div.className = 'decoration-item';
+    div.style.width = div.style.height = `${20 + Math.random() * 40}px`;
+    div.style.left = `${Math.random() * 100}%`;
+    div.style.background = 'rgba(200,255,150,0.3)';
+    div.style.borderRadius = '50%';
+    div.style.animationDuration = `${20 + Math.random()*10}s`;
+    decorContainer.appendChild(div);
+  }
+}
+
+// ==== MOTYW ====
+function setTheme(themeName) {
+  document.body.classList.remove('theme-standard', 'theme-spring');
+  document.body.classList.add(themeName);
+}
+
+// przykład: inicjalizacja
+initDecorations();
+setTheme('theme-standard');  // standardowy
+// setTheme('theme-spring');  // wiosenny, odkomentuj żeby sprawdzić
+
 async function init() {
 
   const { data } = await supabase.auth.getUser();
