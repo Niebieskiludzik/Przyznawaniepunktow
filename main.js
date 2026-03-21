@@ -418,6 +418,22 @@ document.getElementById("boiskoCounter").innerText=
 
 }
 
+function setTheme(theme){
+
+  document.body.className = theme;
+
+  localStorage.setItem("theme", theme);
+
+}
+
+function loadTheme(){
+
+  const saved = localStorage.getItem("theme") || "theme-default";
+
+  document.body.className = saved;
+
+}
+
 async function init() {
 
   const { data } = await supabase.auth.getUser();
@@ -472,6 +488,7 @@ async function init() {
   loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
+  loadTheme();
 }
 
 init();
