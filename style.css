@@ -207,25 +207,20 @@ button:hover {
 
 }
 
-.navbar{
-
-  position:sticky;
-  top:0;
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:18px 40px;
-
-  background:#0f172a;
-  border-bottom:1px solid #334155;
-
-  font-size:26px;
-  font-weight:bold;
-
-  z-index:100;
-
+.navbar {
+  position: fixed;   /* zamiast sticky */
+  top: 0;
+  left: 0;           /* przyklejony do lewej krawędzi */
+  width: 100%;       /* rozciągnięty na całą szerokość */
+  z-index: 1000;     /* nad innymi elementami */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  background: #0f172a;
+  border-bottom: 1px solid #334155;
+  font-size: 26px;
+  font-weight: bold;
 }
 
 .nav-right button{
