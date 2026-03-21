@@ -261,31 +261,9 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  for (let player of players) {
-
-    const voter = players.find(p => p.name === voterName);
-
-    const input = document.getElementById(
-      voter.id + '_' + player.id
-    );
-
-    if (!input.value) continue;
-
-    await supabase.from('votes').upsert({
-      round_id: currentRoundId,
-      player_id: player.id,
-      voter_name: voterName,
-      score: parseFloat(input.value.replace(",", "."))
-    });
-
-  }
-
-  await supabase.rpc('calculate_round', {
-    p_round_id: currentRoundId,
-  });
+  await voting.saveVotes(voterName, players, currentRoundId);
 
   await loadPlayers();
-
 };
 
 async function addPlayer() {
