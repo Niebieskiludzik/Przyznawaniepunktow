@@ -604,9 +604,6 @@ body.theme-spring {
   --card1: #FFFACD;
   --card2: #FFFFE0;
 }
-body.theme-summer {
-  color: #042f2e;
-}
 
 .theme-selector {
   margin: 20px 0;
