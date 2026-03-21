@@ -667,23 +667,28 @@ body.theme-summer {
   color: #f1f5f9;
 }
 
-/* Wiosenny motyw pastelowy */
-/* ========================= */
+/* ============================= */
+/* Płynne przejścia dla wszystkich motywów */
+body, .card, .navbar, button, select {
+  transition: background 0.8s ease, color 0.8s ease, border-color 0.8s ease;
+}
+
+/* ============================= */
 /* Poprawiony wiosenny motyw */
 .theme-spring body {
   background: linear-gradient(45deg, #fef9e7, #d7f5d8);
-  color: #3a3a3a; /* ciemny szary zamiast białego */
+  color: #3a3a3a; /* ciemny szary tekst */
 }
 
 .theme-spring .card {
   background: linear-gradient(45deg, #fff9d9, #e3fbe1);
-  color: #3a5a2a; /* ciemna zieleń dla tekstu w kartach */
+  color: #3a5a2a; /* ciemna zieleń */
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .theme-spring button {
   background: #cce5aa;
-  color: #3a5a2a; /* ciemna zieleń dla tekstu w przyciskach */
+  color: #3a5a2a;
 }
 
 .theme-spring button:hover {
@@ -694,11 +699,17 @@ body.theme-summer {
 .theme-spring .navbar {
   background: #eaf7d6;
   border-bottom: 1px solid #cce5aa;
-  color: #3a5a2a; /* ciemna zieleń dla navbaru */
+  color: #3a5a2a;
 }
 
-/* Tekst w dropdown wyboru motywu */
 .theme-spring select,
 .theme-spring option {
-  color: #3a5a2a; /* ciemna zieleń dla wyboru motywu */
+  color: #3a5a2a;
+}
+
+/* ============================= */
+/* Usuń wszystkie dekoracje w normalnym motywie */
+.theme-default .decorations,
+.theme-spring .decorations {
+  display: none; /* usuwa spadające kółka/śnieżki */
 }
