@@ -423,12 +423,9 @@ window.setTheme = function(theme){
   localStorage.setItem("theme", theme);
 }
 
-function loadTheme(){
-
+window.loadTheme = function(){
   const saved = localStorage.getItem("theme") || "theme-default";
-
   document.body.className = saved;
-
 }
 
 async function init() {
