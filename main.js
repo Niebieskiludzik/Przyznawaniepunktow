@@ -23,32 +23,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
-  // ========================
-  // FUNKCJE GŁOSOWANIA I PANELI
-  // ========================
-
   async function ensureRound(date) {
-    const { data, error } = await supabase
-      .from('rounds')
-      .select('*')
-      .eq('round_date', date)
-      .maybeSingle();
-
+    const { data } = await supabase.from('rounds').select('*').eq('round_date', date).maybeSingle();
     if (!data) {
-      const { data: newRound } = await supabase
-        .from('rounds')
-        .insert({ round_date: date })
-        .select()
-        .single();
+      const { data: newRound } = await supabase.from('rounds').insert({ round_date: date }).select().single();
       currentRoundId = newRound.id;
     } else currentRoundId = data.id;
   }
 
   async function loadPlayers() {
-    const { data } = await supabase
-      .from('players')
-      .select('*')
-      .order('rating', { ascending: false });
+    const { data } = await supabase.from('players').select('*').order('rating', { ascending: false });
     players = data || [];
     renderRanking();
     renderPanels();
@@ -61,20 +45,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderRanking() {
-    rankingTable.innerHTML = `
-      <tr>
-        <th>#</th><th>Gracz</th><th>Punkty</th><th>Zmiana</th>
-      </tr>`;
+    rankingTable.innerHTML = `<tr><th>#</th><th>Gracz</th><th>Punkty</th><th>Zmiana</th></tr>`;
     players.forEach((p, i) => {
       let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
       const diff = Math.round(p.rating - (yesterdayRatings[p.id]||p.rating));
-      rankingTable.innerHTML += `
-        <tr class="${i===0?'leader gold':i===1?'silver':i===2?'bronze':''}">
-          <td>${medal||i+1}</td>
-          <td><span class="avatar">${p.avatar||"👤"}</span>${p.name}</td>
-          <td>${Math.round(p.rating+(p.manual_points||0))}</td>
-          <td class="${diff>=0?'positive':'negative'}">${diff>=0?'+':''}${diff}</td>
-        </tr>`;
+      rankingTable.innerHTML += `<tr class="${i===0?'leader gold':i===1?'silver':i===2?'bronze':''}">
+        <td>${medal||i+1}</td>
+        <td><span class="avatar">${p.avatar||"👤"}</span>${p.name}</td>
+        <td>${Math.round(p.rating+(p.manual_points||0))}</td>
+        <td class="${diff>=0?'positive':'negative'}">${diff>=0?'+':''}${diff}</td>
+      </tr>`;
     });
   }
 
