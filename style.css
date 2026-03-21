@@ -26,6 +26,7 @@ body {
   max-width: 1600px;
   margin: auto;
   padding: 50px;
+  padding-top: 100px; /* wysokość navbaru + margines, dopasuj do faktycznej wysokości */
 }
 
 h1 {
@@ -221,11 +222,6 @@ button:hover {
   border-bottom: 1px solid #334155;
   font-size: 26px;
   font-weight: bold;
-}
-
-/* dodajemy padding-top dla całej strony równy wysokości navbaru */
-body {
-  padding-top: 76px; /* wysokość navbaru = padding + font-size + marginesy, dopasuj jeśli trzeba */
 }
 
 .nav-right button{
@@ -563,7 +559,6 @@ font-size:18px;
 
 #decorations {
   position: fixed;
-  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
