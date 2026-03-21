@@ -1,9 +1,40 @@
 /* ============================= */
+/* 🎨 THEMES */
+
+body.theme-default {
+  --bg1: #0f172a;
+  --bg2: #0e0f21;
+  --card1: #1e293b;
+  --card2: #1d3254;
+}
+
+body.theme-christmas {
+  --bg1: #0b1f14;
+  --bg2: #1f3d2b;
+  --card1: #14532d;
+  --card2: #166534;
+}
+
+body.theme-summer {
+  --bg1: #0ea5e9;
+  --bg2: #22c55e;
+  --card1: #38bdf8;
+  --card2: #4ade80;
+}
+
+body.theme-halloween {
+  --bg1: #1a0f0a;
+  --bg2: #3b1d0f;
+  --card1: #7c2d12;
+  --card2: #ea580c;
+}
+
+/* ============================= */
 /* SKALA STRONY */
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(45deg, #0f172a, #0e0f21);
+  background: linear-gradient(45deg, var(--bg1), var(--bg2));
   color: #f1f5f9;
   margin: 0;
   font-size: 20px; /* większy tekst */
@@ -36,7 +67,7 @@ h3 {
 /* KARTY */
 
 .card {
-  background: linear-gradient(45deg, #1e293b, #1d3254);
+  background: linear-gradient(45deg, var(--card1), var(--card2));
   padding: 40px;
   margin: 30px 0;
   border-radius: 20px;
