@@ -523,3 +523,30 @@ font-size:18px;
   border-radius: 12px;
   margin-bottom: 8px;
 }
+
+.save-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+}
+
+.save-status {
+  font-size: 16px;
+  opacity: 0.7;
+  min-width: 100px;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.save-status.loading {
+  color: #94a3b8;
+}
+
+.save-status.success {
+  color: #22c55e;
+}
+
+.save-status.error {
+  color: #ef4444;
+}
