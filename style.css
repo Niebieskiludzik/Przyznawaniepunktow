@@ -581,3 +581,28 @@ font-size:18px;
 .save-status.error {
   color: #ef4444;
 }
+
+body.theme-christmas::before {
+  content: "❄️ ❄️ ❄️ ❄️ ❄️ ❄️";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: 20px;
+  opacity: 0.3;
+  pointer-events: none;
+  animation: snow 10s linear infinite;
+}
+
+@keyframes snow {
+  0% { transform: translateY(-100px); }
+  100% { transform: translateY(100vh); }
+}
+
+body.theme-halloween .card {
+  box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+}
+
+body.theme-summer {
+  color: #042f2e;
+}
