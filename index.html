@@ -11,10 +11,13 @@
     <div class="nav-left">
     🏆 Ranking Chwały
 
-      <select onchange="setTheme(this.value)">
-        <option value="theme-default">Default</option>
-         <option value="theme-spring">Wiosna</option>
-      </select>
+      <div class="theme-selector">
+        <label for="themeSelect">Wybierz motyw:</label>
+        <select id="themeSelect" onchange="setTheme(this.value)">
+          <option value="theme-default">Standard</option>
+          <option value="theme-spring">Wiosenny</option>
+        </select>
+      </div>
     </div>
 
     <div class="nav-center">
