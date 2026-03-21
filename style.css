@@ -668,27 +668,37 @@ body.theme-summer {
 }
 
 /* Wiosenny motyw pastelowy */
+/* ========================= */
+/* Poprawiony wiosenny motyw */
 .theme-spring body {
   background: linear-gradient(45deg, #fef9e7, #d7f5d8);
-  color: #3a3a3a;
+  color: #3a3a3a; /* ciemny szary zamiast białego */
 }
 
 .theme-spring .card {
   background: linear-gradient(45deg, #fff9d9, #e3fbe1);
+  color: #3a5a2a; /* ciemna zieleń dla tekstu w kartach */
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .theme-spring button {
   background: #cce5aa;
-  color: #3a3a3a;
+  color: #3a5a2a; /* ciemna zieleń dla tekstu w przyciskach */
 }
 
 .theme-spring button:hover {
   background: #d9f3b3;
+  color: #3a5a2a;
 }
 
 .theme-spring .navbar {
   background: #eaf7d6;
   border-bottom: 1px solid #cce5aa;
-  color: #3a3a3a;
+  color: #3a5a2a; /* ciemna zieleń dla navbaru */
+}
+
+/* Tekst w dropdown wyboru motywu */
+.theme-spring select,
+.theme-spring option {
+  color: #3a5a2a; /* ciemna zieleń dla wyboru motywu */
 }
