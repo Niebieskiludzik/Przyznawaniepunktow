@@ -489,10 +489,17 @@ function initDecorations() {
   }
 }
 
-// ==== MOTYW ====
-function setTheme(themeName) {
-  document.body.classList.remove('theme-standard', 'theme-spring');
-  document.body.classList.add(themeName);
+// usuwamy istniejące dekoracje przy zmianie motywu
+function clearDecorations() {
+  const dec = document.querySelectorAll('.decorations');
+  dec.forEach(d => d.remove());
+}
+
+// przykład w funkcji zmiany motywu
+function setTheme(theme) {
+  document.body.classList.remove('theme-default','theme-spring');
+  document.body.classList.add(theme);
+  clearDecorations(); // usuwa spadające elementy
 }
 
 // przykład: inicjalizacja
