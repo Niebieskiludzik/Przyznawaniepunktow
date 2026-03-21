@@ -125,8 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-});
-
   async function renderPanels() {
     panelsDiv.innerHTML = '';
     const { data: userData } = await supabase.auth.getUser();
