@@ -436,14 +436,15 @@ window.loadDecorations = function(theme){
   let decorations = [];
 
   if(theme === "theme-spring"){
-    // wiosna: liście pastelowe
+    // wiosna: liście pastelowe, kwiatki
     decorations = ["🍃","🌸","🌼"];
-  } else if(theme === "theme-default"){
-    // standard
-    decorations = ["❄️","⭐"];
+  } 
+  // ❌ usuń spadające elementy w standardowym motywie
+  else if(theme === "theme-default"){
+    decorations = []; // brak dekoracji
   }
 
-  for(let i=0; i<20; i++){
+  for(let i=0; i<decorations.length; i++){
     const elem = document.createElement("div");
     elem.className = "decoration";
     elem.style.fontSize = (Math.random()*30+20)+"px";
@@ -453,7 +454,6 @@ window.loadDecorations = function(theme){
     container.appendChild(elem);
   }
 }
-
 // aktualizacja dekoracji przy zmianie motywu
 window.setTheme = function(theme){
   document.body.className = theme;
