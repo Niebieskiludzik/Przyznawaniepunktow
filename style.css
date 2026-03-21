@@ -209,7 +209,7 @@ button:hover {
 }
 
 .navbar {
-  position: fixed;   /* zawsze przyklejony */
+  position: fixed;      /* zawsze przyklejony */
   top: 0;
   left: 0;
   width: 100%;
@@ -630,4 +630,65 @@ body.theme-summer {
 .theme-selector select:hover {
   background: #334155;
   transform: scale(1.05);
+}
+
+.container {
+  max-width: 1600px;
+  margin: auto;
+  padding: 120px 50px 50px 50px;  /* 120px = wysokość navbaru + margines */
+}
+.theme-decoration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;  /* tło za wszystkimi elementami */
+  overflow: hidden;
+}
+
+/* ruchome elementy w tle – poruszają się wolniej niż zawartość */
+.decoration-item {
+  position: absolute;
+  will-change: transform;
+  opacity: 0.5;
+  animation: float 20s linear infinite;
+}
+
+/* wolniejsze od elementów na pierwszym planie */
+@keyframes float {
+  0% { transform: translateY(-50px); }
+  100% { transform: translateY(100vh); }
+}
+/* Standardowy motyw */
+.theme-standard body {
+  background: linear-gradient(45deg, #0f172a, #0e0f21);
+  color: #f1f5f9;
+}
+
+/* Wiosenny motyw pastelowy */
+.theme-spring body {
+  background: linear-gradient(45deg, #fef9e7, #d7f5d8);
+  color: #3a3a3a;
+}
+
+.theme-spring .card {
+  background: linear-gradient(45deg, #fff9d9, #e3fbe1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.theme-spring button {
+  background: #cce5aa;
+  color: #3a3a3a;
+}
+
+.theme-spring button:hover {
+  background: #d9f3b3;
+}
+
+.theme-spring .navbar {
+  background: #eaf7d6;
+  border-bottom: 1px solid #cce5aa;
+  color: #3a3a3a;
 }
