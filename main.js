@@ -1,10 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
+
   initAuthUI();
-
+  
   const supabase = window.supabaseClient;
-  const savedEmail = localStorage.getItem("savedEmail");
 
-  if (savedEmail) document.getElementById("email").value = savedEmail;
+  const savedEmail = localStorage.getItem("savedEmail");
+  if (savedEmail) {
+    document.getElementById("email").value = savedEmail;
+  }
 
   let players = [];
   let currentRoundId = null;
@@ -13,6 +16,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const datePicker = document.getElementById('datePicker');
   const rankingTable = document.getElementById('rankingTable');
   const panelsDiv = document.getElementById('panels');
+  const loginCard = document.getElementById('loginCard');
+  const dateCard = document.getElementById("dateCard");
 
   datePicker.value = new Date().toISOString().split('T')[0];
 
@@ -20,43 +25,107 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateDateDisplay();
     init();
   });
-
   document.getElementById('addPlayerBtn').addEventListener('click', addPlayer);
 
   async function ensureRound(date) {
-    const { data } = await supabase.from('rounds').select('*').eq('round_date', date).maybeSingle();
+    const { data, error } = await supabase
+      .from('rounds')
+      .select('*')
+      .eq('round_date', date)
+      .maybeSingle();
+
     if (!data) {
-      const { data: newRound } = await supabase.from('rounds').insert({ round_date: date }).select().single();
+      const { data: newRound, error: insertError } = await supabase
+        .from('rounds')
+        .insert({ round_date: date })
+        .select()
+        .single();
+
+      if(insertError){
+        console.error("INSERT ROUND ERROR:", insertError);
+        return;
+      }
+
       currentRoundId = newRound.id;
-    } else currentRoundId = data.id;
+    } else {
+      currentRoundId = data.id;
+    }
   }
 
   async function loadPlayers() {
-    const { data } = await supabase.from('players').select('*').order('rating', { ascending: false });
+    const { data } = await supabase
+      .from('players')
+      .select('*')
+      .order('rating', { ascending: false });
+
     players = data || [];
     renderRanking();
     renderPanels();
+    loadPenaltyPlayers();
   }
 
-  function updateDateDisplay() {
+  function updateDateDisplay(){
     const dateDisplay = document.getElementById("currentDateDisplay");
     const date = new Date(datePicker.value);
-    dateDisplay.innerHTML = "📅 Runda: <b>" + date.toLocaleDateString("pl-PL", { weekday:"long", year:"numeric", month:"long", day:"numeric" }) + "</b>";
+    const formatted = date.toLocaleDateString("pl-PL", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    });
+    dateDisplay.innerHTML = "📅 Runda: <b>" + formatted + "</b>";
+  }
+
+  async function loadYesterdayRatings() {
+    const { data } = await supabase
+      .from('players')
+      .select('id,rating');
+
+    yesterdayRatings = {};
+    data?.forEach(p => {
+      yesterdayRatings[p.id] = p.rating;
+    });
   }
 
   function renderRanking() {
-    rankingTable.innerHTML = `<tr><th>#</th><th>Gracz</th><th>Punkty</th><th>Zmiana</th></tr>`;
+    rankingTable.innerHTML = `
+      <tr>
+        <th>#</th>
+        <th>Gracz</th>
+        <th>Punkty</th>
+        <th>Zmiana</th>
+      </tr>
+    `;
+
     players.forEach((p, i) => {
-      let medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      const diff = Math.round(p.rating - (yesterdayRatings[p.id]||p.rating));
-      rankingTable.innerHTML += `<tr class="${i===0?'leader gold':i===1?'silver':i===2?'bronze':''}">
-        <td>${medal||i+1}</td>
-        <td><span class="avatar">${p.avatar||"👤"}</span>${p.name}</td>
-        <td>${Math.round(p.rating+(p.manual_points||0))}</td>
-        <td class="${diff>=0?'positive':'negative'}">${diff>=0?'+':''}${diff}</td>
-      </tr>`;
+      let medal = '';
+      if (i === 0) medal = '🥇';
+      if (i === 1) medal = '🥈';
+      if (i === 2) medal = '🥉';
+
+      const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
+
+      rankingTable.innerHTML += `
+        <tr class="${
+            i === 0 ? 'leader gold' :
+            i === 1 ? 'silver' :
+            i === 2 ? 'bronze' : ''
+        }">
+          <td>${medal || i + 1}</td>
+          <td>
+          <span class="avatar">${p.avatar || "👤"}</span>
+          ${p.name}
+          </td>
+          <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
+          <td class="${diff >= 0 ? 'positive' : 'negative'}">
+            ${diff >= 0 ? '+' : ''}${diff}
+          </td>
+        </tr>
+      `;
     });
   }
+
+});
 
   async function renderPanels() {
     panelsDiv.innerHTML = '';
