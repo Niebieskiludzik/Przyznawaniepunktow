@@ -561,6 +561,37 @@ font-size:18px;
   color: #ef4444;
 }
 
+#decorations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* nie przeszkadza w klikaniu */
+  overflow: hidden;
+  z-index: 0; /* tło */
+}
+
+.decoration {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  opacity: 0.5;
+  animation: floatDecor 20s linear infinite;
+  z-index: 0;
+}
+
+@keyframes floatDecor {
+  0% { transform: translateY(-60px) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(360deg); }
+}
+
+/* warstwa nad dekoracjami */
+.container, .navbar, .card {
+  position: relative;
+  z-index: 1;
+}
+
 /* 🌙 STANDARD (taki jak miałeś) */
 body.theme-default {
   --bg1: #0f172a;
@@ -578,4 +609,28 @@ body.theme-spring {
 }
 body.theme-summer {
   color: #042f2e;
+}
+
+.theme-selector {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+}
+
+.theme-selector select {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-selector select:hover {
+  background: #334155;
+  transform: scale(1.05);
 }
