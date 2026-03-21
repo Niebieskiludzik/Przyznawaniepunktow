@@ -215,9 +215,12 @@ async function renderPanels() {
 
     html += `
       <div class="panel-buttons">
-        <button ${!votingAllowed ? "disabled" : ""} onclick="saveVotes('${voter.name}')">
-          Zapisz oceny
-        </button>
+        <div class="save-container">
+          <button onclick="saveVotes('${voter.name}', this)">
+            Zapisz oceny
+          </button>
+          <span class="save-status" id="status_${voter.id}"></span>
+        </div>
         <button class="absence-btn"
         onclick="markAbsent('${voter.id}')">
         Nieobecność
@@ -259,11 +262,30 @@ window.markAbsent = async function (playerId) {
   await loadPlayers();
 };
 
-window.saveVotes = async function (voterName) {
+window.saveVotes = async function (voterName, btn) {
 
-  await voting.saveVotes(voterName, players, currentRoundId);
+  const status = btn.nextElementSibling;
 
-  await loadPlayers();
+  status.innerText = "Zapisywanie...";
+  status.className = "save-status loading";
+
+  try {
+    await voting.saveVotes(voterName, players, currentRoundId);
+    await loadPlayers();
+
+    status.innerText = "✔ Zapisano";
+    status.className = "save-status success";
+
+  } catch (err) {
+    console.error(err);
+
+    status.innerText = "❌ Błąd";
+    status.className = "save-status error";
+  }
+
+  setTimeout(() => {
+    status.innerText = "";
+  }, 2000);
 };
 
 async function addPlayer() {
