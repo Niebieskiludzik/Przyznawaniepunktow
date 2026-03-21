@@ -418,12 +418,9 @@ document.getElementById("boiskoCounter").innerText=
 
 }
 
-function setTheme(theme){
-
+window.setTheme = function(theme){
   document.body.className = theme;
-
   localStorage.setItem("theme", theme);
-
 }
 
 function loadTheme(){
