@@ -428,6 +428,48 @@ window.loadTheme = function(){
   document.body.className = saved;
 }
 
+// 🌸 Dekoracje
+window.loadDecorations = function(theme){
+  const container = document.getElementById("decorations");
+  container.innerHTML = ""; // wyczyść poprzednie dekoracje
+
+  let decorations = [];
+
+  if(theme === "theme-spring"){
+    // wiosna: liście pastelowe
+    decorations = ["🍃","🌸","🌼"];
+  } else if(theme === "theme-default"){
+    // standard
+    decorations = ["❄️","⭐"];
+  }
+
+  for(let i=0; i<20; i++){
+    const elem = document.createElement("div");
+    elem.className = "decoration";
+    elem.style.fontSize = (Math.random()*30+20)+"px";
+    elem.style.left = Math.random()*100+"%";
+    elem.style.animationDuration = (15 + Math.random()*10) + "s"; // różne prędkości
+    elem.innerText = decorations[Math.floor(Math.random()*decorations.length)];
+    container.appendChild(elem);
+  }
+}
+
+// aktualizacja dekoracji przy zmianie motywu
+window.setTheme = function(theme){
+  document.body.className = theme;
+  localStorage.setItem("theme", theme);
+  window.loadDecorations(theme);
+}
+
+// załaduj dekoracje przy starcie
+window.addEventListener("DOMContentLoaded", ()=>{
+  const saved = localStorage.getItem("theme") || "theme-default";
+  document.body.className = saved;
+  const select = document.getElementById("themeSelect");
+  if(select) select.value = saved;
+  window.loadDecorations(saved);
+});
+
 async function init() {
 
   const { data } = await supabase.auth.getUser();
