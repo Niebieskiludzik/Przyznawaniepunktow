@@ -428,85 +428,56 @@ window.loadTheme = function(){
   document.body.className = saved;
 }
 
-// 🌸 Dekoracje
-window.loadDecorations = function(theme){
-  const container = document.getElementById("decorations");
-  container.innerHTML = ""; // wyczyść poprzednie dekoracje
+// Płynne przejścia motywów
+document.body.style.transition = "background 0.8s ease, color 0.8s ease";
 
-  let decorations = [];
-
-  if(theme === "theme-spring"){
-    // wiosna: liście pastelowe, kwiatki
-    decorations = ["🍃","🌸","🌼"];
-  } 
-  // ❌ usuń spadające elementy w standardowym motywie
-  else if(theme === "theme-default"){
-    decorations = []; // brak dekoracji
-  }
-
-  for(let i=0; i<decorations.length; i++){
-    const elem = document.createElement("div");
-    elem.className = "decoration";
-    elem.style.fontSize = (Math.random()*30+20)+"px";
-    elem.style.left = Math.random()*100+"%";
-    elem.style.animationDuration = (15 + Math.random()*10) + "s"; // różne prędkości
-    elem.innerText = decorations[Math.floor(Math.random()*decorations.length)];
-    container.appendChild(elem);
-  }
-}
-// aktualizacja dekoracji przy zmianie motywu
-window.setTheme = function(theme){
-  document.body.className = theme;
-  localStorage.setItem("theme", theme);
-  window.loadDecorations(theme);
-}
-
-// załaduj dekoracje przy starcie
-window.addEventListener("DOMContentLoaded", ()=>{
-  const saved = localStorage.getItem("theme") || "theme-default";
-  document.body.className = saved;
-  const select = document.getElementById("themeSelect");
-  if(select) select.value = saved;
-  window.loadDecorations(saved);
-});
-
-// ==== DEKORACJE W TLE ====
-function initDecorations() {
-  const decorContainer = document.createElement('div');
-  decorContainer.className = 'theme-decoration';
-  document.body.appendChild(decorContainer);
-
-  // przykładowe dekoracje: liście/wiosenne kule
-  for (let i = 0; i < 20; i++) {
-    const div = document.createElement('div');
-    div.className = 'decoration-item';
-    div.style.width = div.style.height = `${20 + Math.random() * 40}px`;
-    div.style.left = `${Math.random() * 100}%`;
-    div.style.background = 'rgba(200,255,150,0.3)';
-    div.style.borderRadius = '50%';
-    div.style.animationDuration = `${20 + Math.random()*10}s`;
-    decorContainer.appendChild(div);
-  }
-}
-
-// usuwamy istniejące dekoracje przy zmianie motywu
-function clearDecorations() {
-  const dec = document.querySelectorAll('.decorations');
-  dec.forEach(d => d.remove());
-}
-
-// przykład w funkcji zmiany motywu
 function setTheme(theme) {
-  document.body.classList.remove('theme-default','theme-spring');
+  document.body.classList.remove("theme-default", "theme-spring");
   document.body.classList.add(theme);
-  clearDecorations(); // usuwa spadające elementy
 }
 
-// przykład: inicjalizacja
-initDecorations();
-setTheme('theme-standard');  // standardowy
-// setTheme('theme-spring');  // wiosenny, odkomentuj żeby sprawdzić
+// Kolory dla motywów
+const themeStyles = {
+  "theme-default": {
+    body: "linear-gradient(45deg, #0f172a, #0e0f21)",
+    card: "linear-gradient(45deg, #1e293b, #1d3254)",
+    text: "#f1f5f9",
+    button: "#72898f",
+    buttonHover: "#51808f",
+    navbar: "#0f172a",
+    navbarText: "#f1f5f9"
+  },
+  "theme-spring": {
+    body: "linear-gradient(45deg, #fef9e7, #d7f5d8)",
+    card: "linear-gradient(45deg, #fff9d9, #e3fbe1)",
+    text: "#3a5a2a",
+    button: "#cce5aa",
+    buttonHover: "#d9f3b3",
+    navbar: "#eaf7d6",
+    navbarText: "#3a5a2a"
+  }
+};
 
+// Aktualizacja kolorów po zmianie motywu
+document.getElementById("themeSelect").addEventListener("change", (e) => {
+  const theme = e.target.value;
+  setTheme(theme);
+  const style = themeStyles[theme];
+
+  document.body.style.background = style.body;
+  document.querySelectorAll(".card").forEach(c => c.style.background = style.card);
+  document.body.style.color = style.text;
+  document.querySelectorAll("button").forEach(b => {
+    b.style.background = style.button;
+    b.style.color = style.text;
+    b.onmouseover = () => b.style.background = style.buttonHover;
+    b.onmouseout = () => b.style.background = style.button;
+  });
+  document.querySelector(".navbar").style.background = style.navbar;
+  document.querySelector(".navbar").style.color = style.navbarText;
+  document.querySelectorAll(".navbar *").forEach(el => el.style.color = style.navbarText);
+});
+  
 async function init() {
 
   const { data } = await supabase.auth.getUser();
