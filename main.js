@@ -482,13 +482,14 @@ async function init() {
       penaltyBox.style.display = "none";
     }
   }
-
+  
+  loadTheme();
   await ensureRound(datePicker.value);
   updateNavbarDate();
   loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
-  loadTheme();
+  
 }
 
 init();
