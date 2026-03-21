@@ -1,32 +1,11 @@
 /* ============================= */
 /* 🎨 THEMES */
 
-body.theme-default {
+:root {
   --bg1: #0f172a;
   --bg2: #0e0f21;
   --card1: #1e293b;
   --card2: #1d3254;
-}
-
-body.theme-christmas {
-  --bg1: #0b1f14;
-  --bg2: #1f3d2b;
-  --card1: #14532d;
-  --card2: #166534;
-}
-
-body.theme-summer {
-  --bg1: #0ea5e9;
-  --bg2: #22c55e;
-  --card1: #38bdf8;
-  --card2: #4ade80;
-}
-
-body.theme-halloween {
-  --bg1: #1a0f0a;
-  --bg2: #3b1d0f;
-  --card1: #7c2d12;
-  --card2: #ea580c;
 }
 
 /* ============================= */
@@ -582,27 +561,21 @@ font-size:18px;
   color: #ef4444;
 }
 
-body.theme-christmas::before {
-  content: "❄️ ❄️ ❄️ ❄️ ❄️ ❄️";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  font-size: 20px;
-  opacity: 0.3;
-  pointer-events: none;
-  animation: snow 10s linear infinite;
+/* 🌙 STANDARD (taki jak miałeś) */
+body.theme-default {
+  --bg1: #0f172a;
+  --bg2: #0e0f21;
+  --card1: #1e293b;
+  --card2: #1d3254;
 }
 
-@keyframes snow {
-  0% { transform: translateY(-100px); }
-  100% { transform: translateY(100vh); }
+/* 🌱 WIOSNA (przykład) */
+body.theme-spring {
+  --bg1: #052e16;
+  --bg2: #14532d;
+  --card1: #166534;
+  --card2: #22c55e;
 }
-
-body.theme-halloween .card {
-  box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
-}
-
 body.theme-summer {
   color: #042f2e;
 }
