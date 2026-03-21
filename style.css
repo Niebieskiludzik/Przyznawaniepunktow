@@ -208,11 +208,11 @@ button:hover {
 }
 
 .navbar {
-  position: fixed;   /* zamiast sticky */
+  position: fixed;   /* zawsze przyklejony */
   top: 0;
-  left: 0;           /* przyklejony do lewej krawędzi */
-  width: 100%;       /* rozciągnięty na całą szerokość */
-  z-index: 1000;     /* nad innymi elementami */
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -221,6 +221,11 @@ button:hover {
   border-bottom: 1px solid #334155;
   font-size: 26px;
   font-weight: bold;
+}
+
+/* dodajemy padding-top dla całej strony równy wysokości navbaru */
+body {
+  padding-top: 76px; /* wysokość navbaru = padding + font-size + marginesy, dopasuj jeśli trzeba */
 }
 
 .nav-right button{
