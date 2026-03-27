@@ -398,6 +398,30 @@ await loadPlayers();
 
 }
 
+window.openPlayerProfile = function(playerId) {
+
+  const player = players.find(p => p.id === playerId);
+  if (!player) return;
+
+  const totalPoints = (player.rating + (player.manual_points || 0)).toFixed(3);
+
+  document.getElementById("profileData").innerHTML = `
+    <h2>
+      <span class="avatar">${player.avatar || "👤"}</span>
+      ${player.name}
+    </h2>
+
+    <p><b>Punkty chwały:</b> ${totalPoints}</p>
+    <p><b>Rating bazowy:</b> ${player.rating.toFixed(3)}</p>
+    <p><b>Bonusy/kary:</b> ${(player.manual_points || 0).toFixed(3)}</p>
+  `;
+
+  document.getElementById("playerProfile").classList.add("active");
+};
+
+window.closeProfile = function() {
+  document.getElementById("playerProfile").classList.remove("active");
+};
 
 async function loadBoiskoCounter(){
 
