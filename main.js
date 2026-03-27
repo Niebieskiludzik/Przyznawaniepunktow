@@ -130,7 +130,7 @@ function renderRanking() {
           i === 2 ? 'bronze' : ''
       }">
         <td>${medal || i + 1}</td>
-        <td onclick="openPlayerProfile(${p.id})" class="clickable">
+        <td onclick="showPlayer(${p.id})" style="cursor:pointer;">
         <span class="avatar">${p.avatar || "👤"}</span>
         ${p.name}
         </td>
@@ -398,29 +398,17 @@ await loadPlayers();
 
 }
 
-window.openPlayerProfile = function(playerId) {
-
-  const player = players.find(p => p.id === playerId);
+window.showPlayer = function(id) {
+  const player = players.find(p => p.id === id);
   if (!player) return;
 
-  const totalPoints = (player.rating + (player.manual_points || 0)).toFixed(3);
+  const points = (player.rating + (player.manual_points || 0)).toFixed(3);
 
-  document.getElementById("profileData").innerHTML = `
-    <h2>
-      <span class="avatar">${player.avatar || "👤"}</span>
-      ${player.name}
-    </h2>
-
-    <p><b>Punkty chwały:</b> ${totalPoints}</p>
-    <p><b>Rating bazowy:</b> ${player.rating.toFixed(3)}</p>
-    <p><b>Bonusy/kary:</b> ${(player.manual_points || 0).toFixed(3)}</p>
-  `;
-
-  document.getElementById("playerProfile").classList.add("active");
-};
-
-window.closeProfile = function() {
-  document.getElementById("playerProfile").classList.remove("active");
+  alert(
+    player.name + "\n\n" +
+    "Punkty: " + points + "\n\n" +
+    "Zmiana 30 dni: wkrótce"
+  );
 };
 
 async function loadBoiskoCounter(){
