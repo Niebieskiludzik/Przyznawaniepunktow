@@ -9,41 +9,49 @@
   <div class="navbar">
 
     <div class="nav-left">
-      🏆 Ranking Chwały
+    🏆 Ranking Chwały
     </div>
 
     <div class="nav-center">
-      <span id="navbarDate"></span>
+    <span id="navbarDate"></span>
     </div>
 
     <div class="nav-right">
 
-      <div id="loginBox">
-        <input id="email" placeholder="email">
-        <input id="password" type="password" placeholder="hasło">
-        <button id="loginBtn" onclick="login()">Zaloguj</button>
-        <div id="loginError"></div>
-      </div>
+    <div id="loginBox">
+    <input id="email" placeholder="email">
+    <input id="password" type="password" placeholder="hasło">
+    <button id="loginBtn" onclick="login()">Zaloguj</button>
+    <div id="loginError"></div>
+    </div>
 
-      <div id="userBox" style="display:none;">
-        <span id="userName"></span>
-        <button onclick="logout()">Wyloguj</button>
-      </div>
+    <div id="userBox" style="display:none;">
+    <span id="userName"></span>
+    <button onclick="logout()">Wyloguj</button>
+    </div>
 
     </div>
 
   </div>
-
   <div class="container">
     <h1>🏆 Tabela punktów chwały</h1>
 
-    <div class="boiskoButtonBox">
-      <a href="boisko.html" class="boiskoButton">
-        Umawianie na boisko  
-        <span id="boiskoCounter"></span>
-      </a>
-    </div>
+  <div class="center" id="logoutBox" style="display:none;">
+    <button onclick="logout()">Wyloguj</button>
+  </div>
 
+  <div class="boiskoButtonBox">
+
+  <a href="boisko.html" class="boiskoButton">
+
+  Umawianie na boisko  
+  <span id="boiskoCounter"></span>
+
+  </a>
+
+  </div>
+    
+    
     <!-- RANKING -->
     <div class="card">
       <h2>Ranking</h2>
@@ -51,45 +59,44 @@
       <table id="rankingTable"></table>
     </div>
 
-    <!-- INSTRUKCJA -->
     <div class="card">
-      <h2>📜 Instrukcja</h2>
+    <h2>📜 Instrukcja</h2>
 
-      <p><b>1. Logowanie</b><br>
-      Zaloguj się swoim kontem. Każdy gracz może oceniać tylko jako on.</p>
+    <p><b>1. Logowanie</b><br>
+    Zaloguj się swoim kontem. Każdy gracz może oceniać tylko jako on.</p>
 
-      <p><b>2. Wybór daty</b><br>
-      Wybierz datę rundy w polu <b>„Wybierz datę”</b>.  
-      Jeśli głosujesz za dzień wcześniejszy, wybierz w kalendarzu datę tego dnia.</p>
+    <p><b>2. Wybór daty</b><br>
+    Wybierz datę rundy w polu <b>„Wybierz datę”</b>.  
+    Jeśli głosujesz za dzień wcześniejszy, wybierz w kalendarzu datę tego dnia.</p>
 
-      <p><b>3. Ocenianie</b><br>
-      Wpisz punkty dla każdego gracza w skali od <b>1 do 10</b>.  
-      Można używać liczb <b>dziesiętnych</b>, np. <b>6</b>, <b>8.5</b> lub <b>7,8</b>.</p>
+    <p><b>3. Ocenianie</b><br>
+    Wpisz punkty dla każdego gracza w skali od <b>1 do 10</b>.  
+    Można używać liczb <b>dziesiętnych</b>, np. <b>6</b>, <b>8.5</b> lub <b>7,8</b>.</p>
 
-      <p><b>4. Nieobecność</b><br>
-      Jeśli gracz jest nieobecny, pozostaw jego pole oceny <b>puste</b>.</p>
+    <p><b>4. Nieobecność</b><br>
+    Jeśli gracz jest nieobecny, pozostaw jego pole oceny <b>puste</b>.</p>
 
-      <p><b>5. Zapis</b><br>
-      Po wpisaniu ocen kliknij <b>Zapisz oceny</b> <i>(głosów nie da się zmieniać!)</i>.</p>
+    <p><b>5. Zapis</b><br>
+    Po wpisaniu ocen kliknij <b>Zapisz oceny</b> <i>(głosów nie da się zmieniać!)</i>.</p>
 
-      <p><b>6. Ranking</b><br>
-      Ranking aktualizuje się automatycznie po zapisaniu ocen.</p>
+    <p><b>6. Ranking</b><br>
+    Ranking aktualizuje się automatycznie po zapisaniu ocen.</p>
 
-      <hr>
+    <hr>
 
-      <p>
-      📄 <a href="https://docs.google.com/document/d/11Wibtg98KUgT6J1Nrx6LTu8EGNZYKEsiITr8nMX6XK0/edit?usp=sharing" target="_blank" style="background-color: white;">
-      Regulamin systemu ocen
-      </a>
-      </p>
+    <p>
+    📄 <a href="https://docs.google.com/document/d/11Wibtg98KUgT6J1Nrx6LTu8EGNZYKEsiITr8nMX6XK0/edit?usp=sharing" target="_blank" style="background-color: white;">
+    Regulamin systemu ocen
+    </a>
+    </p>
 
-      <p style="opacity:0.7;font-size:14px;">
-      Ostatnia aktualizacja regulaminu: <b>21.02.2026</b>
-      </p>
+    <p style="opacity:0.7;font-size:14px;">
+    Ostatnia aktualizacja regulaminu: <b>21.02.2026</b>
+    </p>
 
     </div>
-
-    <!-- DATA -->
+    
+    <!-- DATA (wyśrodkowana) -->
     <div class="card center" id="dateCard">
       <h2>Wybierz datę</h2>
       <input type="date" id="datePicker" />
@@ -105,29 +112,26 @@
       <button id="addPlayerBtn">Dodaj</button>
     </div>
 
-    <!-- KARY / BONUSY -->
     <div class="card" id="adminPenaltyBox">
-      <h2>⚖️ Kary / Bonusy</h2>
+    <h2>⚖️ Kary / Bonusy</h2>
 
-      <select id="penaltyPlayer"></select>
+    <select id="penaltyPlayer"></select>
 
-      <div style="margin-top:10px;">
-        <input type="number" id="penaltyPoints" placeholder="Punkty do odjęcia">
-        <button onclick="givePenalty()">Odejmij</button>
-      </div>
-
-      <div style="margin-top:10px;">
-        <input type="number" id="bonusPoints" placeholder="Punkty bonusowe">
-        <button onclick="giveBonus()">Dodaj bonus</button>
-      </div>
+    <div style="margin-top:10px;">
+    <input type="number" id="penaltyPoints" placeholder="Punkty do odjęcia">
+    <button onclick="givePenalty()">Odejmij</button>
     </div>
 
+    <div style="margin-top:10px;">
+    <input type="number" id="bonusPoints" placeholder="Punkty bonusowe">
+    <button onclick="giveBonus()">Dodaj bonus</button>
+    </div>
+
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
-  <script src="api.js"></script>
-  <script src="voting.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
