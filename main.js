@@ -130,7 +130,7 @@ function renderRanking() {
           i === 2 ? 'bronze' : ''
       }">
         <td>${medal || i + 1}</td>
-        <td>
+        <td onclick="openPlayerProfile(${p.id})" class="clickable">
         <span class="avatar">${p.avatar || "👤"}</span>
         ${p.name}
         </td>
