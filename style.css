@@ -583,3 +583,10 @@ font-size:18px;
   font-size:22px;
   color:#f59e0b;
 }
+
+.profile-manual {
+  margin-top: 25px;
+  font-size: 20px;
+  opacity: 0.9;
+  color: #38bdf8; /* lekki niebieski */
+}
