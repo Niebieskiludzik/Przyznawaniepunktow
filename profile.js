@@ -59,6 +59,8 @@ if (count === 0) {
 }
 
 const manualPoints = player.manual_points || 0;
+
+const manualClass = manualPoints < 0 ? "minus" : "";
   
 document.getElementById("profileCard").innerHTML = `
   
@@ -82,7 +84,7 @@ document.getElementById("profileCard").innerHTML = `
     🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
   </div>
 
-  <div class="profile-manual">
+  <div class="profile-manual ${manualClass}">
     ⚖️ Kary i bonusy suma:
     <b>${manualPoints.toFixed(3).replace(".", ",")}</b>
   </div>
