@@ -590,3 +590,7 @@ font-size:18px;
   opacity: 0.9;
   color: #38bdf8; /* lekki niebieski */
 }
+
+.profile-manual.minus {
+  color: #ef4444; /* czerwony */
+}
