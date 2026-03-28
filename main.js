@@ -130,9 +130,9 @@ function renderRanking() {
           i === 2 ? 'bronze' : ''
       }">
         <td>${medal || i + 1}</td>
-        <td onclick="showProfile(${p.id})" style="cursor:pointer;">
-          <span class="avatar">${p.avatar || "👤"}</span>
-          ${p.name}
+        <td onclick="goToProfile('${p.id}')" style="cursor:pointer;">
+        <span class="avatar">${p.avatar || "👤"}</span>
+        ${p.name}
         </td>
         <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
         <td class="${diff >= 0 ? 'positive' : 'negative'}">
@@ -143,6 +143,10 @@ function renderRanking() {
   });
 
 }
+
+window.goToProfile = function(playerId){
+  window.location.href = `profile.html?id=${playerId}`;
+};
 
 async function renderPanels() {
 
@@ -397,40 +401,7 @@ document.getElementById("bonusPoints").value="";
 await loadPlayers();
 
 }
-  
-window.showProfile = function(playerId){
 
-  const player = players.find(p => p.id === playerId);
-  if(!player) return;
-
-  const totalPoints = (player.rating + (player.manual_points || 0));
-  const diff = totalPoints - (yesterdayRatings[player.id] || totalPoints);
-
-  const html = `
-    <div class="profile-avatar">${player.avatar || "👤"}</div>
-    <h2>${player.name}</h2>
-
-    <p><b>Punkty chwały:</b><br>
-    ${totalPoints.toFixed(3).replace(".", ",")}
-    </p>
-
-    <p>
-    Zmiana: 
-    <span class="${diff >= 0 ? 'positive' : 'negative'}">
-      ${diff >= 0 ? '+' : ''}${diff.toFixed(2)}
-    </span>
-    </p>
-
-    <p>Rola: ${player.role}</p>
-  `;
-
-  document.getElementById("profileContent").innerHTML = html;
-  document.getElementById("profileModal").style.display = "flex";
-};
-
-window.closeProfile = function(){
-  document.getElementById("profileModal").style.display = "none";
-};
 
 async function loadBoiskoCounter(){
 
