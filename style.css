@@ -594,3 +594,9 @@ font-size:18px;
 .profile-manual.minus {
   color: #ef4444; /* czerwony */
 }
+
+.profile-history {
+  margin-top: 15px;
+  font-size: 20px;
+  opacity: 0.85;
+}
