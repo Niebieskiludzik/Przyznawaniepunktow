@@ -79,7 +79,7 @@ document.getElementById("profileCard").innerHTML = `
   </div>
 
   <div class="profile-max">
-    🔥 Najwyższa ocena: ${max.toFixed(2).replace(".", ",")}
+    🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
   </div>
 
   <div class="profile-manual">
