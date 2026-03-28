@@ -58,6 +58,24 @@ if (count === 0) {
   max = 0;
 }
 
+const { data: rounds } = await supabase
+  .from("rounds")
+  .select("points, created_at")
+  .eq("player_id", playerId)
+  .order("created_at", { ascending: true });
+
+let points30days = 0;
+
+if (rounds) {
+  const now = new Date();
+  const pastDate = new Date();
+  pastDate.setDate(now.getDate() - 30);
+
+  points30days = rounds
+    .filter(r => new Date(r.created_at) <= pastDate)
+    .reduce((sum, r) => sum + r.points, 0);
+}
+
 const manualPoints = player.manual_points || 0;
 
 const manualClass = manualPoints < 0 ? "minus" : "";
@@ -74,6 +92,11 @@ document.getElementById("profileCard").innerHTML = `
     Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
   </div>
 
+  <div class="profile-history">
+    📅 30 dni temu:
+    <b>${points30days.toFixed(3).replace(".", ",")}</b>
+  </div>
+  
   <div class="profile-stats">
     ⭐ Średnia: ${avg.toFixed(2).replace(".", ",")}
     <span class="divider">|</span>
