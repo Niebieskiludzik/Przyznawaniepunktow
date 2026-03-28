@@ -130,9 +130,9 @@ function renderRanking() {
           i === 2 ? 'bronze' : ''
       }">
         <td>${medal || i + 1}</td>
-        <td onclick="showPlayer(${p.id})" style="cursor:pointer;">
-        <span class="avatar">${p.avatar || "👤"}</span>
-        ${p.name}
+        <td onclick="showProfile(${p.id})" style="cursor:pointer;">
+          <span class="avatar">${p.avatar || "👤"}</span>
+          ${p.name}
         </td>
         <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
         <td class="${diff >= 0 ? 'positive' : 'negative'}">
@@ -398,18 +398,6 @@ await loadPlayers();
 
 }
 
-window.showPlayer = function(id) {
-  const player = players.find(p => p.id === id);
-  if (!player) return;
-
-  const points = (player.rating + (player.manual_points || 0)).toFixed(3);
-
-  alert(
-    player.name + "\n\n" +
-    "Punkty: " + points + "\n\n" +
-    "Zmiana 30 dni: wkrótce"
-  );
-};
 
 async function loadBoiskoCounter(){
 
