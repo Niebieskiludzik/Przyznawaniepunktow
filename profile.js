@@ -34,20 +34,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   const totalPoints = (player.rating + (player.manual_points || 0));
 
   // 🎨 render
-  document.getElementById("profileCard").innerHTML = `
-    <div class="avatar" style="font-size:60px;">
-      ${player.avatar || "👤"}
-    </div>
+  const { data: votes } = await supabase
+  .from("votes")
+  .select("score")
+  .eq("player_id", playerId);
 
-    <h1>${player.name}</h1>
+// 📊 statystyki
+let avg = 0;
+let count = 0;
+let max = 0;
 
-    <h2>🏆 Punkty chwały</h2>
-    <div style="font-size:40px; font-weight:bold;">
-      ${totalPoints.toFixed(3).replace(".", ",")}
-    </div>
+if (votes && votes.length > 0) {
+  count = votes.length;
 
-    <p style="margin-top:20px;">
-      Rola: <b>${player.role}</b>
-    </p>
-  `;
+  const sum = votes.reduce((a, b) => a + b.score, 0);
+  avg = sum / count;
+
+  max = Math.max(...votes.map(v => v.score));
+}
+
+document.getElementById("profileCard").innerHTML = `
+  
+  <div class="profile-avatar-circle">
+    ${player.avatar || "👤"}
+  </div>
+
+  <h1 class="profile-name">${player.name}</h1>
+
+  <div class="profile-points">
+    Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
+  </div>
+
+  <div class="profile-stats">
+    ⭐ Średnia: ${avg.toFixed(2).replace(".", ",")}
+    <span class="divider">|</span>
+    ${count} ocen
+  </div>
+
+  <div class="profile-max">
+    🔥 Najwyższa ocena: ${max.toFixed(2).replace(".", ",")}
+  </div>
+
+`;
 });
