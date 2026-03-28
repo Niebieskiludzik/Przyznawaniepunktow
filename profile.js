@@ -53,6 +53,11 @@ if (votes && votes.length > 0) {
   max = Math.max(...votes.map(v => v.score));
 }
 
+if (count === 0) {
+  avg = 0;
+  max = 0;
+}
+
 document.getElementById("profileCard").innerHTML = `
   
   <div class="profile-avatar-circle">
