@@ -397,7 +397,40 @@ document.getElementById("bonusPoints").value="";
 await loadPlayers();
 
 }
+  
+window.showProfile = function(playerId){
 
+  const player = players.find(p => p.id === playerId);
+  if(!player) return;
+
+  const totalPoints = (player.rating + (player.manual_points || 0));
+  const diff = totalPoints - (yesterdayRatings[player.id] || totalPoints);
+
+  const html = `
+    <div class="profile-avatar">${player.avatar || "👤"}</div>
+    <h2>${player.name}</h2>
+
+    <p><b>Punkty chwały:</b><br>
+    ${totalPoints.toFixed(3).replace(".", ",")}
+    </p>
+
+    <p>
+    Zmiana: 
+    <span class="${diff >= 0 ? 'positive' : 'negative'}">
+      ${diff >= 0 ? '+' : ''}${diff.toFixed(2)}
+    </span>
+    </p>
+
+    <p>Rola: ${player.role}</p>
+  `;
+
+  document.getElementById("profileContent").innerHTML = html;
+  document.getElementById("profileModal").style.display = "flex";
+};
+
+window.closeProfile = function(){
+  document.getElementById("profileModal").style.display = "none";
+};
 
 async function loadBoiskoCounter(){
 
