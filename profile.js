@@ -58,6 +58,8 @@ if (count === 0) {
   max = 0;
 }
 
+const manualPoints = player.manual_points || 0;
+  
 document.getElementById("profileCard").innerHTML = `
   
   <div class="profile-avatar-circle">
@@ -80,5 +82,10 @@ document.getElementById("profileCard").innerHTML = `
     🔥 Najwyższa ocena: ${max.toFixed(2).replace(".", ",")}
   </div>
 
+  <div class="profile-manual">
+    ⚖️ Kary i bonusy suma:
+    <b>${manualPoints.toFixed(3).replace(".", ",")}</b>
+  </div>
+  
 `;
 });
