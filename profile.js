@@ -97,9 +97,8 @@ const manualClass = manualPoints < 0 ? "minus" : "";
 
 const diff = totalPoints - last30days;
   
-const diffClass = diff >= 0 ? "plus" : "minus";
-
 const diffClass = last30days >= 0 ? "plus" : "minus";
+const totalDiffClass = totalPoints >= 0 ? "plus" : "minus";
   
 document.getElementById("profileCard").innerHTML = `
   
