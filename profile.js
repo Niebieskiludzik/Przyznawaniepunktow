@@ -87,17 +87,28 @@ if (votesHistory && votesHistory.length > 0) {
 
 const { data: givenVotes } = await supabase
   .from("votes")
-  .select("score")
+  .select("score, player_id")
   .eq("voter_name", player.name);
 
 let givenCount = 0;
 let givenAvg = 0;
 
-if (givenVotes && givenVotes.length > 0) {
-  givenCount = givenVotes.length;
+let selfVotes = 0;
+let selfSum = 0;
 
-  const sum = givenVotes.reduce((a, b) => a + b.score, 0);
-  givenAvg = sum / givenCount;
+if (givenVotes && givenVotes.length > 0) {
+  const filtered = givenVotes.filter(v => v.player_id !== playerId);
+  const self = givenVotes.filter(v => v.player_id === playerId);
+
+  givenCount = filtered.length;
+  givenAvg = filtered.length
+    ? filtered.reduce((a, b) => a + b.score, 0) / filtered.length
+    : 0;
+
+  selfVotes = self.length;
+  selfSum = self.length
+    ? self.reduce((a, b) => a + b.score, 0) / self.length
+    : 0;
 }
 
 const { data: roundsPlayed } = await supabase
@@ -199,6 +210,10 @@ document.getElementById("profileCard").innerHTML = `
     🗳 Oddane głosy średnia: ${givenAvg.toFixed(2).replace(".", ",")}
     <span class="divider">|</span>
     ${givenCount} ocen
+
+    <div class="sub-info">
+      na siebie: ${selfSum.toFixed(2).replace(".", ",")} (${selfVotes})
+     </div>
   </div>
 
   <div class="profile-extra days">
