@@ -5,6 +5,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   const monthPicker = document.getElementById("monthPicker");
   const rankingList = document.getElementById("rankingList");
 
+
+
+
+    // 📌 pobierz ID z URL
+  const params = new URLSearchParams(window.location.search);
+  const playerId = params.get("id");
+
+  if (!playerId) return;
+
+  // 📅 navbar data (jak w main.js)
+  const today = new Date().toLocaleDateString("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  document.getElementById("navbarDate").innerText = "📅 " + today;
+
+  // 📥 pobierz gracza
+  const { data: player, error } = await supabase
+    .from("players")
+    .select("*")
+    .eq("id", playerId)
+    .single();
+
+  if (error || !player) {
+    document.getElementById("profileCard").innerHTML = "❌ Nie znaleziono gracza";
+    return;
+  }
+
+
+
+
+
+
+  
   // 📅 domyślny miesiąc = obecny
   const now = new Date();
   monthPicker.value = now.toISOString().slice(0, 7);
