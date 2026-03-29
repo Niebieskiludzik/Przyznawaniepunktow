@@ -82,6 +82,10 @@ if (votesHistory) {
 const manualPoints = player.manual_points || 0;
 
 const manualClass = manualPoints < 0 ? "minus" : "";
+
+const diff = totalPoints - points30days;
+  
+const diffClass = diff >= 0 ? "plus" : "minus";
   
 document.getElementById("profileCard").innerHTML = `
   
