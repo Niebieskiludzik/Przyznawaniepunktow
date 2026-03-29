@@ -83,7 +83,7 @@ const manualPoints = player.manual_points || 0;
 
 const manualClass = manualPoints < 0 ? "minus" : "";
 
-const diff = totalPoints - points30days;
+const diff = totalPoints - last30days;
   
 const diffClass = diff >= 0 ? "plus" : "minus";
   
@@ -100,7 +100,7 @@ document.getElementById("profileCard").innerHTML = `
   </div>
 
   <div class="profile-history">
-    📅 Ostatnie 30 dni:
+    📅 Przez ostatnie 30 dni:
     <b>${last30days.toFixed(1).replace(".", ",")}</b>
   </div>
   
