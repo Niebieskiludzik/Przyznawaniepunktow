@@ -58,14 +58,9 @@ if (count === 0) {
   max = 0;
 }
 
-const { data: votesHistory } = await supabase
+const { data: votesHistory, error: votesError } = await supabase
   .from("votes")
-  .select(`
-    score,
-    rounds (
-      round_date
-    )
-  `)
+  .select(`score,rounds (round_date)`)
   .eq("player_id", playerId);
   
 console.log("VOTES:", votesHistory);
