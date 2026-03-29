@@ -622,3 +622,30 @@ font-size:18px;
 .profile-extra.rank {
   color: #f59e0b; /* złoty */
 }
+
+.profile-history-list {
+  margin-top: 15px;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  margin-top: 4px;
+  background: #1f2937;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.history-date {
+  color: #9ca3af;
+}
+
+.history-name {
+  color: #e5e7eb;
+}
+
+.history-score {
+  font-weight: bold;
+  color: #22c55e;
+}
