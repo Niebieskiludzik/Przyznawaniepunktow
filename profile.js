@@ -69,6 +69,18 @@ console.log("ERROR:", votesError);
 
 let last30days = 0;
 
+let points30daysAgo = 0;
+
+if (votesHistory && votesHistory.length > 0) {
+  const now = new Date();
+  const pastDate = new Date();
+  pastDate.setDate(now.getDate() - 30);
+
+  points30daysAgo = votesHistory
+    .filter(v => new Date(v.created_at) <= pastDate)
+    .reduce((sum, v) => sum + v.score, 0);
+}
+
 if (votesHistory) {
   const now = new Date();
   const pastDate = new Date();
@@ -86,6 +98,8 @@ const manualClass = manualPoints < 0 ? "minus" : "";
 const diff = totalPoints - last30days;
   
 const diffClass = diff >= 0 ? "plus" : "minus";
+
+const diffClass = last30days >= 0 ? "plus" : "minus";
   
 document.getElementById("profileCard").innerHTML = `
   
@@ -101,7 +115,7 @@ document.getElementById("profileCard").innerHTML = `
 
   <div class="profile-history">
   📅 30 dni temu:
-  <b>${last30days.toFixed(3).replace(".", ",")}</b>r
+  <b>${last30days.toFixed(1).replace(".", ",")}</b>
   </div>
 
   <div class="profile-history">
