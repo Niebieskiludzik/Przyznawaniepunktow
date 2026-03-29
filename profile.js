@@ -167,6 +167,53 @@ const historyHTML = fullHistory.map(v => `
   </div>
 `).join("");
 
+const { data: recentVotes } = await supabase
+  .from("votes")
+  .select(`
+    score,
+    voter_name,
+    rounds (
+      round_date
+    )
+  `)
+  .eq("player_id", playerId);
+
+let topVotes = [];
+let worstVotes = [];
+
+if (recentVotes && recentVotes.length > 0) {
+  const now = new Date();
+  const pastDate = new Date();
+  pastDate.setDate(now.getDate() - 14);
+
+  const filtered = recentVotes.filter(v =>
+    new Date(v.rounds.round_date) >= pastDate
+  );
+
+  // TOP 3
+  topVotes = [...filtered]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  // NAJGORSZE 3
+  worstVotes = [...filtered]
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3);
+}
+
+const renderRow = (v) => `
+  <div class="history-row">
+    <span class="history-date">${v.rounds.round_date}</span>
+    <span class="history-name">${v.voter_name}</span>
+    <span class="history-score ${v.score >= 0 ? 'plus' : 'minus'}">
+      ${v.score}
+    </span>
+  </div>
+`;
+
+const topHTML = topVotes.map(renderRow).join("");
+const worstHTML = worstVotes.map(renderRow).join("");
+
 const uniqueRounds = new Set(roundsPlayed?.map(v => v.round_id));
 const daysPlayed = uniqueRounds.size;
   
@@ -226,14 +273,26 @@ document.getElementById("profileCard").innerHTML = `
 
   <hr>
 
-  <div class="profile-history-list">
-    ${historyHTML}
+  <hr>
+
+  <div class="profile-history-title">
+    📊 Najwyższe i najniższe oceny (14 dni)
   </div>
 
-  <div class="profile-manual ${manualClass}">
-    ⚖️ Kary i bonusy suma:
-    <b>${manualPoints.toFixed(3).replace(".", ",")}</b>
+  <div class="history-block">
+    <div class="history-subtitle">🔥 Najwyższe oceny</div>
+    ${topHTML}
   </div>
+
+  <div class="history-block">
+    <div class="history-subtitle">❄️ Najniższe oceny</div>
+    ${worstHTML}
+  </div>
+
+    <div class="profile-manual ${manualClass}">
+      ⚖️ Kary i bonusy suma:
+      <b>${manualPoints.toFixed(3).replace(".", ",")}</b>
+    </div>
   
 `;
 });
