@@ -79,16 +79,6 @@ if (votesHistory) {
     .reduce((sum, v) => sum + v.score, 0);
 }
 
-if (rounds) {
-  const now = new Date();
-  const pastDate = new Date();
-  pastDate.setDate(now.getDate() - 30);
-
-  points30days = rounds
-    .filter(r => new Date(r.created_at) <= pastDate)
-    .reduce((sum, r) => sum + r.points, 0);
-}
-
 const manualPoints = player.manual_points || 0;
 
 const manualClass = manualPoints < 0 ? "minus" : "";
