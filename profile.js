@@ -171,12 +171,14 @@ const { data: recentVotes } = await supabase
   .from("votes")
   .select(`
     score,
-    voter_name,
+    players (
+      name
+    ),
     rounds (
       round_date
     )
   `)
-  .eq("player_id", playerId);
+  .eq("voter_name", player.name);
 
 let topVotes = [];
 let worstVotes = [];
@@ -204,13 +206,13 @@ if (recentVotes && recentVotes.length > 0) {
 const renderRow = (v) => `
   <div class="history-row">
     <span class="history-date">${v.rounds.round_date}</span>
-    <span class="history-name">${v.voter_name}</span>
+    <span class="history-name">${v.players.name}</span>
     <span class="history-score ${v.score >= 0 ? 'plus' : 'minus'}">
       ${v.score}
     </span>
   </div>
 `;
-
+  
 const topHTML = topVotes.map(renderRow).join("");
 const worstHTML = worstVotes.map(renderRow).join("");
 
@@ -259,7 +261,9 @@ document.getElementById("profileCard").innerHTML = `
     ${givenCount} ocen
 
     <div class="sub-info">
-      na siebie: ${selfSum.toFixed(2).replace(".", ",")} (${selfVotes})
+      Na siebie: ${selfSum.toFixed(2).replace(".", ",")}
+      <span class="divider">|</span> 
+      ${selfVotes} ocen
      </div>
   </div>
 
@@ -270,8 +274,6 @@ document.getElementById("profileCard").innerHTML = `
   <div class="profile-extra rank">
     🏆 Ranking średniej: <b>#${avgRank}</b>
   </div>
-
-  <hr>
 
   <hr>
 
