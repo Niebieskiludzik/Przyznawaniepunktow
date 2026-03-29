@@ -604,3 +604,21 @@ font-size:18px;
 .profile-diff.plus { color: #22c55e; }
 
 .profile-diff.minus { color: #ef4444; }
+
+.profile-extra {
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+/* kolory */
+.profile-extra.votes {
+  color: #3b82f6; /* niebieski */
+}
+
+.profile-extra.days {
+  color: #10b981; /* zielony */
+}
+
+.profile-extra.rank {
+  color: #f59e0b; /* złoty */
+}
