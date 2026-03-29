@@ -67,15 +67,15 @@ const { data: votesHistory, error: votesError } = await supabase
 console.log("VOTES:", votesHistory);
 console.log("ERROR:", votesError);
 
-let points30days = 0;
+let last30days = 0;
 
 if (votesHistory) {
   const now = new Date();
   const pastDate = new Date();
   pastDate.setDate(now.getDate() - 30);
 
-  points30days = votesHistory
-    .filter(v => new Date(v.created_at) <= pastDate)
+  last30days = votesHistory
+    .filter(v => new Date(v.created_at) >= pastDate)
     .reduce((sum, v) => sum + v.score, 0);
 }
 
