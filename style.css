@@ -649,3 +649,9 @@ font-size:18px;
   font-weight: bold;
   color: #22c55e;
 }
+
+.sub-info {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 3px;
+}
