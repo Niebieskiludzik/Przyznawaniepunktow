@@ -150,9 +150,9 @@ const { data: fullHistory } = await supabase
 
 const historyHTML = fullHistory.map(v => `
   <div class="history-row">
-    <span>${v.rounds.round_date}</span>
-    <span>${v.voter_name}</span>
-    <b>${v.score}</b>
+    <span class="history-date">${v.rounds.round_date}</span>
+    <span class="history-name">${v.voter_name}</span>
+    <span class="history-score">${v.score}</span>
   </div>
 `).join("");
 
