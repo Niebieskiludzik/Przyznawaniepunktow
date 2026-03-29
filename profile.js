@@ -58,14 +58,27 @@ if (count === 0) {
   max = 0;
 }
 
-const { data: rounds, error: roundsError } = await supabase
-  .from("rounds")
-  .select("*")
-  .eq("player_id", playerId);
+const { data: votesHistory, error: votesError } = await supabase
+  .from("votes")
+  .select("score, created_at")
+  .eq("player_id", playerId)
+  .order("created_at", { ascending: true });
 
-console.log("ROUNDS:", rounds);
-console.log("ERROR:", roundsError);
-  
+console.log("VOTES:", votesHistory);
+console.log("ERROR:", votesError);
+
+let points30days = 0;
+
+if (votesHistory) {
+  const now = new Date();
+  const pastDate = new Date();
+  pastDate.setDate(now.getDate() - 30);
+
+  points30days = votesHistory
+    .filter(v => new Date(v.created_at) <= pastDate)
+    .reduce((sum, v) => sum + v.score, 0);
+}
+
 let points30days = 0;
 
 if (rounds) {
