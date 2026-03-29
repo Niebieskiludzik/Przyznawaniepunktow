@@ -58,12 +58,13 @@ if (count === 0) {
   max = 0;
 }
 
-const { data: rounds, error } = await supabase
+const { data: rounds, error: roundsError } = await supabase
   .from("rounds")
-  .select("*");
+  .select("*")
+  .eq("player_id", playerId);
 
 console.log("ROUNDS:", rounds);
-console.log("ERROR:", error);
+console.log("ERROR:", roundsError);
   
 let points30days = 0;
 
