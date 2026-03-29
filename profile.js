@@ -58,27 +58,112 @@ if (count === 0) {
   max = 0;
 }
 
-const { data: votesHistory, error: votesError } = await supabase
+const { data: votesHistory } = await supabase
   .from("votes")
-  .select("score, created_at")
-  .eq("player_id", playerId)
-  .order("created_at", { ascending: true });
-
+  .select(`
+    score,
+    rounds (
+      round_date
+    )
+  `)
+  .eq("player_id", playerId);
+  
 console.log("VOTES:", votesHistory);
 console.log("ERROR:", votesError);
 
 let last30days = 0;
+let points30daysAgo = 0;
 
-if (votesHistory) {
+if (votesHistory && votesHistory.length > 0) {
   const now = new Date();
   const pastDate = new Date();
   pastDate.setDate(now.getDate() - 30);
 
-  last30days = votesHistory
-    .filter(v => new Date(v.created_at) >= pastDate)
-    .reduce((sum, v) => sum + v.score, 0);
+  votesHistory.forEach(v => {
+    const roundDate = new Date(v.rounds.round_date);
+
+    if (roundDate >= pastDate) {
+      last30days += v.score;
+    } else {
+      points30daysAgo += v.score;
+    }
+  });
 }
 
+const { data: givenVotes } = await supabase
+  .from("votes")
+  .select("score")
+  .eq("voter_name", player.name);
+
+let givenCount = 0;
+let givenAvg = 0;
+
+if (givenVotes && givenVotes.length > 0) {
+  givenCount = givenVotes.length;
+
+  const sum = givenVotes.reduce((a, b) => a + b.score, 0);
+  givenAvg = sum / givenCount;
+}
+
+const { data: roundsPlayed } = await supabase
+  .from("votes")
+  .select("round_id")
+  .eq("player_id", playerId);
+
+
+
+  
+const { data: allVotes } = await supabase
+  .from("votes")
+  .select("player_id, score");
+
+const avgMap = {};
+
+allVotes.forEach(v => {
+  if (!avgMap[v.player_id]) {
+    avgMap[v.player_id] = { sum: 0, count: 0 };
+  }
+  avgMap[v.player_id].sum += v.score;
+  avgMap[v.player_id].count += 1;
+});
+
+// średnie
+const averages = Object.entries(avgMap).map(([id, val]) => ({
+  player_id: id,
+  avg: val.sum / val.count
+}));
+
+// sortowanie
+averages.sort((a, b) => b.avg - a.avg);
+
+// pozycja
+const avgRank = averages.findIndex(a => a.player_id == playerId) + 1;
+
+
+
+const { data: fullHistory } = await supabase
+  .from("votes")
+  .select(`
+    score,
+    voter_name,
+    rounds (
+      round_date
+    )
+  `)
+  .eq("player_id", playerId)
+  .order("rounds(round_date)", { ascending: false });
+
+const historyHTML = fullHistory.map(v => `
+  <div class="history-row">
+    <span>${v.rounds.round_date}</span>
+    <span>${v.voter_name}</span>
+    <b>${v.score}</b>
+  </div>
+`).join("");
+
+const uniqueRounds = new Set(roundsPlayed?.map(v => v.round_id));
+const daysPlayed = uniqueRounds.size;
+  
 const manualPoints = player.manual_points || 0;
 
 const manualClass = manualPoints < 0 ? "minus" : "";
@@ -113,6 +198,24 @@ document.getElementById("profileCard").innerHTML = `
 
   <div class="profile-max">
     🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
+  </div>
+
+  <div class="profile-extra">
+    🗳 Oddane głosy: <b>${givenCount}</b> (średnia: ${givenAvg.toFixed(2).replace(".", ",")})
+  </div>
+
+  <div class="profile-extra">
+    📅 Dni aktywności: <b>${daysPlayed}</b>
+  </div>
+
+  <div class="profile-extra">
+    🏆 Ranking średniej: <b>#${avgRank}</b>
+  </div>
+
+  <hr>
+
+  <div class="profile-history-list">
+    ${historyHTML}
   </div>
 
   <div class="profile-manual ${manualClass}">
