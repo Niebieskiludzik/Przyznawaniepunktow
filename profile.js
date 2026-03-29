@@ -101,7 +101,7 @@ document.getElementById("profileCard").innerHTML = `
 
   <div class="profile-history">
     📅 Ostatnie 30 dni:
-    <b>${last30days.toFixed(3).replace(".", ",")}</b>
+    <b>${last30days.toFixed(1).replace(".", ",")}</b>
   </div>
   
   <div class="profile-stats">
