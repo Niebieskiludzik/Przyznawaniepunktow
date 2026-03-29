@@ -79,8 +79,6 @@ if (votesHistory) {
     .reduce((sum, v) => sum + v.score, 0);
 }
 
-let points30days = 0;
-
 if (rounds) {
   const now = new Date();
   const pastDate = new Date();
