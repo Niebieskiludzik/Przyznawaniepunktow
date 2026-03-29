@@ -195,15 +195,17 @@ document.getElementById("profileCard").innerHTML = `
     🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
   </div>
 
-  <div class="profile-extra">
-    🗳 Oddane głosy: <b>${givenCount}</b> (średnia: ${givenAvg.toFixed(2).replace(".", ",")})
+  <div class="profile-extra votes">
+    🗳 Oddane głosy średnia: ${givenAvg.toFixed(2).replace(".", ",")}
+    <span class="divider">|</span>
+    ${givenCount} ocen
   </div>
 
-  <div class="profile-extra">
+  <div class="profile-extra days">
     📅 Dni aktywności: <b>${daysPlayed}</b>
   </div>
 
-  <div class="profile-extra">
+  <div class="profile-extra rank">
     🏆 Ranking średniej: <b>#${avgRank}</b>
   </div>
 
