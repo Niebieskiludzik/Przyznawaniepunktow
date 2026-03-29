@@ -100,6 +100,11 @@ document.getElementById("profileCard").innerHTML = `
   </div>
 
   <div class="profile-history">
+  📅 30 dni temu:
+  <b>${last30days.toFixed(3).replace(".", ",")}</b>r
+  </div>
+
+  <div class="profile-history">
     📅 Przez ostatnie 30 dni:
     <b>${last30days.toFixed(1).replace(".", ",")}</b>
   </div>
