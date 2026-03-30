@@ -875,3 +875,11 @@ h1 {
 .profile-rank {
   font-size: 22px !important;
 }
+
+#profileCard {
+  text-align: center;
+}
+
+#profileCard b {
+  font-size: 1.2em;
+}
