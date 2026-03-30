@@ -568,7 +568,7 @@ font-size:18px;
 }
 
 .profile-stats {
-  margin-top:20px;
+  margin-top:15px;
   font-size:22px;
   opacity:0.9;
 }
@@ -579,13 +579,13 @@ font-size:18px;
 }
 
 .profile-max {
-  margin-top:20px;
-  font-size:22px;
+  margin-top:15px;
+  font-size:20px;
   color:#f59e0b;
 }
 
 .profile-manual {
-  margin-top: 25px;
+  margin-top: 15px;
   font-size: 20px;
   opacity: 0.9;
   color: #38bdf8; /* lekki niebieski */
@@ -596,8 +596,9 @@ font-size:18px;
 }
 
 .profile-history {
-  margin-top: 15px;
-  font-size: 20px;
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 500;
   opacity: 0.85;
 }
 
@@ -855,4 +856,8 @@ h1 {
   gap: 15px;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+.profile-rank {
+  font-size: 22px !important;
 }
