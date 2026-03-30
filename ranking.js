@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .sort((a, b) => b.points - a.points);
 
     if (ranking.length === 0) {
-      rankingList.innerHTML = "Brak danych";
+      rankingList.innerHTML = `<div style="text-align:center;font-size:24px;margin-top:30px;">Brak danych</div>`;
       return;
     }
 
