@@ -1,20 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
+  initAuthUI();
+
   const supabase = window.supabaseClient;
 
   const monthPicker = document.getElementById("monthPicker");
   const rankingList = document.getElementById("rankingList");
 
-
-
-
-    // 📌 pobierz ID z URL
-  const params = new URLSearchParams(window.location.search);
-  const playerId = params.get("id");
-
-  if (!playerId) return;
-
-  // 📅 navbar data (jak w main.js)
+  // 📅 navbar data
   const today = new Date().toLocaleDateString("pl-PL", {
     day: "numeric",
     month: "long",
@@ -23,25 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("navbarDate").innerText = "📅 " + today;
 
-  // 📥 pobierz gracza
-  const { data: player, error } = await supabase
-    .from("players")
-    .select("*")
-    .eq("id", playerId)
-    .single();
-
-  if (error || !player) {
-    document.getElementById("profileCard").innerHTML = "❌ Nie znaleziono gracza";
-    return;
-  }
-
-
-
-
-
-
-  
-  // 📅 domyślny miesiąc = obecny
+  // 📅 domyślny miesiąc
   const now = new Date();
   monthPicker.value = now.toISOString().slice(0, 7);
 
@@ -49,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadRanking();
 
-  // 🔥 funkcja punktów
   function calculateDailyPoints(avg) {
     if (avg >= 5) {
       return (avg - 5) * (220 / 5);
@@ -64,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const [year, month] = monthPicker.value.split("-").map(Number);
 
-    // 📥 votes + round_date
     const { data: votes, error } = await supabase
       .from("votes")
       .select(`
@@ -77,11 +50,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (error) {
       console.error(error);
-      rankingList.innerHTML = "❌ Błąd pobierania danych";
+      rankingList.innerHTML = "❌ Błąd";
       return;
     }
 
-    // 📊 grupowanie
     const map = {};
 
     votes.forEach(v => {
@@ -105,7 +77,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // 📈 liczenie punktów
     const playerPoints = {};
 
     Object.values(map).forEach(entry => {
@@ -122,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       playerPoints[entry.player_id] += pts;
     });
 
-    // 📥 gracze
     const { data: players } = await supabase
       .from("players")
       .select("id, name");
@@ -132,7 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       playerMap[p.id] = p.name;
     });
 
-    // 🏆 ranking
     const ranking = Object.entries(playerPoints)
       .map(([player_id, points]) => ({
         player_id,
@@ -140,9 +109,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }))
       .sort((a, b) => b.points - a.points);
 
-    // 🎨 render
     if (ranking.length === 0) {
-      rankingList.innerHTML = "Brak danych w tym miesiącu";
+      rankingList.innerHTML = "Brak danych";
       return;
     }
 
@@ -157,7 +125,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 
-// 🔗 profil
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
