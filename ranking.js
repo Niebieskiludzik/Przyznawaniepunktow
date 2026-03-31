@@ -124,8 +124,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     `).join("");
   }
 
-});
-
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
