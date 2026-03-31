@@ -231,7 +231,7 @@ const diffClass = last30days >= 0 ? "plus" : "minus";
 const last30 = last30days;
 
 // 🗳 oddane głosy (na innych)
-const { data: givenVotes } = await supabase
+const { data: givenVotesData } = await supabase
   .from("votes")
   .select("score")
   .eq("voter_name", player.name);
@@ -239,9 +239,9 @@ const { data: givenVotes } = await supabase
 let givenAvg = 0;
 let givenCount = 0;
 
-if (givenVotes && givenVotes.length > 0) {
-  givenCount = givenVotes.length;
-  givenAvg = givenVotes.reduce((a, b) => a + b.score, 0) / givenCount;
+if (givenVotesData && givenVotesData.length > 0) {
+  givenCount = givenVotesData.length;
+  givenAvg = givenVotesData.reduce((a, b) => a + b.score, 0) / givenCount;
 }
 
 // 🎯 głosy NA SIEBIE
