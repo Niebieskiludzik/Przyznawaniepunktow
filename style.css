@@ -953,3 +953,21 @@ h1 {
   color: #666;
   margin-top: 3px;
 }
+
+/* ranking miesięczny */
+.ranking-container {
+  color: white;
+}
+
+.ranking-container * {
+  color: white;
+}
+
+.ranking-table {
+  color: white;
+}
+
+.ranking-table td,
+.ranking-table th {
+  color: white;
+}
