@@ -143,3 +143,4 @@ function setMonthTitle(dateStr) {
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
+setMonthTitle(selectedMonth);
