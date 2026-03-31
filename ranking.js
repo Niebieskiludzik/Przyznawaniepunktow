@@ -23,8 +23,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   monthPicker.addEventListener("change", loadRanking);
 
   await loadRanking();
-  setMonthTitle(selectedMonth.value);
-
+  monthPicker.addEventListener("change", () => {
+    loadRanking();
+    setMonthTitle(monthPicker.value);
+  });
   function calculateDailyPoints(avg) {
     if (avg >= 5) {
       return (avg - 5) * (220 / 5);
