@@ -105,7 +105,6 @@ html+=`
 <div class="meet-row">
 
 Od <input type="time" id="from_${date}">
-
 Do <input type="time" id="to_${date}">
 
 <label class="sunsetBox">
@@ -113,6 +112,13 @@ Do <input type="time" id="to_${date}">
 do zachodu
 </label>
 
+</div>
+
+<div class="extra-players-box">
+  👥 Dodatkowe osoby:
+  <select id="extra_${date}">
+    ${[...Array(16).keys()].map(i => `<option value="${i}">${i}</option>`).join("")}
+  </select>
 </div>
 
 <input id="note_${date}" maxlength="100" placeholder="opis (opcjonalnie)">
@@ -186,36 +192,19 @@ if(sunset) to="sunset";
 
 const note=document.getElementById("note_"+date).value;
 
-const select = document.getElementById("extraPlayers");
-
-for (let i = 0; i <= 15; i++) {
-  const option = document.createElement("option");
-  option.value = i;
-  option.textContent = i;
-  select.appendChild(option);
-}
-
-const extraPlayers = document.getElementById("extraPlayers").value;
-
-await supabase
-  .from("boisko")
-  .insert([
-    {
-      date: selectedDate,
-      extra_players: extraPlayers
-    }
-  ]);
+const extraPlayers = document.getElementById(`extra_${date}`).value;
 
 await supabaseClient
 .from("field_meetups")
 .upsert({
-player_id:player.id,
-player_name:player.name,
-date:date,
-status:currentStatus[date],
-time_from:from,
-time_to:to,
-note:note
+  player_id: player.id,
+  player_name: player.name,
+  date: date,
+  status: currentStatus[date],
+  time_from: from,
+  time_to: to,
+  note: note,
+  extra_players: extraPlayers
 });
 
 loadDays();
