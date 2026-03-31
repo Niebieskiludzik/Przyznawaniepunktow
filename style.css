@@ -899,3 +899,22 @@ h1 {
   font-weight: bold;
   color: #1976d2;
 }
+
+#profileCard {
+  background: linear-gradient(135deg, #2d3959, #0b111f);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* teksty */
+.profile-box,
+.profile-points,
+.profile-name,
+.profile-highlight {
+  color: white;
+}
+
+/* delikatne sekcje */
+.profile-box {
+  opacity: 0.9;
+}
