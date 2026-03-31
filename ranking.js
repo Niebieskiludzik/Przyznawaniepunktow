@@ -125,6 +125,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 
+const monthNames = [
+  "Styczeń", "Luty", "Marzec", "Kwiecień",
+  "Maj", "Czerwiec", "Lipiec", "Sierpień",
+  "Wrzesień", "Październik", "Listopad", "Grudzień"
+];
+
+function setMonthTitle(dateStr) {
+  const d = new Date(dateStr);
+  const name = monthNames[d.getMonth()];
+  const year = d.getFullYear();
+
+  document.getElementById("monthTitle").innerText =
+    `📊 Ranking ${name} ${year}`;
+}
+
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
