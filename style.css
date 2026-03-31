@@ -879,3 +879,23 @@ h1 {
   font-size: 18px;
   border-radius: 10px;
 }
+
+.extra-players-box {
+  margin-top: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.extra-players-box select {
+  margin-left: 10px;
+  padding: 6px 10px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.extra-info {
+  margin: 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1976d2;
+}
