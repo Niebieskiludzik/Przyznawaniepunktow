@@ -186,6 +186,26 @@ if(sunset) to="sunset";
 
 const note=document.getElementById("note_"+date).value;
 
+const select = document.getElementById("extraPlayers");
+
+for (let i = 0; i <= 15; i++) {
+  const option = document.createElement("option");
+  option.value = i;
+  option.textContent = i;
+  select.appendChild(option);
+}
+
+const extraPlayers = document.getElementById("extraPlayers").value;
+
+await supabase
+  .from("boisko")
+  .insert([
+    {
+      date: selectedDate,
+      extra_players: extraPlayers
+    }
+  ]);
+
 await supabaseClient
 .from("field_meetups")
 .upsert({
