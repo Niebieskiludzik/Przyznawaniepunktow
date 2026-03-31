@@ -121,13 +121,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   const past14 = new Date();
   past14.setDate(now.getDate() - 14);
 
-  const last14 = votesHistory?.filter(v =>
-    new Date(v.rounds.round_date) >= past14
-  ) || [];
+  const { data: last14Votes } = await supabase
+  .from("votes")
+  .select(`
+    score,
+    voter_name,
+    rounds (round_date)
+  `)
+  .eq("player_id", playerId);
 
-  const top3 = [...last14].sort((a, b) => b.score - a.score).slice(0, 3);
-  const low3 = [...last14].sort((a, b) => a.score - b.score).slice(0, 3);
+const filtered14 = (last14Votes || []).filter(v =>
+  new Date(v.rounds.round_date) >= past14
+);
 
+const top3 = [...filtered14]
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3);
+
+const low3 = [...filtered14]
+  .sort((a, b) => a.score - b.score)
+  .slice(0, 3);
+  
   // 🎨 RENDER
   document.getElementById("profileCard").innerHTML = `
     
@@ -138,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     <div class="profile-name">${player.name}</div>
 
     <div class="profile-points">
-      Punkty: <b>${totalPoints.toFixed(1).replace(".", ",")}</b>
+      Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
     </div>
 
     <div class="profile-highlight">
@@ -178,7 +192,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3>🔥 Najwyższe</h3>
         ${top3.map(v => `
           <div class="vote-item">
-            ${v.score.toFixed(1).replace(".", ",")}
+            <div><b>${v.score.toFixed(1).replace(".", ",")}</b></div>
+            <div class="vote-meta">
+              ${v.voter_name} • ${new Date(v.rounds.round_date).toLocaleDateString("pl-PL")}
+            </div>
           </div>
         `).join("")}
       </div>
@@ -187,7 +204,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h3>❄️ Najniższe</h3>
         ${low3.map(v => `
           <div class="vote-item">
-            ${v.score.toFixed(1).replace(".", ",")}
+            <div><b>${v.score.toFixed(1).replace(".", ",")}</b></div>
+            <div class="vote-meta">
+              ${v.voter_name} • ${new Date(v.rounds.round_date).toLocaleDateString("pl-PL")}
+            </div>
           </div>
         `).join("")}
       </div>
