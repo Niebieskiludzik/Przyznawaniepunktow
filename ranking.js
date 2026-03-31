@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", async () => {
 
   initAuthUI();
@@ -23,8 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   monthPicker.addEventListener("change", loadRanking);
 
   await loadRanking();
-  
-  });
+
   function calculateDailyPoints(avg) {
     if (avg >= 5) {
       return (avg - 5) * (220 / 5);
@@ -123,6 +123,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `).join("");
   }
+
+});
 
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
