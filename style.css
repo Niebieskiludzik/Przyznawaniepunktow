@@ -603,10 +603,10 @@ font-size:18px;
 }
 
 /* zielony gradient miejsc */
-.ranking-row:nth-child(1) { background: #14532d; }
-.ranking-row:nth-child(2) { background: #166534; }
-.ranking-row:nth-child(3) { background: #15803d; }
-.ranking-row:nth-child(n+4) { background: #052e16; }
+.ranking-row:nth-child(1) { background: #0d84b8; }
+.ranking-row:nth-child(2) { background: #105370; }
+.ranking-row:nth-child(3) { background: #0f4157; }
+.ranking-row:nth-child(n+4) { background: #0d2d3b; }
 
 .ranking-row:hover {
   transform: scale(1.02);
@@ -666,21 +666,21 @@ font-size:18px;
 
 .ranking-row:hover {
   transform: scale(1.02);
-  background: linear-gradient(315deg, #90caf9, #90caf9);
+  background: linear-gradient(315deg, #0d2d3b, #07171f);
 }
 
 /* 🥇🥈🥉 */
 .ranking-row:nth-child(1) {
-  background: linear-gradient(315deg, #90caf9, #a5d6a7);
+  background: linear-gradient(315deg, #0d84b8, #0a668f);
   font-weight: bold;
 }
 
 .ranking-row:nth-child(2) {
-  background: linear-gradient(315deg, #90caf9, #c5e1a5);
+  background: linear-gradient(315deg, #105370, #0a3345);
 }
 
 .ranking-row:nth-child(3) {
-  background: linear-gradient(315deg, #90caf9, #dce775);
+  background: linear-gradient(315deg, #0f4157, #08222e);
 }
 
 /* 🔢 miejsce */
