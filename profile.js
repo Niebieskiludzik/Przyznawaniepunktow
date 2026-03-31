@@ -226,6 +226,71 @@ const manualClass = manualPoints < 0 ? "minus" : "";
 const diff = totalPoints - last30days;
   
 const diffClass = last30days >= 0 ? "plus" : "minus";
+
+// 📅 ostatnie 30 dni (JUŻ MASZ)
+const last30 = last30days;
+
+// 🗳 oddane głosy (na innych)
+const { data: givenVotes } = await supabase
+  .from("votes")
+  .select("score")
+  .eq("voter_name", player.name);
+
+let givenAvg = 0;
+let givenCount = 0;
+
+if (givenVotes && givenVotes.length > 0) {
+  givenCount = givenVotes.length;
+  givenAvg = givenVotes.reduce((a, b) => a + b.score, 0) / givenCount;
+}
+
+// 🎯 głosy NA SIEBIE
+const selfVotes = votes || [];
+
+let selfAvg = 0;
+let selfCount = 0;
+
+if (selfVotes.length > 0) {
+  selfCount = selfVotes.length;
+  selfAvg = selfVotes.reduce((a, b) => a + b.score, 0) / selfCount;
+}
+
+// 📅 dni aktywności (unique dni)
+const activeDaysSet = new Set(
+  votesHistory.map(v => new Date(v.created_at).toISOString().split("T")[0])
+);
+const activeDays = activeDaysSet.size;
+
+// 🏆 ranking średniej
+const { data: allPlayers } = await supabase
+  .from("players")
+  .select("id, rating");
+
+let sorted = allPlayers
+  .map(p => ({ id: p.id, avg: p.rating }))
+  .sort((a, b) => b.avg - a.avg);
+
+const rankIndex = sorted.findIndex(p => p.id === player.id);
+const avgRank = rankIndex + 1;
+
+// 📊 14 dni – top i low
+const now = new Date();
+const past14 = new Date();
+past14.setDate(now.getDate() - 14);
+
+const last14Votes = votesHistory.filter(v => 
+  new Date(v.created_at) >= past14
+);
+
+// najwyższe
+const top3 = [...last14Votes]
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3);
+
+// najniższe
+const low3 = [...last14Votes]
+  .sort((a, b) => a.score - b.score)
+  .slice(0, 3);
   
 document.getElementById("profileCard").innerHTML = `
   
@@ -240,20 +305,56 @@ document.getElementById("profileCard").innerHTML = `
   </div>
 
   <div class="profile-highlight">
-    📅 Ostatnie 30 dni:
-    ${last30days.toFixed(1).replace(".", ",")}
+    📅 Przez ostatnie 30 dni zdobył 
+    <b>${last30.toFixed(1).replace(".", ",")}</b> punktów
   </div>
 
   <div class="profile-box">
-    ⭐ Średnia: ${avg.toFixed(1).replace(".", ",")} | ${count} ocen
+    🗳 Oddane głosy średnia: 
+    <b>${givenAvg.toFixed(2).replace(".", ",")}</b>
+    <span class="divider">|</span>
+    ${givenCount} ocen
   </div>
 
   <div class="profile-box">
-    🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
+    🎯 Oddane głosy na siebie:
+    <b>${selfAvg.toFixed(2).replace(".", ",")}</b>
+    <span class="divider">|</span>
+    ${selfCount} ocen
   </div>
 
-  <div class="profile-box ${manualPoints < 0 ? "minus" : ""}">
-    ⚖️ Kary i bonusy: ${manualPoints.toFixed(1).replace(".", ",")}
+  <div class="profile-box">
+    📅 Dni aktywności: <b>${activeDays}</b>
+  </div>
+
+  <div class="profile-box">
+    🏆 Ranking średniej: <b>#${avgRank}</b>
+  </div>
+
+  <div class="profile-section-title">
+    📊 Najwyższe i najniższe oceny (14 dni)
+  </div>
+
+  <div class="votes-section">
+
+    <div class="votes-column">
+      <h3>🔥 Najwyższe</h3>
+      ${top3.map(v => `
+        <div class="vote-item">
+          ${v.score.toFixed(1).replace(".", ",")}
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="votes-column">
+      <h3>❄️ Najniższe</h3>
+      ${low3.map(v => `
+        <div class="vote-item">
+          ${v.score.toFixed(1).replace(".", ",")}
+        </div>
+      `).join("")}
+    </div>
+
   </div>
 
 `;
