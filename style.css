@@ -947,3 +947,9 @@ h1 {
   margin: 5px 0;
   font-size: 18px;
 }
+
+.vote-meta {
+  font-size: 14px;
+  color: #666;
+  margin-top: 3px;
+}
