@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   monthPicker.addEventListener("change", loadRanking);
 
   await loadRanking();
+  setMonthTitle(selectedMonth);
 
   function calculateDailyPoints(avg) {
     if (avg >= 5) {
@@ -143,4 +144,3 @@ function setMonthTitle(dateStr) {
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
-setMonthTitle(selectedMonth);
