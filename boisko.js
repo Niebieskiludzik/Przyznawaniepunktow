@@ -82,6 +82,10 @@ html+=`<div class="note">${p.note}</div>`;
 
 });
 
+const extra = data?.[0]?.extra_players || 0;
+
+html += `<div class="extra-info">👥 +${extra} dodatkowych osób</div>`;
+
 html+=`<h3>Nie będą</h3>`;
 
 no.forEach(p=>{
