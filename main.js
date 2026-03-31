@@ -413,12 +413,13 @@ const {data}=await supabase
 .eq("date",today)
 .eq("status","yes");
 
-const willCome=data.length;
+const players = data.filter(x => x.status === "yes").length;
+const extra = data?.[0]?.extra_players || 0;
 
-const totalPlayers=players.length;
+const total = players + extra;
 
 document.getElementById("boiskoCounter").innerText=
-"Dziś będzie "+willCome+" osób";
+'Dziś będzie ${total} osób';
 
 }
 
