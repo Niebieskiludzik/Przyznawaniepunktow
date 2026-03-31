@@ -409,9 +409,8 @@ const today=new Date().toISOString().split("T")[0];
 
 const {data}=await supabase
 .from("field_meetups")
-.select("*")
-.eq("date",today)
-.eq("status","yes");
+.select("status, extra_players")
+.eq("date", today);
 
 const players = data.filter(x => x.status === "yes").length;
 const extra = data?.[0]?.extra_players || 0;
