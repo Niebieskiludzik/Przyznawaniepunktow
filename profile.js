@@ -233,70 +233,28 @@ document.getElementById("profileCard").innerHTML = `
     ${player.avatar || "👤"}
   </div>
 
-  <h1 class="profile-name">${player.name}</h1>
+  <div class="profile-name">${player.name}</div>
 
   <div class="profile-points">
-    Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
+    Punkty: <b>${totalPoints.toFixed(1).replace(".", ",")}</b>
   </div>
 
-  <div class="profile-history">
-    📅 Przez ostatnie 30 dni zdobył
-    <b>${last30days.toFixed(1).replace(".", ",")}</b>
-    punktów.
-  </div>
-  
-  <div class="profile-stats">
-    ⭐ Średnia: ${avg.toFixed(2).replace(".", ",")}
-    <span class="divider">|</span>
-    ${count} ocen
+  <div class="profile-highlight">
+    📅 Ostatnie 30 dni:
+    ${last30days.toFixed(1).replace(".", ",")}
   </div>
 
-  <div class="profile-max">
+  <div class="profile-box">
+    ⭐ Średnia: ${avg.toFixed(1).replace(".", ",")} | ${count} ocen
+  </div>
+
+  <div class="profile-box">
     🔥 Najwyższa ocena: ${max.toFixed(1).replace(".", ",")}
   </div>
 
-  <div class="profile-extra votes">
-    🗳 Oddane głosy średnia: ${givenAvg.toFixed(2).replace(".", ",")}
-    <span class="divider">|</span>
-    ${givenCount} ocen
-
-    <div class="sub-info">
-      Na siebie: ${selfSum.toFixed(2).replace(".", ",")}
-      <span class="divider">|</span> 
-      ${selfVotes} ocen
-     </div>
+  <div class="profile-box ${manualPoints < 0 ? "minus" : ""}">
+    ⚖️ Kary i bonusy: ${manualPoints.toFixed(1).replace(".", ",")}
   </div>
 
-  <div class="profile-extra days">
-    📅 Dni aktywności: <b>${daysPlayed}</b>
-  </div>
-
-  <div class="profile-extra rank">
-    🏆 Ranking średniej: <b>#${avgRank}</b>
-  </div>
-
-  <hr>
-
-  <div class="profile-history-title">
-    📊 Najwyższe i najniższe oceny (14 dni)
-  </div>
-
-  <div class="history-block">
-    <div class="history-subtitle">🔥 Najwyższe oceny</div>
-    ${topHTML}
-  </div>
-
-  <div class="history-block">
-    <div class="history-subtitle">❄️ Najniższe oceny</div>
-    ${worstHTML}
-  </div>
-
-  <hr>
-
-    <div class="profile-manual ${manualClass}">
-      ⚖️ Kary i bonusy suma:
-      <b>${manualPoints.toFixed(1).replace(".", ",")}</b>
-    </div>
-  
 `;
 });
