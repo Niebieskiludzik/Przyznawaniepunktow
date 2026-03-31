@@ -419,7 +419,7 @@ const extra = data?.[0]?.extra_players || 0;
 const total = players + extra;
 
 document.getElementById("boiskoCounter").innerText=
-'Dziś będzie ${total} osób';
++'Dziś będzie '+${total}+' osób'+;
 
 }
 
