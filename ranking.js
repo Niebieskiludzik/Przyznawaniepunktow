@@ -132,3 +132,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
 }
+
+const monthNames = [
+  "Styczeń","Luty","Marzec","Kwiecień",
+  "Maj","Czerwiec","Lipiec","Sierpień",
+  "Wrzesień","Październik","Listopad","Grudzień"
+];
+
+function setMonthTitle() {
+  const [year, month] = document
+    .getElementById("monthPicker")
+    .value
+    .split("-");
+
+  const name = monthNames[parseInt(month) - 1];
+
+  document.getElementById("monthTitle").innerText =
+    `📊 Ranking ${name} ${year}`;
+}
