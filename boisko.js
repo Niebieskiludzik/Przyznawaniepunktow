@@ -1,4 +1,4 @@
-const supabase = window.supabaseClient;
+var supabase = window.supabaseClient;
 
 document.addEventListener("DOMContentLoaded", async () => {
   initAuthUI();
