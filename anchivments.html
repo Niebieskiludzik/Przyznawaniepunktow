@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil gracza</title>
+  <link rel="stylesheet" href="profile.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+</head>
+<body>
+
+  <nav>
+    <div id="navbarDate"></div>
+  </nav>
+
+  <div id="profileCard"></div>
+
+  <!-- Zakładki -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="stats-tab">📊 Statystyki</button>
+    <button class="tab-btn" data-tab="achievements-tab">🏅 Osiągnięcia</button>
+  </div>
+
+  <!-- Zawartość zakładek -->
+  <div class="tab-content active" id="stats-tab">
+    <!-- Tutaj wyświetlane są średnie, głosy itp. -->
+  </div>
+
+  <div class="tab-content" id="achievements-tab">
+    <div class="profile-section-title">
+      🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
+    </div>
+    <div id="achievements-list" class="achievements-list"></div>
+  </div>
+
+  <script src="profile.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil gracza</title>
+  <link rel="stylesheet" href="profile.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+</head>
+<body>
+
+  <nav>
+    <div id="navbarDate"></div>
+  </nav>
+
+  <div id="profileCard"></div>
+
+  <!-- Zakładki -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="stats-tab">📊 Statystyki</button>
+    <button class="tab-btn" data-tab="achievements-tab">🏅 Osiągnięcia</button>
+  </div>
+
+  <!-- Zawartość zakładek -->
+  <div class="tab-content active" id="stats-tab">
+    <!-- Tutaj wyświetlane są średnie, głosy itp. -->
+  </div>
+
+  <div class="tab-content" id="achievements-tab">
+    <div class="profile-section-title">
+      🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
+    </div>
+    <div id="achievements-list" class="achievements-list"></div>
+  </div>
+
+  <script src="anchivments.js"></script>
+</body>
+</html>
