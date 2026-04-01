@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
     </div>
     <div id="achievements-list" class="achievements-list">
-      <!-- Tu będą odznaki po kliknięciu -->
+      <!-- Odznaki będą dodawane przez JS -->
     </div>
   `;
 
