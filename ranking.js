@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const map = {};
 
     votes.forEach(v => {
-      const date = new Date(v.rounds.round_date);
+
+      if (!v.rounds || !v.rounds.round_date) return;
 
       if (
         date.getFullYear() === year &&
