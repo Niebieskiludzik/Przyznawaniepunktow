@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", async () => {
 
   initAuthUI();
@@ -23,10 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   monthPicker.addEventListener("change", loadRanking);
 
-  monthPicker.addEventListener("change", () => {
-    loadRanking();
-    setMonthTitle(monthPicker.value);
-  });
+  await loadRanking();
 
   function calculateDailyPoints(avg) {
     if (avg >= 5) {
@@ -61,10 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const map = {};
 
     votes.forEach(v => {
-
-      if (!v.rounds || !v.rounds.round_date) return;
-
-      const date = new Date(v.rounds.round_date); // 🔥 TO BRAKOWAŁO
+      const date = new Date(v.rounds.round_date);
 
       if (
         date.getFullYear() === year &&
@@ -134,22 +127,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function goToProfile(id) {
   window.location.href = `profile.html?id=${id}`;
-}
-
-const monthNames = [
-  "Styczeń","Luty","Marzec","Kwiecień",
-  "Maj","Czerwiec","Lipiec","Sierpień",
-  "Wrzesień","Październik","Listopad","Grudzień"
-];
-
-function setMonthTitle() {
-  const [year, month] = document
-    .getElementById("monthPicker")
-    .value
-    .split("-");
-
-  const name = monthNames[parseInt(month) - 1];
-
-  document.getElementById("monthTitle").innerText =
-    `📊 Ranking ${name} ${year}`;
 }
