@@ -32,9 +32,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const { avg, count } = await loadAverageRating(playerId);
   document.getElementById('avg-rating').innerText = avg;
   document.getElementById('avg-count').innerText = count;
-  
-
-  const totalPoints = player.rating + (player.manual_points || 0);
 
   // 📊 głosy NA gracza
   const { data: votes } = await supabase
@@ -42,12 +39,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     .select("score")
     .eq("player_id", playerId);
 
-  let avg = 0;
-  let count = 0;
+  let voteAvg = 0;
+  let voteCount = 0;
 
   if (votes && votes.length > 0) {
-    count = votes.length;
-    avg = votes.reduce((a, b) => a + b.score, 0) / count;
+    voteCount = votes.length;
+    voteAvg = votes.reduce((a, b) => a + b.score, 0) / voteCount;
   }
 
   // 📅 historia z datami
