@@ -99,6 +99,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     avgMap[v.player_id].count++;
   });
 
+  async function loadAchievements(playerId) {
+  const supabase = window.supabaseClient;
+
+  const { data: achievements } = await supabase
+    .from("achievements")
+    .select("*")
+    .eq("player_id", playerId)
+    .order("obtained_at", { ascending: false });
+
+  const listEl = document.getElementById("achievements-list");
+  const countEl = document.getElementById("achievements-count");
+  if (!listEl || !countEl) return;
+
+  listEl.innerHTML = achievements.map(a => `
+    <div class="achievement-badge ${a.rarity}" title="${a.description}">
+      ${a.name}<br><small>${new Date(a.obtained_at).toLocaleDateString("pl-PL")}</small>
+    </div>
+  `).join("");
+
+  countEl.innerText = `${achievements.length}/${achievements.length}`; // można dopracować jeśli lista wszystkich osiągnięć jest większa
+}
+
   const averages = Object.entries(avgMap).map(([id, val]) => ({
     player_id: id,
     avg: val.sum / val.count
