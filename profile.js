@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       📅 Przez ostatnie 30 dni zdobył <b>${last30.toFixed(1).replace(".", ",")}</b> punktów
     </div>
     <div class="profile-average">
-      Średnia ocen: <span id="avg-rating">${avgRating}</span> | <span id="avg-count">${ratingCount}</span> ocen
+      🗳 Średnia ocen: <span id="avg-rating">${avgRating}</span> <span class="divider">|</span> <span id="avg-count">${ratingCount}</span> ocen
     </div>
     <div class="profile-box">
       🗳 Oddane głosy średnia: <b>${givenAvg.toFixed(2).replace(".", ",")}</b>
