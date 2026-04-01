@@ -1,16 +1,20 @@
 // 🔥 GLOBALNY CLIENT
-const supabase = window.supabaseClient;
+window.supabaseClient = window.supabase.createClient(
+  'https://wzanqzcjrpbhocrfcciy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
+);
+
 // 🔐 INIT UI
 window.initAuthUI = async function () {
 
-  window.supabaseClient
+  const supabase = window.supabaseClient;
 
   const userBox = document.getElementById("userBox");
   const loginBox = document.getElementById("loginBox");
   const userName = document.getElementById("userName");
 
   try {
-    const { data: { user }, error } = await window.supabaseClient.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
     if (!user) {
       if(userBox) userBox.style.display = "none";
@@ -21,7 +25,7 @@ window.initAuthUI = async function () {
     if(userBox) userBox.style.display = "flex";
     if(loginBox) loginBox.style.display = "none";
 
-    const { data: player } = await window.supabaseClient
+    const { data: player } = await supabase
       .from('players')
       .select('*')
       .eq('email', user.email)
@@ -40,7 +44,7 @@ window.initAuthUI = async function () {
 // 🔐 LOGIN
 window.login = async function () {
 
-  window.supabaseClient
+  const supabase = window.supabaseClient;
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -52,7 +56,7 @@ window.login = async function () {
   loginBtn.classList.add("loading");
 
   try {
-    const { error } = await window.supabaseClient.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
@@ -76,8 +80,8 @@ window.login = async function () {
 
 // 🔓 LOGOUT
 window.logout = async function () {
-  window.supabaseClient
-  await window.supabaseClient.auth.signOut();
+  const supabase = window.supabaseClient;
+  await supabase.auth.signOut();
   location.reload();
 };
 
