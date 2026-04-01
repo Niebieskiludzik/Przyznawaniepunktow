@@ -231,6 +231,10 @@ document.getElementById('avg-count').innerText = count;
         `).join("")}
       </div>
 
+      <div class="profile-average">
+        Średnia ocen: <span id="avg-rating">...</span> | <span id="avg-count">0</span> ocen
+      </div>
+
     </div>
   `;
 });
