@@ -1,0 +1,84 @@
+/* Styl zakładek */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+.tab-btn.active {
+  background-color: #1e90ff;
+  color: white;
+}
+.tab-content {
+  display: none;
+  margin-top: 10px;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* Profil */
+.profile-box, .profile-average {
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin: 10px 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.profile-average span {
+  font-weight: bold;
+  color: #2a2a2a;
+}
+.profile-average .divider {
+  margin: 0 5px;
+  color: #999;
+}
+
+/* Odznaki */
+.achievements-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.achievement-badge {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  text-align: center;
+}
+.achievement-badge.yellow { background-color: #FFD700; color: #000; }
+.achievement-badge.purple { background-color: #9B30FF; }
+.achievement-badge.blue { background-color: #1E90FF; }
+.achievement-badge.green { background-color: #32CD32; }
+.achievement-badge.gray { background-color: #808080; }
+
+/* Dodatkowe style */
+.profile-avatar-circle {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.profile-name {
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+}
