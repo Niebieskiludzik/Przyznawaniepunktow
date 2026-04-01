@@ -28,6 +28,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+
+  const { avg, count } = await loadAverageRating(playerId);
+  document.getElementById('avg-rating').innerText = avg;
+  document.getElementById('avg-count').innerText = count;
+  
+
   const totalPoints = player.rating + (player.manual_points || 0);
 
   // 📊 głosy NA gracza
@@ -156,10 +162,6 @@ async function loadAverageRating(playerId) {
 
     return { avg: avg.toFixed(2), count: votes.length };
 }
-
-const { avg, count } = await loadAverageRating(playerId);
-document.getElementById('avg-rating').innerText = avg;
-document.getElementById('avg-count').innerText = count;
   
   // 🎨 RENDER
   document.getElementById("profileCard").innerHTML = `
@@ -178,6 +180,10 @@ document.getElementById('avg-count').innerText = count;
       📅 Przez ostatnie 30 dni zdobył 
       <b>${last30.toFixed(1).replace(".", ",")}</b> punktów
     </div>
+
+     <div class="profile-average">
+        Średnia ocen: <span id="avg-rating">...</span> | <span id="avg-count">0</span> ocen
+      </div>
 
     <div class="profile-box">
       🗳 Oddane głosy średnia: 
@@ -229,10 +235,6 @@ document.getElementById('avg-count').innerText = count;
             </div>
           </div>
         `).join("")}
-      </div>
-
-      <div class="profile-average">
-        Średnia ocen: <span id="avg-rating">...</span> | <span id="avg-count">0</span> ocen
       </div>
 
     </div>
