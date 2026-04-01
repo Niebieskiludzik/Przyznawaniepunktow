@@ -179,8 +179,8 @@ async function loadAverageRating(playerId) {
     </div>
 
      <div class="profile-average">
-        Średnia ocen: <span id="avg-rating">...</span> | <span id="avg-count">0</span> ocen
-      </div>
+      Średnia ocen: <span id="avg-rating">${avg}</span> | <span id="avg-count">${count}</span> ocen
+     </div>
 
     <div class="profile-box">
       🗳 Oddane głosy średnia: 
