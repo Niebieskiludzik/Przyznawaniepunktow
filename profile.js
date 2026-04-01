@@ -30,8 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   const { avg, count } = await loadAverageRating(playerId);
-  document.getElementById('avg-rating').innerText = avg;
-  document.getElementById('avg-count').innerText = count;
 
   // 📊 głosy NA gracza
   const { data: votes } = await supabase
