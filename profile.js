@@ -141,6 +141,25 @@ const top3 = [...filtered14]
 const low3 = [...filtered14]
   .sort((a, b) => a.score - b.score)
   .slice(0, 3);
+
+async function loadAverageRating(playerId) {
+    const { data: votes } = await supabase
+        .from('votes')
+        .select('score, created_at')
+        .eq('player_id', playerId)
+        .gte('created_at', new Date(Date.now() - 30*24*60*60*1000).toISOString());
+
+    if (!votes || votes.length === 0) return { avg: 0, count: 0 };
+
+    const sum = votes.reduce((acc, v) => acc + v.score, 0);
+    const avg = sum / votes.length;
+
+    return { avg: avg.toFixed(2), count: votes.length };
+}
+
+const { avg, count } = await loadAverageRating(playerId);
+document.getElementById('avg-rating').innerText = avg;
+document.getElementById('avg-count').innerText = count;
   
   // 🎨 RENDER
   document.getElementById("profileCard").innerHTML = `
