@@ -3,14 +3,14 @@ const supabase = window.supabaseClient;
 // 🔐 INIT UI
 window.initAuthUI = async function () {
 
-  const supabase = window.supabaseClient;
+  window.supabaseClient
 
   const userBox = document.getElementById("userBox");
   const loginBox = document.getElementById("loginBox");
   const userName = document.getElementById("userName");
 
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await window.supabaseClient.auth.getUser();
 
     if (!user) {
       if(userBox) userBox.style.display = "none";
@@ -21,7 +21,7 @@ window.initAuthUI = async function () {
     if(userBox) userBox.style.display = "flex";
     if(loginBox) loginBox.style.display = "none";
 
-    const { data: player } = await supabase
+    const { data: player } = await window.supabaseClient
       .from('players')
       .select('*')
       .eq('email', user.email)
@@ -40,7 +40,7 @@ window.initAuthUI = async function () {
 // 🔐 LOGIN
 window.login = async function () {
 
-  const supabase = window.supabaseClient;
+  window.supabaseClient
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -52,7 +52,7 @@ window.login = async function () {
   loginBtn.classList.add("loading");
 
   try {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await window.supabaseClient.auth.signInWithPassword({
       email,
       password
     });
@@ -76,8 +76,8 @@ window.login = async function () {
 
 // 🔓 LOGOUT
 window.logout = async function () {
-  const supabase = window.supabaseClient;
-  await supabase.auth.signOut();
+  window.supabaseClient
+  await window.supabaseClient.auth.signOut();
   location.reload();
 };
 
