@@ -64,6 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!v.rounds || !v.rounds.round_date) return;
 
+      const date = new Date(v.rounds.round_date); // 🔥 TO BRAKOWAŁO
+
       if (
         date.getFullYear() === year &&
         date.getMonth() === (month - 1)
