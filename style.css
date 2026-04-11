@@ -1031,13 +1031,23 @@ h1 {
 .achievement-badge.green { background-color: #32CD32; }
 .achievement-badge.gray { background-color: #808080; }
 
-.ranking-item {
+.rank-item {
   display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  margin: 5px 0;
-  background: #f5f5f5;
-  border-radius: 10px;
+  align-items: center;
+  background: #140a24;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.rank-position {
+  width: 50px;
+  text-align: center;
+}
+
+.rank-points {
+  width: 80px;
+  text-align: center;
 }
 
 .simple-ranking-btn {
@@ -1052,4 +1062,60 @@ h1 {
 
 .simple-ranking-btn:hover {
   background: #187bcd;
+}
+
+.ranking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.simple-ranking-btn {
+  background: #1a1028;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.simple-ranking-btn:hover {
+  background: #2a1740;
+}
+
+
+
+
+body {
+  background: #0b0613;
+}
+
+.navbar {
+  background: #140a24;
+  border-bottom: 1px solid #2a1740;
+}
+
+.card {
+  background: #140a24;
+  border: 1px solid #2a1740;
+}
+
+
+
+.rank-name {
+  text-align: center;
+  flex: 1;
+}
+
+.top1 {
+  background: linear-gradient(90deg, #3a2a00, #140a24);
+}
+
+.top2 {
+  background: linear-gradient(90deg, #2a2a2a, #140a24);
+}
+
+.top3 {
+  background: linear-gradient(90deg, #1f1f1f, #140a24);
 }
