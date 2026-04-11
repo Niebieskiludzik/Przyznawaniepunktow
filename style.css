@@ -1084,25 +1084,6 @@ h1 {
   background: #2a1740;
 }
 
-
-
-
-body {
-  background: #0b0613;
-}
-
-.navbar {
-  background: #140a24;
-  border-bottom: 1px solid #2a1740;
-}
-
-.card {
-  background: #140a24;
-  border: 1px solid #2a1740;
-}
-
-
-
 .rank-name {
   text-align: center;
   flex: 1;
