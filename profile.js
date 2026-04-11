@@ -201,7 +201,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     </div>
 
     <div class="profile-section-title">
-      🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
+      <a href="achievements.html?id=${playerId}" class="achievements-btn">
+        🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
+      </a>
     </div>
     <div id="achievements-list" class="achievements-list">
       <!-- Odznaki będą dodawane przez JS -->
