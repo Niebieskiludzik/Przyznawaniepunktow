@@ -79,11 +79,39 @@
 
 <body>
 
+<div class="navbar">
+
+  <div class="nav-left">
+    Prosty ranking
+  </div>
+
+  <div class="nav-center">
+    <span id="navbarDate"></span>
+  </div>
+
+  <div class="nav-right">
+
+    <div id="loginBox">
+      <input id="email" placeholder="email">
+      <input id="password" type="password" placeholder="hasło">
+      <button id="loginBtn" onclick="login()">Zaloguj</button>
+      <div id="loginError"></div>
+    </div>
+
+    <div id="userBox" style="display:none;">
+      <span id="userName"></span>
+      <button onclick="logout()">Wyloguj</button>
+    </div>
+
+  </div>
+
+</div>
+  
 <div class="container">
 
   <a href="index.html" class="back-btn">⬅ Powrót</a>
 
-  <h1>⚡ Prosty ranking</h1>
+  <h1>Prosty ranking</h1>
 
   <div id="ranking">
     <div class="loading">Ładowanie...</div>
