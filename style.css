@@ -1100,3 +1100,10 @@ h1 {
 .top3 {
   background: linear-gradient(90deg, #1f1f1f, #140a24);
 }
+
+.rank-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
