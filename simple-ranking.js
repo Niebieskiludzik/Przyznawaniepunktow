@@ -9,6 +9,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const container = document.getElementById("ranking");
 
+  const today = new Date().toLocaleDateString("pl-PL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+const navbarDate = document.getElementById("navbarDate");
+if (navbarDate) {
+  navbarDate.innerText = "📅 " + today;
+}
+
   try {
 
     // 📥 gracze
