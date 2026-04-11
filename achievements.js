@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
-  initAuthUI();
+  // 🔥 poczekaj aż auth się załaduje
+  setTimeout(() => {
+    initAuthUI();
+  }, 100);
 
   const supabase = window.supabaseClient;
 
@@ -15,8 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     year: "numeric"
   });
 
-  const navbarDate = document.getElementById("navbarDate");
-  if (navbarDate) navbarDate.innerText = "📅 " + today;
+  document.getElementById("navbarDate").innerText = "📅 " + today;
 
   try {
 
@@ -39,11 +41,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
 
     // 🏅 osiągnięcia
-    const { data: achievements } = await supabase
+    const { data: achievements, error } = await supabase
       .from("achievements")
       .select("*")
       .eq("player_id", playerId)
       .order("obtained_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     const grid = document.getElementById("achievementsGrid");
 
