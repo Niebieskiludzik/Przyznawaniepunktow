@@ -61,13 +61,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const mvpCount = achievements.filter(a => a.code?.startsWith("mvp_")).length;
 
+      if (mvpCount > 0) {
+         header.innerHTML += `
+          <div class="profile-box">
+            🏆 MVP: <b>${mvpCount}</b> razy
+          </div>
+        `;
+      }
     const header = document.getElementById("playerHeader");
-
-    header.innerHTML += `
-      <div class="profile-box">
-        🏆 MVP: <b>${mvpCount}</b> razy
-      </div>
-    `;
 
     async function checkTop1(playerId) {
 
