@@ -425,6 +425,9 @@ document.getElementById("boiskoCounter").innerText =
 
 }
 
+
+
+  
 //początek osiągnięć
 async function addAchievement(playerId, code, name, description, rarity = "gray") {
 
@@ -506,6 +509,39 @@ async function checkAchievements(playerId, voterName) {
     addAchievement(voter.id, "given_500", "Maszyna ocen", "500 głosów", "gold");
 
 }
+
+async function loadMVPPlayers() {
+
+  const { data: players } = await supabase
+    .from("players")
+    .select("id, name");
+
+  const select = document.getElementById("mvpPlayer");
+
+  select.innerHTML = players.map(p =>
+    `<option value="${p.id}">${p.name}</option>`
+  ).join("");
+}
+
+async function addMVP() {
+
+  const playerId = document.getElementById("mvpPlayer").value;
+  const date = document.getElementById("mvpDate").value;
+
+  if (!date) return alert("Wybierz datę");
+
+  await supabase.from("achievements").insert({
+    player_id: playerId,
+    code: "mvp_" + date,
+    name: "MVP dnia",
+    description: "Najlepszy gracz dnia",
+    rarity: "gold",
+    obtained_at: date
+  });
+
+  alert("Dodano MVP!");
+}
+  
 //koniec osiągnięć
   
 
