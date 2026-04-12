@@ -265,9 +265,11 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  for (let player of players) {
+  const supabase = window.supabaseClient;
 
-    const voter = players.find(p => p.name === voterName);
+  const voter = players.find(p => p.name === voterName);
+
+  for (let player of players) {
 
     const input = document.getElementById(
       voter.id + '_' + player.id
@@ -282,6 +284,8 @@ window.saveVotes = async function (voterName) {
       score: parseFloat(input.value.replace(",", "."))
     });
 
+    // 🔥 ACHIEVEMENT dla OTRZYMUJĄCEGO
+    await checkAchievements(player.id, voterName);
   }
 
   await supabase.rpc('calculate_round', {
@@ -289,7 +293,6 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
-
 };
 
 async function addPlayer() {
