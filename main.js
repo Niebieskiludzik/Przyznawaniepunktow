@@ -430,7 +430,7 @@ document.getElementById("boiskoCounter").innerText =
   
 //początek osiągnięć
 async function addAchievement(playerId, code, name, description, rarity = "gray") {
-
+    
   const supabase = window.supabaseClient;
 
   // ❌ sprawdź czy już istnieje
@@ -455,7 +455,7 @@ async function addAchievement(playerId, code, name, description, rarity = "gray"
 }
 
 async function checkAchievements(playerId, voterName) {
-
+  
   const supabase = window.supabaseClient;
 
   // 🟣 OTRZYMANE GŁOSY
@@ -511,7 +511,7 @@ async function checkAchievements(playerId, voterName) {
 }
 
 async function loadMVPPlayers() {
-
+    const supabase = window.supabaseClient;
   const { data: players } = await supabase
     .from("players")
     .select("id, name");
@@ -524,15 +524,39 @@ async function loadMVPPlayers() {
 }
 
 window.addMVP = async function () {
-
+    const supabase = window.supabaseClient;
   const playerId = document.getElementById("mvpPlayer").value;
   const date = document.getElementById("mvpDate").value;
 
   if (!date) return alert("Wybierz datę");
 
+  window.addMVP = async function () {
+      const supabase = window.supabaseClient;
+  const playerId = document.getElementById("mvpPlayer").value;
+  const date = document.getElementById("mvpDate").value;
+
+  if (!date) {
+    alert("Wybierz datę");
+    return;
+  }
+
+  const code = "mvp_" + date;
+
+  // ❌ sprawdź czy już istnieje MVP tego dnia
+  const { data: existing } = await supabase
+    .from("achievements")
+    .select("id")
+    .eq("code", code)
+    .maybeSingle();
+
+  if (existing) {
+    alert("MVP dla tej daty już istnieje!");
+    return;
+  }
+
   await supabase.from("achievements").insert({
     player_id: playerId,
-    code: "mvp_" + date,
+    code: code,
     name: "MVP dnia",
     description: "Najlepszy gracz dnia",
     rarity: "gold",
@@ -540,6 +564,8 @@ window.addMVP = async function () {
   });
 
   alert("Dodano MVP!");
+};
+
 }
   
 //koniec osiągnięć
