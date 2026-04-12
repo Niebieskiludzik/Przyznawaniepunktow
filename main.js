@@ -425,6 +425,90 @@ document.getElementById("boiskoCounter").innerText =
 
 }
 
+//początek osiągnięć
+async function addAchievement(playerId, code, name, description, rarity = "gray") {
+
+  const supabase = window.supabaseClient;
+
+  // ❌ sprawdź czy już istnieje
+  const { data: existing } = await supabase
+    .from("achievements")
+    .select("id")
+    .eq("player_id", playerId)
+    .eq("code", code)
+    .maybeSingle();
+
+  if (existing) return;
+
+  // ✅ dodaj
+  await supabase.from("achievements").insert({
+    player_id: playerId,
+    code,
+    name,
+    description,
+    rarity
+  });
+
+}
+
+async function checkAchievements(playerId, voterName) {
+
+  const supabase = window.supabaseClient;
+
+  // 🟣 OTRZYMANE GŁOSY
+  const { data: votesReceived } = await supabase
+    .from("votes")
+    .select("id")
+    .eq("player_id", playerId);
+
+  const receivedCount = votesReceived.length;
+
+  if (receivedCount >= 20)
+    addAchievement(playerId, "received_20", "Pierwsze uznanie", "20 otrzymanych ocen", "green");
+
+  if (receivedCount >= 50)
+    addAchievement(playerId, "received_50", "Znany gracz", "50 otrzymanych ocen", "blue");
+
+  if (receivedCount >= 100)
+    addAchievement(playerId, "received_100", "Gwiazda boiska", "100 ocen", "purple");
+
+  if (receivedCount >= 500)
+    addAchievement(playerId, "received_500", "Legenda", "500 ocen", "gold");
+
+
+  // 🔵 ODDANE GŁOSY
+  const { data: votesGiven } = await supabase
+    .from("votes")
+    .select("id")
+    .eq("voter_name", voterName);
+
+  const givenCount = votesGiven.length;
+
+  // znajdź ID głosującego
+  const { data: voter } = await supabase
+    .from("players")
+    .select("id")
+    .eq("name", voterName)
+    .single();
+
+  if (!voter) return;
+
+  if (givenCount >= 20)
+    addAchievement(voter.id, "given_20", "Sędzia", "Oddałeś 20 głosów", "green");
+
+  if (givenCount >= 50)
+    addAchievement(voter.id, "given_50", "Analityk", "50 głosów", "blue");
+
+  if (givenCount >= 100)
+    addAchievement(voter.id, "given_100", "Ekspert", "100 głosów", "purple");
+
+  if (givenCount >= 500)
+    addAchievement(voter.id, "given_500", "Maszyna ocen", "500 głosów", "gold");
+
+}
+//koniec osiągnięć
+  
+
 async function init() {
 
   const { data } = await supabase.auth.getUser();
