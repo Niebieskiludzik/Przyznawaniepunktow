@@ -523,7 +523,7 @@ async function loadMVPPlayers() {
   ).join("");
 }
 
-async function addMVP() {
+window.addMVP = async function () {
 
   const playerId = document.getElementById("mvpPlayer").value;
   const date = document.getElementById("mvpDate").value;
@@ -599,6 +599,7 @@ async function init() {
   loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
+  await loadMVPPlayers();
 }
 
 init();
