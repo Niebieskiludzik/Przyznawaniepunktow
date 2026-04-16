@@ -103,7 +103,43 @@ async function loadYesterdayRatings() {
   });
 }
 
-function renderRanking() {
+async function renderRanking() {
+
+  const { data: votes } = await supabase
+    .from("votes")
+    .select("player_id, score, round_id");
+
+  const map = {};
+
+  votes.forEach(v => {
+    const key = `${v.player_id}_${v.round_id}`;
+
+    if (!map[key]) map[key] = [];
+    map[key].push(v.score);
+  });
+
+  const playerPoints = {};
+
+  players.forEach(p => {
+    playerPoints[p.id] = 1000;
+  });
+
+  for (const key in map) {
+    const [playerId] = key.split("_");
+    const scores = map[key];
+
+    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const change = (avg - 6) * 40;
+
+    playerPoints[playerId] += change;
+  }
+
+  const ranking = players.map(p => ({
+    ...p,
+    simplePoints: playerPoints[p.id] || 1000
+  }));
+
+  ranking.sort((a, b) => b.simplePoints - a.simplePoints);
 
   rankingTable.innerHTML = `
     <tr>
@@ -114,34 +150,25 @@ function renderRanking() {
     </tr>
   `;
 
-  players.forEach((p, i) => {
+  ranking.forEach((p, i) => {
 
     let medal = '';
     if (i === 0) medal = '🥇';
     if (i === 1) medal = '🥈';
     if (i === 2) medal = '🥉';
 
-    const diff = Math.round(p.rating - (yesterdayRatings[p.id] || p.rating));
-
     rankingTable.innerHTML += `
-      <tr class="${
-          i === 0 ? 'leader gold' :
-          i === 1 ? 'silver' :
-          i === 2 ? 'bronze' : ''
-      }">
+      <tr>
         <td>${medal || i + 1}</td>
         <td onclick="goToProfile('${p.id}')" style="cursor:pointer;">
-        <span class="avatar">${p.avatar || "👤"}</span>
-        ${p.name}
+          <span class="avatar">${p.avatar || "👤"}</span>
+          ${p.name}
         </td>
-        <td>${Math.round(p.rating + (p.manual_points || 0))}</td>
-        <td class="${diff >= 0 ? 'positive' : 'negative'}">
-          ${diff >= 0 ? '+' : ''}${diff}
-        </td>
+        <td>${p.simplePoints.toFixed(0)}</td>
+        <td>-</td>
       </tr>
     `;
   });
-
 }
 
 window.goToProfile = function(playerId){
@@ -265,11 +292,9 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  const supabase = window.supabaseClient;
-
-  const voter = players.find(p => p.name === voterName);
-
   for (let player of players) {
+
+    const voter = players.find(p => p.name === voterName);
 
     const input = document.getElementById(
       voter.id + '_' + player.id
@@ -284,8 +309,6 @@ window.saveVotes = async function (voterName) {
       score: parseFloat(input.value.replace(",", "."))
     });
 
-    // 🔥 ACHIEVEMENT dla OTRZYMUJĄCEGO
-    await checkAchievements(player.id, voterName);
   }
 
   await supabase.rpc('calculate_round', {
@@ -293,6 +316,7 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
+
 };
 
 async function addPlayer() {
@@ -428,152 +452,6 @@ document.getElementById("boiskoCounter").innerText =
 
 }
 
-
-
-  
-//początek osiągnięć
-async function addAchievement(playerId, code, name, description, rarity = "gray") {
-    
-  const supabase = window.supabaseClient;
-
-  // ❌ sprawdź czy już istnieje
-  const { data: existing } = await supabase
-    .from("achievements")
-    .select("id")
-    .eq("player_id", playerId)
-    .eq("code", code)
-    .maybeSingle();
-
-  if (existing) return;
-
-  // ✅ dodaj
-  await supabase.from("achievements").insert({
-    player_id: playerId,
-    code,
-    name,
-    description,
-    rarity
-  });
-
-}
-
-async function checkAchievements(playerId, voterName) {
-  
-  const supabase = window.supabaseClient;
-
-  // 🟣 OTRZYMANE GŁOSY
-  const { data: votesReceived } = await supabase
-    .from("votes")
-    .select("id")
-    .eq("player_id", playerId);
-
-  const receivedCount = votesReceived.length;
-
-  if (receivedCount >= 20)
-    addAchievement(playerId, "received_20", "Pierwsze uznanie", "20 otrzymanych ocen", "green");
-
-  if (receivedCount >= 50)
-    addAchievement(playerId, "received_50", "Znany gracz", "50 otrzymanych ocen", "blue");
-
-  if (receivedCount >= 100)
-    addAchievement(playerId, "received_100", "Gwiazda boiska", "100 ocen", "purple");
-
-  if (receivedCount >= 500)
-    addAchievement(playerId, "received_500", "Legenda", "500 ocen", "gold");
-
-
-  // 🔵 ODDANE GŁOSY
-  const { data: votesGiven } = await supabase
-    .from("votes")
-    .select("id")
-    .eq("voter_name", voterName);
-
-  const givenCount = votesGiven.length;
-
-  // znajdź ID głosującego
-  const { data: voter } = await supabase
-    .from("players")
-    .select("id")
-    .eq("name", voterName)
-    .single();
-
-  if (!voter) return;
-
-  if (givenCount >= 20)
-    addAchievement(voter.id, "given_20", "Sędzia", "Oddałeś 20 głosów", "green");
-
-  if (givenCount >= 50)
-    addAchievement(voter.id, "given_50", "Analityk", "50 głosów", "blue");
-
-  if (givenCount >= 100)
-    addAchievement(voter.id, "given_100", "Ekspert", "100 głosów", "purple");
-
-  if (givenCount >= 500)
-    addAchievement(voter.id, "given_500", "Maszyna ocen", "500 głosów", "gold");
-
-}
-
-async function loadMVPPlayers() {
-    const supabase = window.supabaseClient;
-  const { data: players } = await supabase
-    .from("players")
-    .select("id, name");
-
-  const select = document.getElementById("mvpPlayer");
-
-  select.innerHTML = players.map(p =>
-    `<option value="${p.id}">${p.name}</option>`
-  ).join("");
-}
-
-window.addMVP = async function () {
-    const supabase = window.supabaseClient;
-  const playerId = document.getElementById("mvpPlayer").value;
-  const date = document.getElementById("mvpDate").value;
-
-  if (!date) return alert("Wybierz datę");
-
-  window.addMVP = async function () {
-      const supabase = window.supabaseClient;
-  const playerId = document.getElementById("mvpPlayer").value;
-  const date = document.getElementById("mvpDate").value;
-
-  if (!date) {
-    alert("Wybierz datę");
-    return;
-  }
-
-  const code = "mvp_" + date;
-
-  // ❌ sprawdź czy już istnieje MVP tego dnia
-  const { data: existing } = await supabase
-    .from("achievements")
-    .select("id")
-    .eq("code", code)
-    .maybeSingle();
-
-  if (existing) {
-    alert("MVP dla tej daty już istnieje!");
-    return;
-  }
-
-  await supabase.from("achievements").insert({
-    player_id: playerId,
-    code: code,
-    name: "MVP dnia",
-    description: "Najlepszy gracz dnia",
-    rarity: "gold",
-    obtained_at: date
-  });
-
-  alert("Dodano MVP!");
-};
-
-}
-  
-//koniec osiągnięć
-  
-
 async function init() {
 
   const { data } = await supabase.auth.getUser();
@@ -628,7 +506,6 @@ async function init() {
   loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
-  await loadMVPPlayers();
 }
 
 init();
