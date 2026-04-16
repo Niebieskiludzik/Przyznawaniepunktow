@@ -104,18 +104,6 @@ async function loadPlayers() {
   renderPanels();
 }
 
-players = data.map(r => ({
-    id: r.player_id,
-    name: r.players.name,
-    avatar: r.players.avatar,
-    rating: r.points,
-    yesterday: r.points_yesterday
-  }));
-
-  renderRanking();
-  renderPanels();
-}
-
 function updateDateDisplay(){
 
   const dateDisplay = document.getElementById("currentDateDisplay");
