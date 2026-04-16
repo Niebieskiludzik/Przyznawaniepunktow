@@ -60,6 +60,21 @@ async function ensureRound(date) {
 
 async function loadPlayers() {
 
+  if (!currentRoundId) {
+    console.warn("Brak roundId – biorę najnowszy");
+
+    const { data: lastRound } = await supabase
+      .from("rounds")
+      .select("id")
+      .order("round_date", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!lastRound) return;
+
+    currentRoundId = lastRound.id;
+  }
+
   const { data } = await supabase
     .from("ranking_history")
     .select(`
@@ -72,9 +87,21 @@ async function loadPlayers() {
     .order("points", { ascending: false });
 
   if (!data || data.length === 0) {
-  console.warn("Brak danych ranking_history");
-  players = [];
-  return;
+    console.warn("Brak danych ranking_history");
+    players = [];
+    return;
+  }
+
+  players = data.map(r => ({
+    id: r.player_id,
+    name: r.players.name,
+    avatar: r.players.avatar,
+    rating: r.points,
+    yesterday: r.points_yesterday
+  }));
+
+  renderRanking();
+  renderPanels();
 }
 
 players = data.map(r => ({
