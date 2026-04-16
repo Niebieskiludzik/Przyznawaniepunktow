@@ -137,37 +137,7 @@ async function loadYesterdayRatings() {
 
 async function renderRanking() {
 
-  const map = {};
-
-  votes.forEach(v => {
-    const key = `${v.player_id}_${v.round_id}`;
-
-    if (!map[key]) map[key] = [];
-    map[key].push(v.score);
-  });
-
-  const playerPoints = {};
-
-  players.forEach(p => {
-    playerPoints[p.id] = 1000;
-  });
-
-  for (const key in map) {
-    const [playerId] = key.split("_");
-    const scores = map[key];
-
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const change = (avg - 6) * 40;
-
-    playerPoints[playerId] += change;
-  }
-
-  const ranking = players.map(p => ({
-    ...p,
-    simplePoints: playerPoints[p.id] || 1000
-  }));
-
-  ranking.sort((a, b) => b.simplePoints - a.simplePoints);
+  async function renderRanking() {
 
   rankingTable.innerHTML = `
     <tr>
@@ -178,60 +148,34 @@ async function renderRanking() {
     </tr>
   `;
 
-  ranking.forEach((p, i) => {
+  players.forEach((p, i) => {
 
-  let medal = '';
-  if (i === 0) medal = '🥇';
-  if (i === 1) medal = '🥈';
-  if (i === 2) medal = '🥉';
+    let medal = '';
+    if (i === 0) medal = '🥇';
+    if (i === 1) medal = '🥈';
+    if (i === 2) medal = '🥉';
 
-  const diff = Math.round(p.rating - (p.yesterday || p.rating));
+    const diff = Math.round(p.rating - (p.yesterday || p.rating));
 
-  rankingTable.innerHTML += `
-    <tr class="${i === 0 ? 'leader gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
-      <td>${medal || i + 1}</td>
-      <td onclick="goToProfile('${p.id}')">
-        <span class="avatar">${p.avatar || "👤"}</span>
-        ${p.name}
-      </td>
-      <td>${Math.round(p.rating)}</td>
-      <td class="${diff >= 0 ? 'positive' : 'negative'}">
-        ${diff >= 0 ? '+' : ''}${diff}
-      </td>
-    </tr>
-  `;
-});
+    rankingTable.innerHTML += `
+      <tr class="${i === 0 ? 'leader gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
+        <td>${medal || i + 1}</td>
+        <td onclick="goToProfile('${p.id}')">
+          <span class="avatar">${p.avatar || "👤"}</span>
+          ${p.name}
+        </td>
+        <td>${Math.round(p.rating)}</td>
+        <td class="${diff >= 0 ? 'positive' : 'negative'}">
+          ${diff >= 0 ? '+' : ''}${diff}
+        </td>
+      </tr>
+    `;
+  });
 }
-
+  
 window.goToProfile = function(playerId){
   window.location.href = `profile.html?id=${playerId}`;
 };
-
-async function saveRankingHistory() {
-
-  for (let p of players) {
-
-    const { data: exists } = await supabase
-      .from("ranking_history")
-      .select("id")
-      .eq("player_id", p.id)
-      .eq("round_id", currentRoundId)
-      .maybeSingle();
-
-    if (exists) continue;
-
-    const todayPoints = p.rating;
-    const yesterday = p.yesterday || todayPoints;
-
-    await supabase.from("ranking_history").insert({
-      player_id: p.id,
-      round_id: currentRoundId,
-      points: todayPoints,
-      points_yesterday: yesterday
-    });
-
-  }
-}
 
   
 async function renderPanels() {
@@ -242,8 +186,6 @@ async function renderPanels() {
   const userEmail = userData.user?.email;
 
   const currentPlayer = players.find(p => p.email === userEmail);
-
-  if (!currentPlayer) return;
 
   const selectedDate = new Date(datePicker.value);
   const today = new Date();
@@ -515,8 +457,17 @@ async function saveRankingHistory() {
 
   for (let p of players) {
 
-    const todayPoints = p.rating + (p.manual_points || 0);
-    const yesterday = yesterdayRatings[p.id] || todayPoints;
+    const { data: exists } = await supabase
+      .from("ranking_history")
+      .select("id")
+      .eq("player_id", p.id)
+      .eq("round_id", currentRoundId)
+      .maybeSingle();
+
+    if (exists) continue;
+
+    const todayPoints = p.rating;
+    const yesterday = p.yesterday || todayPoints;
 
     await supabase.from("ranking_history").insert({
       player_id: p.id,
@@ -526,9 +477,7 @@ async function saveRankingHistory() {
     });
 
   }
-
 }
-
 
 async function init() {
 
