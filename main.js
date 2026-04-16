@@ -71,7 +71,13 @@ async function loadPlayers() {
     .eq("round_id", currentRoundId)
     .order("points", { ascending: false });
 
-  players = data.map(r => ({
+  if (!data || data.length === 0) {
+  console.warn("Brak danych ranking_history");
+  players = [];
+  return;
+}
+
+players = data.map(r => ({
     id: r.player_id,
     name: r.players.name,
     avatar: r.players.avatar,
