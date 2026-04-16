@@ -135,8 +135,6 @@ async function loadYesterdayRatings() {
   });
 }
 
-async function renderRanking() {
-
   async function renderRanking() {
 
   rankingTable.innerHTML = `
