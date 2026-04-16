@@ -1136,3 +1136,15 @@ h1 {
   background: #2a1740;
   transform: scale(1.05);
 }
+
+.gold {
+  background: linear-gradient(90deg, #ffd700, #1c1c1c);
+}
+
+.silver {
+  background: linear-gradient(90deg, #c0c0c0, #1c1c1c);
+}
+
+.bronze {
+  background: linear-gradient(90deg, #cd7f32, #1c1c1c);
+}
