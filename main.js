@@ -184,10 +184,10 @@ async function renderRanking() {
 
   ranking.forEach((p, i) => {
 
-    let medal = '';
-    if (i === 0) medal = '🥇';
-    if (i === 1) medal = '🥈';
-    if (i === 2) medal = '🥉';
+  let rowClass = "";
+  if (i === 0) rowClass = "leader gold";
+  if (i === 1) rowClass = "silver";
+  if (i === 2) rowClass = "bronze";
 
     rankingTable.innerHTML += `
       <tr>
