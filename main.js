@@ -183,7 +183,11 @@ async function renderPanels() {
   const { data: userData } = await supabase.auth.getUser();
   const userEmail = userData.user?.email;
 
-  const currentPlayer = players.find(p => p.email === userEmail);
+  const { data: currentPlayer } = await supabase
+  .from("players")
+  .select("*")
+  .eq("email", userEmail)
+  .single();
 
   const selectedDate = new Date(datePicker.value);
   const today = new Date();
@@ -462,7 +466,14 @@ async function saveRankingHistory() {
       .eq("round_id", currentRoundId)
       .maybeSingle();
 
-    if (exists) continue;
+    await supabase
+  .from("ranking_history")
+  .upsert({
+    player_id: p.id,
+    round_id: currentRoundId,
+    points: p.rating + (p.manual_points || 0),
+    points_yesterday: p.yesterday || p.rating
+  });
 
     const todayPoints = p.rating;
     const yesterday = p.yesterday || todayPoints;
