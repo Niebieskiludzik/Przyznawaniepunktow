@@ -32,7 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // 🔹 Obliczenie totalPoints
-  const totalPoints = player.rating + (player.manual_points || 0);
+  const latest = history?.[0];
+  const totalPoints = latest ? latest.points : player.rating;
 
   // 🔹 Średnia ocen gracza (ostatnie 30 dni)
   const { avg: avgRating, count: ratingCount } = await loadAverageRating(playerId);
@@ -56,17 +57,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     .select(`score, rounds (round_date)`)
     .eq("player_id", playerId);
 
-  // 🔹 Punkty w ostatnich 30 dniach
-  let last30 = 0;
-  const now = new Date();
-  const past30 = new Date();
-  past30.setDate(now.getDate() - 30);
+  // 🔹 Punkty w ostatnich 30 dniach (POPRAWNIE)
+let last30 = 0;
 
-  votesHistory?.forEach(v => {
-    const d = new Date(v.rounds.round_date);
-    if (d >= past30) last30 += v.score;
+const now = new Date();
+const past30 = new Date();
+past30.setDate(now.getDate() - 30);
+
+const { data: history } = await supabase
+  .from("ranking_history")
+  .select(`
+    points,
+    points_yesterday,
+    rounds (round_date)
+  `)
+  .eq("player_id", playerId);
+
+if (history) {
+  history.forEach(h => {
+    const d = new Date(h.rounds.round_date);
+
+    if (d >= past30) {
+      const diff = h.points - (h.points_yesterday || h.points);
+      last30 += diff;
+    }
   });
+}
 
+  if (last30 === 0) {
+  last30Text = "brak danych";
+}
+  
   // 🔹 Oddane głosy (inne osoby vs self)
   const { data: givenVotes } = await supabase
     .from("votes")
