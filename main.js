@@ -61,15 +61,26 @@ async function ensureRound(date) {
 async function loadPlayers() {
 
   const { data } = await supabase
-    .from('players')
-    .select('*')
-    .order('rating', { ascending: false });
+    .from("ranking_history")
+    .select(`
+      player_id,
+      points,
+      points_yesterday,
+      players (name, avatar)
+    `)
+    .eq("round_id", currentRoundId)
+    .order("points", { ascending: false });
 
-  players = data || [];
+  players = data.map(r => ({
+    id: r.player_id,
+    name: r.players.name,
+    avatar: r.players.avatar,
+    rating: r.points,
+    yesterday: r.points_yesterday
+  }));
 
   renderRanking();
   renderPanels();
-  loadPenaltyPlayers();
 }
 
 function updateDateDisplay(){
@@ -308,7 +319,7 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
-
+  
   }
 
   await supabase.rpc('calculate_round', {
@@ -316,7 +327,7 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
-
+  await saveRankingHistory();
 };
 
 async function addPlayer() {
@@ -451,6 +462,25 @@ document.getElementById("boiskoCounter").innerText =
 `Dziś będzie ${total} osób`;
 
 }
+
+async function saveRankingHistory() {
+
+  for (let p of players) {
+
+    const todayPoints = p.rating + (p.manual_points || 0);
+    const yesterday = yesterdayRatings[p.id] || todayPoints;
+
+    await supabase.from("ranking_history").insert({
+      player_id: p.id,
+      round_id: currentRoundId,
+      points: todayPoints,
+      points_yesterday: yesterday
+    });
+
+  }
+
+}
+
 
 async function init() {
 
