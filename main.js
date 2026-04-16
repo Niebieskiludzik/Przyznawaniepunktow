@@ -137,10 +137,6 @@ async function loadYesterdayRatings() {
 
 async function renderRanking() {
 
-  const { data: votes } = await supabase
-    .from("votes")
-    .select("player_id, score, round_id");
-
   const map = {};
 
   votes.forEach(v => {
@@ -184,29 +180,60 @@ async function renderRanking() {
 
   ranking.forEach((p, i) => {
 
-  let rowClass = "";
-  if (i === 0) rowClass = "leader gold";
-  if (i === 1) rowClass = "silver";
-  if (i === 2) rowClass = "bronze";
+  let medal = '';
+  if (i === 0) medal = '🥇';
+  if (i === 1) medal = '🥈';
+  if (i === 2) medal = '🥉';
 
-    rankingTable.innerHTML += `
-      <tr>
-        <td>${medal || i + 1}</td>
-        <td onclick="goToProfile('${p.id}')" style="cursor:pointer;">
-          <span class="avatar">${p.avatar || "👤"}</span>
-          ${p.name}
-        </td>
-        <td>${p.simplePoints.toFixed(0)}</td>
-        <td>-</td>
-      </tr>
-    `;
-  });
+  const diff = Math.round(p.rating - (p.yesterday || p.rating));
+
+  rankingTable.innerHTML += `
+    <tr class="${i === 0 ? 'leader gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
+      <td>${medal || i + 1}</td>
+      <td onclick="goToProfile('${p.id}')">
+        <span class="avatar">${p.avatar || "👤"}</span>
+        ${p.name}
+      </td>
+      <td>${Math.round(p.rating)}</td>
+      <td class="${diff >= 0 ? 'positive' : 'negative'}">
+        ${diff >= 0 ? '+' : ''}${diff}
+      </td>
+    </tr>
+  `;
+});
 }
 
 window.goToProfile = function(playerId){
   window.location.href = `profile.html?id=${playerId}`;
 };
 
+async function saveRankingHistory() {
+
+  for (let p of players) {
+
+    const { data: exists } = await supabase
+      .from("ranking_history")
+      .select("id")
+      .eq("player_id", p.id)
+      .eq("round_id", currentRoundId)
+      .maybeSingle();
+
+    if (exists) continue;
+
+    const todayPoints = p.rating;
+    const yesterday = p.yesterday || todayPoints;
+
+    await supabase.from("ranking_history").insert({
+      player_id: p.id,
+      round_id: currentRoundId,
+      points: todayPoints,
+      points_yesterday: yesterday
+    });
+
+  }
+}
+
+  
 async function renderPanels() {
 
   panelsDiv.innerHTML = '';
