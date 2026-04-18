@@ -458,19 +458,20 @@ document.getElementById("boiskoCounter").innerText =
 
 async function saveRankingHistory() {
 
+  const today = new Date().toISOString().split("T")[0];
+
   for (let p of players) {
 
-    const yesterday = p.yesterday ?? p.rating;
+    const totalPoints = p.rating + (p.manual_points || 0);
 
     await supabase
       .from("ranking_history")
       .upsert({
         player_id: p.id,
-        round_id: currentRoundId,
-        points: p.rating,
-        points_yesterday: yesterday
+        date: today,
+        points: totalPoints
       }, {
-        onConflict: "player_id,round_id"
+        onConflict: ["player_id", "date"]
       });
 
   }
@@ -564,6 +565,7 @@ async function init() {
   await loadYesterdayRatings();
   await loadPlayers();
   await copyYesterdaySnapshot();
+  await saveRankingHistory();
 }
 
 init();
