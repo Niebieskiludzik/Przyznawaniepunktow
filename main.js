@@ -82,9 +82,7 @@ async function loadPlayers() {
     //(chyba jest to niepotrzebne) yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
   }));
 
-  const { data: playersData } = await supabase
-    .from("players")
-    .select("*");
+  const playersData = (await supabase.from("players").select("*")).data;
 
   console.log(playersData);
 
