@@ -304,7 +304,6 @@ window.saveVotes = async function (voterName) {
   });
 
   await loadPlayers();
-  await saveRankingHistory();
 };
 
 async function addPlayer() {
@@ -440,7 +439,9 @@ document.getElementById("boiskoCounter").innerText =
 
 }
 
-async function saveRankingHistory() {
+async function saveDailySnapshot() {
+
+  const today = new Date().toISOString().split("T")[0];
 
   for (let p of players) {
 
@@ -448,29 +449,20 @@ async function saveRankingHistory() {
       .from("ranking_history")
       .select("id")
       .eq("player_id", p.id)
-      .eq("round_id", currentRoundId)
+      .eq("date", today)
       .maybeSingle();
 
-    await supabase
-  .from("ranking_history")
-  .upsert({
-    player_id: p.id,
-    round_id: currentRoundId,
-    points: p.rating + (p.manual_points || 0),
-    points_yesterday: p.yesterday || p.rating
-  });
+    if (exists) continue;
 
-    const todayPoints = p.rating;
-    const yesterday = p.yesterday || todayPoints;
+    const points = p.rating; // aktualne punkty
 
     await supabase.from("ranking_history").insert({
       player_id: p.id,
-      round_id: currentRoundId,
-      points: todayPoints,
-      points_yesterday: yesterday
+      date: today,
+      points: points
     });
-
   }
+
 }
 
 async function init() {
@@ -527,6 +519,7 @@ async function init() {
   loadBoiskoCounter();
   await loadYesterdayRatings();
   await loadPlayers();
+  await saveDailySnapshot();
 }
 
 init();
