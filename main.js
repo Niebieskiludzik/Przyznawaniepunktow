@@ -123,9 +123,12 @@ async function loadYesterdayRatings() {
     .lt("round_date", datePicker.value)
     .order("round_date", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (!prevRound) return {};
+  if (!prevRound) {
+    yesterdayRatings = {};
+    return;
+  }
 
   const { data } = await supabase
     .from("ranking_history")
@@ -133,11 +136,12 @@ async function loadYesterdayRatings() {
     .eq("round_id", prevRound.id);
 
   const map = {};
-  data?.forEach(p => {
+
+  (data || []).forEach(p => {
     map[p.player_id] = p.points;
   });
 
-  return map;
+  yesterdayRatings = map;
 }
 
   async function renderRanking() {
@@ -543,7 +547,6 @@ async function init() {
   loadBoiskoCounter();
   yesterdayRatings = await loadYesterdayRatings();
   await loadPlayers();
-  await copyYesterdaySnapshot();
   await saveRankingHistory();
 }
 
