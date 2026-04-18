@@ -64,11 +64,6 @@ async function loadPlayers() {
     .from("players")
     .select("*");
 
-  const { data: history } = await supabase
-    .from("ranking_history")
-    .select("*")
-    .eq("round_id", currentRoundId);
-
   if (!playersData) return;
 
   const historyMap = {};
@@ -80,9 +75,7 @@ async function loadPlayers() {
     id: p.id,
     name: p.name,
     avatar: p.avatar,
-
-    // 🔥 KLUCZ: nowy gracz też ma rating
-    rating: historyMap[p.id]?.points ?? p.rating ?? 1000,
+    rating: p.rating
 
     // 🔥 snapshot fallback
     yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
@@ -301,6 +294,11 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
+    await supabase.rpc('calculate_round', {
+      p_round_id: currentRoundId,
+    });
+
+    await loadPlayers(); // OK
   
   }
 
