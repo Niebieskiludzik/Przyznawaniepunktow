@@ -66,10 +66,11 @@ async function loadPlayers() {
 
   if (!playersData) return;
 
-  const historyMap = {};
-  history?.forEach(h => {
+  if (Array.isArray(history)) {
+  history.forEach(h => {
     historyMap[h.player_id] = h;
   });
+}
 
   players = playersData.map(p => ({
     id: p.id,
@@ -80,6 +81,12 @@ async function loadPlayers() {
     // 🔥 snapshot fallback
     //(chyba jest to niepotrzebne) yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
   }));
+
+  const { data: playersData } = await supabase
+    .from("players")
+    .select("*");
+
+  console.log(playersData);
 
   players.sort((a, b) => b.rating - a.rating);
 
@@ -278,15 +285,12 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
+  const voter = players.find(p => p.name === voterName);
+
   for (let player of players) {
 
-    const voter = players.find(p => p.name === voterName);
-
-    const input = document.getElementById(
-      voter.id + '_' + player.id
-    );
-
-    if (!input.value) continue;
+    const input = document.getElementById(voter.id + '_' + player.id);
+    if (!input?.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
@@ -294,12 +298,7 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
-    await supabase.rpc('calculate_round', {
-      p_round_id: currentRoundId,
-    });
 
-    await loadPlayers(); // OK
-  
   }
 
   await supabase.rpc('calculate_round', {
@@ -460,49 +459,12 @@ async function saveRankingHistory() {
 
   for (let p of players) {
 
-    const totalPoints = p.rating + (p.manual_points || 0);
-
     await supabase
       .from("ranking_history")
       .upsert({
         player_id: p.id,
         date: today,
-        points: totalPoints
-      }, {
-        onConflict: ["player_id", "date"]
-      });
-
-  }
-}
-
-async function copyYesterdaySnapshot() {
-
-  const { data: prevRound } = await supabase
-    .from("rounds")
-    .select("id")
-    .lt("round_date", datePicker.value)
-    .order("round_date", { ascending: false })
-    .limit(1)
-    .single();
-
-  if (!prevRound) return;
-
-  const { data: prevHistory } = await supabase
-    .from("ranking_history")
-    .select("*")
-    .eq("round_id", prevRound.id);
-
-  for (let row of prevHistory || []) {
-
-    await supabase
-      .from("ranking_history")
-      .upsert({
-        player_id: row.player_id,
-        round_id: currentRoundId,
-        points: row.points,
-        points_yesterday: row.points
-      }, {
-        onConflict: "player_id,round_id"
+        points: p.rating
       });
 
   }
