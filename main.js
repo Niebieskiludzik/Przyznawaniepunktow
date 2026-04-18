@@ -60,25 +60,17 @@ async function ensureRound(date) {
 
 async function loadPlayers() {
 
-  const { data } = await supabase
+  const { data: playersData } = await supabase
     .from("players")
     .select("*");
 
-  const { data: history } = await supabase
-    .from("ranking_history")
-    .select("*")
-    .eq("round_id", currentRoundId);
+  if (!playersData) return;
 
-  const map = {};
-  (history || []).forEach(h => {
-    map[h.player_id] = h.points;
-  });
-
-  players = (data || []).map(p => ({
+  players = (playersData || []).map(p => ({
     id: p.id,
     name: p.name,
     avatar: p.avatar,
-    rating: map[p.id] ?? p.rating ?? 1000
+    rating: p.rating ?? 1000
   }));
 
   players.sort((a, b) => b.rating - a.rating);
@@ -184,11 +176,13 @@ async function renderPanels() {
   const { data: userData } = await supabase.auth.getUser();
   const userEmail = userData.user?.email;
 
-  const { data: currentPlayer } = await supabase
+ const { data: currentPlayer } = await supabase
   .from("players")
   .select("*")
   .eq("email", userEmail)
-  .single();
+  .maybeSingle();
+
+  if (!currentPlayer) return;
 
   const selectedDate = new Date(datePicker.value);
   const today = new Date();
@@ -296,15 +290,13 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
+  const voter = players.find(p => p.name === voterName);
+  if (!voter) return;
+
   for (let player of players) {
 
-    const voter = players.find(p => p.name === voterName);
-
-    const input = document.getElementById(
-      voter.id + '_' + player.id
-    );
-
-    if (!input.value) continue;
+    const input = document.getElementById(voter.id + '_' + player.id);
+    if (!input?.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
@@ -312,10 +304,12 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
-    await supabase.rpc('calculate_round', {
-      p_round_id: currentRoundId
-    });
   }
+
+  // 👉 RAZ NA KOŃCU
+  await supabase.rpc('calculate_round', {
+    p_round_id: currentRoundId
+  });
 
   await loadPlayers();
 };
@@ -472,7 +466,7 @@ async function saveRankingHistory() {
 
     await supabase
       .from("ranking_history")
-      .upsert({
+      .insert({
         player_id: p.id,
         date: today,
         points: p.rating
