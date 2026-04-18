@@ -117,15 +117,27 @@ function updateDateDisplay(){
 
 async function loadYesterdayRatings() {
 
+  const { data: prevRound } = await supabase
+    .from("rounds")
+    .select("id")
+    .lt("round_date", datePicker.value)
+    .order("round_date", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (!prevRound) return {};
+
   const { data } = await supabase
-    .from('players')
-    .select('id,rating');
+    .from("ranking_history")
+    .select("player_id, points")
+    .eq("round_id", prevRound.id);
 
-  yesterdayRatings = {};
-
+  const map = {};
   data?.forEach(p => {
-    yesterdayRatings[p.id] = p.rating;
+    map[p.player_id] = p.points;
   });
+
+  return map;
 }
 
   async function renderRanking() {
@@ -146,7 +158,9 @@ async function loadYesterdayRatings() {
     if (i === 1) medal = '🥈';
     if (i === 2) medal = '🥉';
 
-    const diff = Math.round(p.rating - (p.yesterday || p.rating));
+    const diff = Math.round(
+      p.rating - (yesterdayRatings[p.id] ?? p.rating)
+    );
 
     rankingTable.innerHTML += `
       <tr class="${i === 0 ? 'leader gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
@@ -527,7 +541,7 @@ async function init() {
   await ensureRound(datePicker.value);
   updateNavbarDate();
   loadBoiskoCounter();
-  await loadYesterdayRatings();
+  yesterdayRatings = await loadYesterdayRatings();
   await loadPlayers();
   await copyYesterdaySnapshot();
   await saveRankingHistory();
