@@ -60,34 +60,39 @@ async function ensureRound(date) {
 
 async function loadPlayers() {
 
+  // 1. players
   const { data: playersData } = await supabase
     .from("players")
     .select("*");
 
   if (!playersData) return;
 
-  if (Array.isArray(history)) {
-  history.forEach(h => {
-    historyMap[h.player_id] = h;
-  });
-}
+  // 2. ranking history (jeśli chcesz snapshoty)
+  const { data: history } = await supabase
+    .from("ranking_history")
+    .select("*")
+    .eq("date", new Date().toISOString().split("T")[0]);
 
+  const historyMap = {};
+
+  if (Array.isArray(history)) {
+    history.forEach(h => {
+      historyMap[h.player_id] = h;
+    });
+  }
+
+  // 3. mapowanie graczy
   players = playersData.map(p => ({
     id: p.id,
     name: p.name,
     avatar: p.avatar,
     rating: p.rating
-
-    // 🔥 snapshot fallback
-    //(chyba jest to niepotrzebne) yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
   }));
 
-  const playersData = (await supabase.from("players").select("*")).data;
-
-  console.log(playersData);
-
+  // 4. sort
   players.sort((a, b) => b.rating - a.rating);
 
+  // 5. render
   renderRanking();
   renderPanels();
 }
