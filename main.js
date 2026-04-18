@@ -288,12 +288,15 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  const voter = players.find(p => p.name === voterName);
-
   for (let player of players) {
 
-    const input = document.getElementById(voter.id + '_' + player.id);
-    if (!input?.value) continue;
+    const voter = players.find(p => p.name === voterName);
+
+    const input = document.getElementById(
+      voter.id + '_' + player.id
+    );
+
+    if (!input.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
@@ -305,11 +308,10 @@ window.saveVotes = async function (voterName) {
   }
 
   await supabase.rpc('calculate_round', {
-    p_round_id: currentRoundId,
+    p_round_id: currentRoundId
   });
 
   await loadPlayers();
-  await saveRankingHistory();
 };
 
 async function addPlayer() {
