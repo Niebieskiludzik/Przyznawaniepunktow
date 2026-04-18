@@ -78,7 +78,7 @@ async function loadPlayers() {
     rating: p.rating
 
     // 🔥 snapshot fallback
-    yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
+    //(chyba jest to niepotrzebne) yesterday: historyMap[p.id]?.points_yesterday ?? p.rating ?? 1000
   }));
 
   players.sort((a, b) => b.rating - a.rating);
