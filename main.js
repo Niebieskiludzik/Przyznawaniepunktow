@@ -60,26 +60,25 @@ async function ensureRound(date) {
 
 async function loadPlayers() {
 
-  const { data: playersData } = await supabase
+  const { data } = await supabase
     .from("players")
     .select("*");
 
   const { data: history } = await supabase
     .from("ranking_history")
-    .select("player_id, points");
+    .select("*")
+    .eq("round_id", currentRoundId);
 
   const map = {};
-
   (history || []).forEach(h => {
-    if (!map[h.player_id]) map[h.player_id] = 0;
-    map[h.player_id] += h.points;
+    map[h.player_id] = h.points;
   });
 
-  players = playersData.map(p => ({
+  players = (data || []).map(p => ({
     id: p.id,
     name: p.name,
     avatar: p.avatar,
-    rating: map[p.id] ?? 1000
+    rating: map[p.id] ?? p.rating ?? 1000
   }));
 
   players.sort((a, b) => b.rating - a.rating);
@@ -313,7 +312,9 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
-
+    await supabase.rpc('calculate_round', {
+      p_round_id: currentRoundId
+    });
   }
 
   await loadPlayers();
