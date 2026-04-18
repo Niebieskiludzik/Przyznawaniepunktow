@@ -66,23 +66,20 @@ past30.setDate(now.getDate() - 30);
 
 const { data: history } = await supabase
   .from("ranking_history")
-  .select(`
-    points,
-    points_yesterday,
-    rounds (round_date)
-  `)
-  .eq("player_id", playerId);
+  .select("date, points")
+  .eq("player_id", playerId)
+  .order("date", { ascending: false })
+  .limit(30);
 
-if (history) {
-  history.forEach(h => {
-    const d = new Date(h.rounds.round_date);
+let last30 = 0;
 
-    if (d >= past30) {
-      const diff = h.points - (h.points_yesterday || h.points);
-      last30 += diff;
-    }
-  });
+if (history && history.length >= 2) {
+  const newest = history[0].points;
+  const oldest = history[history.length - 1].points;
+  last30 = newest - oldest;
 }
+}
+)};
 
   if (last30 === 0) {
   last30Text = "brak danych";
