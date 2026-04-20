@@ -471,6 +471,9 @@ window.recalculateRanking = async function () {
     return;
   }
 
+  // 🔥 DODAJ TO:
+  await supabase.rpc("update_players_rating");
+
   await loadPlayers();
 
   alert("Ranking przeliczony!");
