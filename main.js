@@ -60,21 +60,39 @@ async function ensureRound(date) {
 
 async function loadPlayers() {
 
+  // 1. players
   const { data: playersData } = await supabase
     .from("players")
     .select("*");
 
   if (!playersData) return;
 
-  players = (playersData || []).map(p => ({
+  // 2. ranking history (jeśli chcesz snapshoty)
+  const { data: history } = await supabase
+    .from("ranking_history")
+    .select("*")
+    .eq("date", new Date().toISOString().split("T")[0]);
+
+  const historyMap = {};
+
+  if (Array.isArray(history)) {
+    history.forEach(h => {
+      historyMap[h.player_id] = h;
+    });
+  }
+
+  // 3. mapowanie graczy
+  players = playersData.map(p => ({
     id: p.id,
     name: p.name,
     avatar: p.avatar,
-    rating: p.rating ?? 1000
+    rating: p.rating
   }));
 
+  // 4. sort
   players.sort((a, b) => b.rating - a.rating);
 
+  // 5. render
   renderRanking();
   renderPanels();
 }
@@ -99,31 +117,15 @@ function updateDateDisplay(){
 
 async function loadYesterdayRatings() {
 
-  const { data: prevRound } = await supabase
-    .from("rounds")
-    .select("id")
-    .lt("round_date", datePicker.value)
-    .order("round_date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (!prevRound) {
-    yesterdayRatings = {};
-    return;
-  }
-
   const { data } = await supabase
-    .from("ranking_history")
-    .select("player_id, points")
-    .eq("round_id", prevRound.id);
+    .from('players')
+    .select('id,rating');
 
-  const map = {};
+  yesterdayRatings = {};
 
-  (data || []).forEach(p => {
-    map[p.player_id] = p.points;
+  data?.forEach(p => {
+    yesterdayRatings[p.id] = p.rating;
   });
-
-  yesterdayRatings = map;
 }
 
   async function renderRanking() {
@@ -144,9 +146,7 @@ async function loadYesterdayRatings() {
     if (i === 1) medal = '🥈';
     if (i === 2) medal = '🥉';
 
-    const diff = Math.round(
-      p.rating - (yesterdayRatings[p.id] ?? p.rating)
-    );
+    const diff = Math.round(p.rating - (p.yesterday || p.rating));
 
     rankingTable.innerHTML += `
       <tr class="${i === 0 ? 'leader gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : ''}">
@@ -176,13 +176,11 @@ async function renderPanels() {
   const { data: userData } = await supabase.auth.getUser();
   const userEmail = userData.user?.email;
 
- const { data: currentPlayer } = await supabase
+  const { data: currentPlayer } = await supabase
   .from("players")
   .select("*")
   .eq("email", userEmail)
-  .maybeSingle();
-
-  if (!currentPlayer) return;
+  .single();
 
   const selectedDate = new Date(datePicker.value);
   const today = new Date();
@@ -290,13 +288,15 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  const voter = players.find(p => p.name === voterName);
-  if (!voter) return;
-
   for (let player of players) {
 
-    const input = document.getElementById(voter.id + '_' + player.id);
-    if (!input?.value) continue;
+    const voter = players.find(p => p.name === voterName);
+
+    const input = document.getElementById(
+      voter.id + '_' + player.id
+    );
+
+    if (!input.value) continue;
 
     await supabase.from('votes').upsert({
       round_id: currentRoundId,
@@ -304,9 +304,9 @@ window.saveVotes = async function (voterName) {
       voter_name: voterName,
       score: parseFloat(input.value.replace(",", "."))
     });
+
   }
 
-  // 👉 RAZ NA KOŃCU
   await supabase.rpc('calculate_round', {
     p_round_id: currentRoundId
   });
@@ -466,7 +466,7 @@ async function saveRankingHistory() {
 
     await supabase
       .from("ranking_history")
-      .insert({
+      .upsert({
         player_id: p.id,
         date: today,
         points: p.rating
@@ -547,7 +547,7 @@ async function init() {
   await ensureRound(datePicker.value);
   updateNavbarDate();
   loadBoiskoCounter();
-  yesterdayRatings = await loadYesterdayRatings();
+  await loadYesterdayRatings();
   await loadPlayers();
   await saveRankingHistory();
 }
