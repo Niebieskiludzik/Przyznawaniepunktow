@@ -471,9 +471,6 @@ window.recalculateRanking = async function () {
     return;
   }
 
-  // opcjonalnie update players.rating
-  await supabase.rpc("calculate_all"); // tylko jeśli chcesz 2x (albo zrób osobną funkcję SQL)
-
   await loadPlayers();
 
   alert("Ranking przeliczony!");
