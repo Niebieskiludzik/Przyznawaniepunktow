@@ -515,28 +515,28 @@ window.recalculateRanking = async function () {
 };
 
 
-function showLoading() {
-  const toast = document.getElementById("toast");
-  const loader = toast.querySelector(".loader");
-  const text = document.getElementById("toastText");
+function showLoader() {
+  const overlay = document.getElementById("globalLoader");
+  const loader = overlay.querySelector(".loader");
 
-  loader.className = "loader";
-  text.innerText = "Zapisywanie...";
-
-  toast.classList.remove("hidden");
-}
-
-function showSuccess() {
-  const toast = document.getElementById("toast");
-  const loader = toast.querySelector(".loader");
-  const text = document.getElementById("toastText");
-
-  loader.className = "loader success";
-  text.innerText = "Zapisano!";
+  loader.classList.remove("success");
+  overlay.classList.remove("hidden");
 
   setTimeout(() => {
-    toast.classList.add("hidden");
-  }, 2000);
+    overlay.classList.add("active"); // 🔥 animacja
+  }, 10);
+}
+
+function hideLoaderSuccess() {
+  const overlay = document.getElementById("globalLoader");
+  const loader = overlay.querySelector(".loader");
+
+  loader.classList.add("success");
+
+  setTimeout(() => {
+    overlay.classList.remove("active");
+    overlay.classList.add("hidden");
+  }, 1200);
 }
 
   
