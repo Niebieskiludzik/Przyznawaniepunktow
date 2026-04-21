@@ -657,12 +657,6 @@ font-size:18px;
   color: white;
 }
 
-/* 🏆 Ranking miesięczny */
-.ranking-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 #monthPicker {
   font-size: 30px;
   padding: 8px 12px;
@@ -674,65 +668,6 @@ font-size:18px;
 /* 📦 lista */
 #rankingList {
   margin-top: 20px;
-}
-
-/* 📊 pojedynczy wiersz */
-.ranking-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 16px 20px;
-  margin-bottom: 10px;
-
-  border-radius: 14px;
-  background: linear-gradient(315deg, #90caf9, #bbdefb);
-
-  font-size: 20px;
-  font-weight: 500;
-
-  transition: 0.2s;
-  cursor: pointer;
-}
-
-.ranking-row:hover {
-  transform: scale(1.02);
-  background: linear-gradient(315deg, #0d2d3b, #07171f);
-}
-
-/* 🥇🥈🥉 */
-.ranking-row:nth-child(1) {
-  background: linear-gradient(315deg, #0d84b8, #0a668f);
-  font-weight: bold;
-}
-
-.ranking-row:nth-child(2) {
-  background: linear-gradient(315deg, #105370, #0a3345);
-}
-
-.ranking-row:nth-child(3) {
-  background: linear-gradient(315deg, #0f4157, #08222e);
-}
-
-/* 🔢 miejsce */
-.rank {
-  font-size: 64px;
-  font-weight: bold;
-  width: 40px;
-}
-
-/* 👤 imię */
-.name {
-  flex: 1;
-  text-align: center;
-  margin-left: 10px;
-  font-size: 50px;
-}
-
-/* ⭐ punkty */
-.points {
-  font-size: 50px;
-  font-weight: bold;
 }
 
 /* ❌ brak danych */
