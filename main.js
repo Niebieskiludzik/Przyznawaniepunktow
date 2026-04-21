@@ -417,13 +417,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           .select("*")
           .eq("email", auth.user.email)
           .maybeSingle();
-
-          currentPlayer = player;
-          currentRole = player?.role || "player";
-        } else {
-          currentPlayer = null;
-          currentRole = "guest";
-        }
     
     const panels = document.getElementById("panels");
     const loginBox = document.getElementById("loginBox");
