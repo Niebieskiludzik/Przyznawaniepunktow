@@ -98,7 +98,7 @@ document.addEventListener("keydown", function(e){
     const password = document.getElementById("password");
 
     if(document.activeElement === email || document.activeElement === password){
-      login();
+      window.login();
     }
   }
 });
