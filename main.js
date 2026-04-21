@@ -350,12 +350,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 }
 
+  async function loadBoiskoCounter(){
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data } = await supabase
+    .from("field_meetups")
+    .select("status, extra_players")
+    .eq("date", today);
+
+  const playersCount = data?.filter(x => x.status === "yes").length || 0;
+
+  const extra = (data || []).reduce(
+    (sum, x) => sum + (x.extra_players || 0),
+    0
+  );
+
+  const total = playersCount + extra;
+
+  const el = document.getElementById("boiskoCounter");
+  if (el) el.innerText = `Dziś będzie ${total} osób`;
+}
+
   /* ================= ADMIN ================= */
 
   async function addPlayer() {
 
     const name = document.getElementById('newPlayerName').value;
     if (!name) return;
+    if (currentRole !== "admin") return;
 
     await supabase.from('players').insert({
       name,
