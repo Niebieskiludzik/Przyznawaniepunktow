@@ -1148,3 +1148,55 @@ h1 {
 .bronze {
   background: linear-gradient(90deg, #cd7f32, #1c1c1c);
 }
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #1e1e1e;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  font-size: 14px;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #777;
+  border-top: 3px solid #aaa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.success {
+  border: 3px solid #2ecc71;
+  border-top: 3px solid #2ecc71;
+  animation: none;
+  position: relative;
+}
+
+.success::after {
+  content: "✔";
+  position: absolute;
+  font-size: 12px;
+  color: #2ecc71;
+  top: -2px;
+  left: 3px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
