@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let players = [];
   let currentRoundId = null;
   let yesterdayRatings = {};
+  let currentRole = "guest";
+  let currentPlayer = null;
 
   const datePicker = document.getElementById('datePicker');
   const rankingTable = document.getElementById('rankingTable');
@@ -330,6 +332,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadPlayers();
   };
 
+  function loadPenaltyPlayers() {
+
+  const select = document.getElementById("penaltyPlayer");
+  if (!select || !players) return;
+
+  select.innerHTML = "";
+
+  players.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.name;
+    select.appendChild(opt);
+  });
+}
+
   /* ================= ADMIN ================= */
 
   async function addPlayer() {
@@ -378,7 +395,7 @@ function applyUIVisibility(role, isLogged) {
   /* ================= PLAYER ================= */
   if (isLogged && role === "user") {
 
-    if (mvpBox) mvpBox.style.display = "block";
+    if (mvpBox) mvpBox.style.display = "none";
     if (addPlayerBox) addPlayerBox.style.display = "block";
     if (penaltyBox) penaltyBox.style.display = "block";
 
@@ -391,11 +408,47 @@ function applyUIVisibility(role, isLogged) {
   /* ================= GUEST ================= */
   if (!isLogged) {
 
-    if (dateCard) dateCard.style.display = "block";
+    if (dateCard) dateCard.style.display = "none";
     if (panels) panels.style.display = "block";
 
     return;
   }
+}
+
+  function applyPermissions() {
+
+  const panels = document.getElementById("panels");
+  const dateCard = document.getElementById("dateCard");
+  const addPlayerBox = document.getElementById("addPlayerBox");
+  const penaltyBox = document.getElementById("adminPenaltyBox");
+  const mvpBox = document.getElementById("mvpBox");
+  const rankingTable = document.getElementById("rankingTable");
+
+  // RESET (ważne!)
+  if (panels) panels.style.display = "block";
+  if (dateCard) dateCard.style.display = "block";
+  if (addPlayerBox) addPlayerBox.style.display = "block";
+  if (penaltyBox) penaltyBox.style.display = "block";
+  if (mvpBox) mvpBox.style.display = "block";
+  if (rankingTable) rankingTable.style.display = "table";
+
+  // 🔥 GUEST
+  if (currentRole === "guest") {
+    if (panels) panels.style.display = "none";
+    if (addPlayerBox) addPlayerBox.style.display = "none";
+    if (penaltyBox) penaltyBox.style.display = "none";
+    if (mvpBox) mvpBox.style.display = "none";
+    if (dateCard) dateCard.style.display = "none";
+  }
+
+  // 🔥 PLAYER
+  if (currentRole === "player") {
+    if (addPlayerBox) addPlayerBox.style.display = "none";
+    if (penaltyBox) penaltyBox.style.display = "none";
+    if (mvpBox) mvpBox.style.display = "none";
+  }
+
+  // 🔥 ADMIN → nic nie ukrywamy (ma wszystko)
 }
 
   /* ================= INIT ================= */
@@ -412,9 +465,25 @@ function applyUIVisibility(role, isLogged) {
       !!data.user
     );
 
+    const { data: auth } = await supabase.auth.getUser();
+
+      if (auth.user) {
+        const { data: player } = await supabase
+          .from("players")
+          .select("*")
+          .eq("email", auth.user.email)
+          .maybeSingle();
+
+          currentPlayer = player;
+          currentRole = player?.role || "player";
+        } else {
+          currentPlayer = null;
+          currentRole = "guest";
+        }
+    
     const panels = document.getElementById("panels");
     const loginBox = document.getElementById("loginBox");
-
+    
     if (!data.user) {
       panels?.style && (panels.style.display = "none");
       loginBox?.style && (loginBox.style.display = "flex");
@@ -427,6 +496,7 @@ function applyUIVisibility(role, isLogged) {
     await ensureRound(datePicker.value);
     await loadYesterdayRatings();
     await loadPlayers();
+    applyPermissions();
   }
 
   init();
