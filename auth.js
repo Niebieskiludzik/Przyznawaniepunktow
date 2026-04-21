@@ -85,6 +85,30 @@ window.logout = async function () {
   location.reload();
 };
 
+async function login() {
+
+  showLoader();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    hideLoaderSuccess();
+    alert("Błąd logowania");
+    return;
+  }
+
+  hideLoaderSuccess();
+
+  init();
+}
+
+
 // ENTER = login
 document.addEventListener("keydown", function(e){
   if(e.key === "Enter"){
