@@ -476,9 +476,43 @@ window.recalculateRanking = async function () {
 
   await loadPlayers();
 
-  alert("Ranking przeliczony!");
+  showLoading();
+
+    await supabase.rpc('calculate_round', {
+      p_round_id: currentRoundId
+    });
+
+    await loadPlayers();
+
+    showSuccess();
 };
 
+
+function showLoading() {
+  const toast = document.getElementById("toast");
+  const loader = toast.querySelector(".loader");
+  const text = document.getElementById("toastText");
+
+  loader.className = "loader";
+  text.innerText = "Zapisywanie...";
+
+  toast.classList.remove("hidden");
+}
+
+function showSuccess() {
+  const toast = document.getElementById("toast");
+  const loader = toast.querySelector(".loader");
+  const text = document.getElementById("toastText");
+
+  loader.className = "loader success";
+  text.innerText = "Zapisano!";
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 2000);
+}
+
+  
 async function init() {
 
   const { data } = await supabase.auth.getUser();
