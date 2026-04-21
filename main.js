@@ -409,11 +409,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const userEmail = data?.user?.email;
     const currentPlayer = players.find(p => p.email === userEmail);
 
-    applyUIVisibility(
-      currentPlayer?.role || null,
-      !!data.user
-    );
-
     const { data: auth } = await supabase.auth.getUser();
 
       if (auth.user) {
