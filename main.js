@@ -20,6 +20,26 @@ const panelsDiv = document.getElementById('panels');
 const loginCard = document.getElementById('loginCard');
 const dateCard = document.getElementById("dateCard");
 
+function showLoader() {
+  const overlay = document.getElementById("globalLoader");
+  const loader = overlay.querySelector(".loader");
+
+  loader.classList.remove("success");
+  overlay.classList.remove("hidden");
+}
+
+function hideLoaderSuccess() {
+  const overlay = document.getElementById("globalLoader");
+  const loader = overlay.querySelector(".loader");
+
+  loader.classList.add("success");
+
+  setTimeout(() => {
+    overlay.classList.add("hidden");
+    loader.classList.remove("success");
+  }, 1200);
+}
+
 datePicker.value = new Date().toISOString().split('T')[0];
 
 datePicker.addEventListener('change', () => {
@@ -288,31 +308,38 @@ window.markAbsent = async function (playerId) {
 
 window.saveVotes = async function (voterName) {
 
-  for (let player of players) {
+  showLoader();
 
-    const voter = players.find(p => p.name === voterName);
+  try {
 
-    const input = document.getElementById(
-      voter.id + '_' + player.id
-    );
+    for (let player of players) {
 
-    if (!input.value) continue;
+      const voter = players.find(p => p.name === voterName);
 
-    await supabase.from('votes').upsert({
-      round_id: currentRoundId,
-      player_id: player.id,
-      voter_name: voterName,
-      score: parseFloat(input.value.replace(",", "."))
-    });
+      const input = document.getElementById(
+        voter.id + '_' + player.id
+      );
 
+      if (!input.value) continue;
+
+      await supabase.from('votes').upsert({
+        round_id: currentRoundId,
+        player_id: player.id,
+        voter_name: voterName,
+        score: parseFloat(input.value.replace(",", "."))
+      });
+    }
+
+    await supabase.rpc('calculate_all');
+
+    await loadPlayers();
+
+    hideLoaderSuccess();
+
+  } catch (e) {
+    console.error(e);
+    alert("Błąd zapisu");
   }
-
-  await supabase.rpc('calculate_round', {
-    p_round_id: currentRoundId
-  });
-
-  await loadPlayers();
-  await recalculateRanking();
 };
 
 async function addPlayer() {
