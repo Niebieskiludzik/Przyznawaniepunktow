@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           .from("players")
           .select("*")
           .eq("email", auth.user.email)
-          .maybeSingle();
+          .maybeSingle();}
     
     const panels = document.getElementById("panels");
     const loginBox = document.getElementById("loginBox");
