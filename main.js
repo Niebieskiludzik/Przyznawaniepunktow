@@ -208,7 +208,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data: userData } = await supabase.auth.getUser();
     const userEmail = userData?.user?.email;
 
-    const currentPlayer = getCurrentPlayer(userEmail);
+    const player = getCurrentPlayer(userEmail);
+
+    currentPlayer = player;
+    currentRole = player?.role || "guest";
 
     /* ================= GUEST ================= */
     if (!currentPlayer) {
@@ -407,16 +410,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data } = await supabase.auth.getUser();
 
     const userEmail = data?.user?.email;
-    const currentPlayer = players.find(p => p.email === userEmail);
 
     const { data: auth } = await supabase.auth.getUser();
 
-      if (auth.user) {
-        const { data: player } = await supabase
-          .from("players")
-          .select("*")
-          .eq("email", auth.user.email)
-          .maybeSingle();}
+    currentRole = "guest";
+    currentPlayer = null;
+  
+    if (auth?.user) {
+
+      const { data: player } = await supabase
+        .from("players")
+        .select("*")
+        .eq("email", auth.user.email)
+        .maybeSingle();
+
+      if (player) {
+        currentPlayer = player;
+        currentRole = player.role || "player";
+      }
+    }
     
     const panels = document.getElementById("panels");
     const loginBox = document.getElementById("loginBox");
@@ -433,7 +445,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     await ensureRound(datePicker.value);
     await loadYesterdayRatings();
     await loadPlayers();
-    applyPermissions();
+  
+    applyPermissions(); // 🔥 NA KONIEC
   }
 
   init();
