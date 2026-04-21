@@ -347,11 +347,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadPlayers();
   }
 
+function applyUIVisibility(role, isLogged) {
+
+  const dateCard = document.getElementById("dateCard");
+  const addPlayerBox = document.getElementById("newPlayerName")?.parentElement;
+  const panels = document.getElementById("panels");
+
+  const mvpBox = document.getElementById("mvpBox");
+  const penaltyBox = document.getElementById("adminPenaltyBox");
+
+  /* ================= RESET ================= */
+  if (dateCard) dateCard.style.display = "none";
+  if (addPlayerBox) addPlayerBox.style.display = "none";
+  if (panels) panels.style.display = "none";
+  if (mvpBox) mvpBox.style.display = "none";
+  if (penaltyBox) penaltyBox.style.display = "none";
+
+  /* ================= ADMIN → WSZYSTKO ================= */
+  if (role === "admin") {
+
+    if (dateCard) dateCard.style.display = "block";
+    if (addPlayerBox) addPlayerBox.style.display = "block";
+    if (panels) panels.style.display = "block";
+    if (mvpBox) mvpBox.style.display = "block";
+    if (penaltyBox) penaltyBox.style.display = "block";
+
+    return;
+  }
+
+  /* ================= PLAYER ================= */
+  if (isLogged && role === "user") {
+
+    if (mvpBox) mvpBox.style.display = "block";
+    if (addPlayerBox) addPlayerBox.style.display = "block";
+    if (penaltyBox) penaltyBox.style.display = "block";
+
+    if (panels) panels.style.display = "none";
+    if (dateCard) dateCard.style.display = "none";
+
+    return;
+  }
+
+  /* ================= GUEST ================= */
+  if (!isLogged) {
+
+    if (dateCard) dateCard.style.display = "block";
+    if (panels) panels.style.display = "block";
+
+    return;
+  }
+}
+
   /* ================= INIT ================= */
 
   async function init() {
 
     const { data } = await supabase.auth.getUser();
+
+    const userEmail = data?.user?.email;
+    const currentPlayer = players.find(p => p.email === userEmail);
+
+    applyUIVisibility(
+      currentPlayer?.role || null,
+      !!data.user
+    );
 
     const panels = document.getElementById("panels");
     const loginBox = document.getElementById("loginBox");
