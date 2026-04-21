@@ -367,22 +367,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadPlayers();
   }
 
+  async function resolveUserRole() {
+
+  const { data: auth } = await supabase.auth.getUser();
+
+  if (!auth.user) {
+    currentRole = "guest";
+    currentPlayer = null;
+    return;
+  }
+
+  const { data: player } = await supabase
+    .from("players")
+    .select("*")
+    .eq("email", auth.user.email)
+    .maybeSingle();
+
+  currentPlayer = player;
+
+  if (!player) {
+    currentRole = "guest";
+  } else {
+    currentRole = player.role || "player";
+  }
+}
+
   function applyPermissions() {
 
   const panels = document.getElementById("panels");
   const dateCard = document.getElementById("dateCard");
+
   const addPlayerBox = document.getElementById("addPlayerBox");
   const penaltyBox = document.getElementById("adminPenaltyBox");
   const mvpBox = document.getElementById("mvpBox");
-  const rankingTable = document.getElementById("rankingTable");
+  const boiskoBox = document.getElementById("boiskoBox");
 
-  // RESET (ważne!)
+  // RESET
   if (panels) panels.style.display = "block";
   if (dateCard) dateCard.style.display = "block";
   if (addPlayerBox) addPlayerBox.style.display = "block";
   if (penaltyBox) penaltyBox.style.display = "block";
   if (mvpBox) mvpBox.style.display = "block";
-  if (rankingTable) rankingTable.style.display = "table";
+  if (boiskoBox) boiskoBox.style.display = "block";
 
   // 🔥 GUEST
   if (currentRole === "guest") {
@@ -390,7 +416,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (addPlayerBox) addPlayerBox.style.display = "none";
     if (penaltyBox) penaltyBox.style.display = "none";
     if (mvpBox) mvpBox.style.display = "none";
-    if (dateCard) dateCard.style.display = "none";
+    return;
   }
 
   // 🔥 PLAYER
@@ -398,57 +424,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (addPlayerBox) addPlayerBox.style.display = "none";
     if (penaltyBox) penaltyBox.style.display = "none";
     if (mvpBox) mvpBox.style.display = "none";
+    return;
   }
 
-  // 🔥 ADMIN → nic nie ukrywamy (ma wszystko)
+  // 🔥 ADMIN → nic nie ukrywamy
 }
 
+  function loadPenaltyPlayers() {
+
+  const select = document.getElementById("penaltyPlayer");
+  if (!select || !players) return;
+
+  select.innerHTML = "";
+
+  players.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = p.name;
+    select.appendChild(opt);
+  });
+}
   /* ================= INIT ================= */
 
-  async function init() {
+async function init() {
 
-    const { data } = await supabase.auth.getUser();
+  await resolveUserRole();
 
-    const userEmail = data?.user?.email;
+  const panels = document.getElementById("panels");
+  const loginBox = document.getElementById("loginBox");
 
-    const { data: auth } = await supabase.auth.getUser();
-
-    currentRole = "guest";
-    currentPlayer = null;
-  
-    if (auth?.user) {
-
-      const { data: player } = await supabase
-        .from("players")
-        .select("*")
-        .eq("email", auth.user.email)
-        .maybeSingle();
-
-      if (player) {
-        currentPlayer = player;
-        currentRole = player.role || "player";
-      }
-    }
-    
-    const panels = document.getElementById("panels");
-    const loginBox = document.getElementById("loginBox");
-    
-    if (!data.user) {
-      panels?.style && (panels.style.display = "none");
-      loginBox?.style && (loginBox.style.display = "flex");
-      return;
-    }
-
-    panels?.style && (panels.style.display = "block");
-    loginBox?.style && (loginBox.style.display = "none");
-
-    await ensureRound(datePicker.value);
-    await loadYesterdayRatings();
-    await loadPlayers();
-  
-    applyPermissions(); // 🔥 NA KONIEC
+  if (currentRole === "guest") {
+    panels.style.display = "none";
+    loginBox.style.display = "flex";
+  } else {
+    panels.style.display = "block";
+    loginBox.style.display = "none";
   }
 
+  await ensureRound(datePicker.value);
+  await loadYesterdayRatings();
+  await loadPlayers();
+
+  applyPermissions();
+  updateDateDisplay();
+  loadBoiskoCounter();
+
+}
   init();
 
 });
