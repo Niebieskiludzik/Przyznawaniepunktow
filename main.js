@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await supabase.from('players').insert({
       name,
       rating: 1000,
-      role: "user"
+      role: "player"
     });
 
     document.getElementById('newPlayerName').value = '';
@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const panels = document.getElementById("panels");
   const dateCard = document.getElementById("dateCard");
 
-  const addPlayer = document.getElementById("addPlayer");
+  const addPlayerBox = document.getElementById("newPlayerName")?.parentElement;
   const penaltyBox = document.getElementById("adminPenaltyBox");
   const mvpBox = document.getElementById("mvpBox");
   const boiskoBox = document.getElementById("boiskoBox");
@@ -428,7 +428,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // RESET
   if (panels) panels.style.display = "block";
   if (dateCard) dateCard.style.display = "block";
-  if (addPlayer) addPlayer.style.display = "block";
+  if (addPlayerBox) addPlayerBox.style.display = "block";
   if (penaltyBox) penaltyBox.style.display = "block";
   if (mvpBox) mvpBox.style.display = "block";
   if (boiskoBox) boiskoBox.style.display = "block";
@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (currentRole === "guest") {
     if (panels) panels.style.display = "none";
     if (dateCard) dateCard.style.display = "none";
-    if (addPlayer) addPlayer.style.display = "none";
+    if (addPlayerBox) addPlayerBox.style.display = "none";
     if (penaltyBox) penaltyBox.style.display = "none";
     if (mvpBox) mvpBox.style.display = "none";
     return;
@@ -445,13 +445,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 🔥 PLAYER
   if (currentRole === "player") {
-    if (addPlayer) addPlayer.style.display = "none";
+    if (addPlayerBox) addPlayerBox.style.display = "none";
     if (penaltyBox) penaltyBox.style.display = "none";
     if (mvpBox) mvpBox.style.display = "none";
     return;
   }
 
-  // 🔥 ADMIN → nic nie ukrywamy
+  // ADMIN → wszystko widzi
 }
 
   function loadPenaltyPlayers() {
