@@ -436,6 +436,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 🔥 GUEST
   if (currentRole === "guest") {
     if (panels) panels.style.display = "none";
+    if (dateCard) dateCard.style.display = "none";
     if (addPlayer) addPlayer.style.display = "none";
     if (penaltyBox) penaltyBox.style.display = "none";
     if (mvpBox) mvpBox.style.display = "none";
