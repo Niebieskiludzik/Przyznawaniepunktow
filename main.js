@@ -122,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-  // 🔎 znajdź rundę z wczoraj
   const { data: round } = await supabase
     .from("rounds")
     .select("id")
@@ -131,15 +130,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   yesterdayRatings = {};
 
-  if (!round) return; // brak danych z wczoraj
+  if (!round) return;
 
-  // 🔎 pobierz historię rankingu
   const { data: history } = await supabase
     .from("ranking_history")
     .select("player_id, rating")
     .eq("round_id", round.id);
 
-    const prev = yesterdayRatings[String(p.id)] ?? p.rating;
+  history?.forEach(row => {
+    yesterdayRatings[String(row.player_id)] = row.rating;
+  });
 }
 
   /* ================= UI ================= */
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     players.forEach((p, i) => {
 
-      const prev = yesterdayRatings[p.id] ?? p.rating;
+      const prev = yesterdayRatings[String(p.id)] ?? p.rating;
       const diff = Math.round(p.rating - prev);
 
       let medal = '';
