@@ -134,12 +134,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data: history } = await supabase
     .from("ranking_history")
-    .select("player_id, rating")
+    .select("player_id, points")
     .eq("round_id", round.id);
 
+    if (error) {
+      console.error("HISTORY ERROR:", error);
+    }
+
   history?.forEach(row => {
-    yesterdayRatings[String(row.player_id)] = row.rating;
-  });
+  yesterdayRatings[String(row.player_id)] = row.points;
+});
 }
 
   /* ================= UI ================= */
