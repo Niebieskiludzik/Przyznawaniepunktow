@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .eq("round_id", round.id);
 
   history?.forEach(row => {
-    yesterdayRatings[row.player_id] = row.rating;
+    const prev = yesterdayRatings[String(p.id)] ?? p.rating;
   });
 }
 
@@ -207,6 +207,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.goToProfile = function(id){
     window.location.href = `profile.html?id=${id}`;
+       
+    
+        console.log("PLAYER ID:", p.id);
+        console.log("YESTERDAY:", yesterdayRatings[p.id]);
+        console.log("MAP:", yesterdayRatings);
   };
 
   /* ================= ROLE FIX ================= */
