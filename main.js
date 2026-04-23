@@ -139,9 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .select("player_id, rating")
     .eq("round_id", round.id);
 
-  history?.forEach(row => {
     const prev = yesterdayRatings[String(p.id)] ?? p.rating;
-  });
 }
 
   /* ================= UI ================= */
