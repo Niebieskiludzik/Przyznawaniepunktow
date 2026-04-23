@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!round) return;
 
-  const { data: history } = await supabase
+  const { data: history, error } = await supabase
     .from("ranking_history")
     .select("player_id, points")
     .eq("round_id", round.id);
