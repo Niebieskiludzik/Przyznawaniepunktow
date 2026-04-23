@@ -115,16 +115,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadYesterdayRatings() {
 
-    const { data } = await supabase
-      .from("players")
-      .select("id, rating");
+  const selectedDate = new Date(datePicker.value);
 
-    yesterdayRatings = {};
+  const yesterday = new Date(selectedDate);
+  yesterday.setDate(selectedDate.getDate() - 1);
 
-    data?.forEach(p => {
-      yesterdayRatings[p.id] = p.rating;
-    });
-  }
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+  // 🔎 znajdź rundę z wczoraj
+  const { data: round } = await supabase
+    .from("rounds")
+    .select("id")
+    .eq("round_date", yesterdayStr)
+    .maybeSingle();
+
+  yesterdayRatings = {};
+
+  if (!round) return; // brak danych z wczoraj
+
+  // 🔎 pobierz historię rankingu
+  const { data: history } = await supabase
+    .from("ranking_history")
+    .select("player_id, rating")
+    .eq("round_id", round.id);
+
+  history?.forEach(row => {
+    yesterdayRatings[row.player_id] = row.rating;
+  });
+}
 
   /* ================= UI ================= */
 
