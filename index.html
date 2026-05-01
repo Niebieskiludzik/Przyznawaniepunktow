@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Tabela punktów chwały</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
   <div class="navbar">
@@ -60,19 +61,16 @@
     <div class="card">
       <div class="ranking-header">
         <h2>Ranking</h2>
-
-        <button onclick="recalculateRanking()">
-            🔄 Policz ranking
-        </button>
         
-        <a href="simple-ranking.html" class="simple-ranking-btn">
-          Prosty ranking
-        </a>
       </div>
       <p id="currentDateDisplay"></p>
       <table id="rankingTable"></table>
     </div>
 
+    <div class="card center" id="lastMvpBox">
+        🏆 Ostatni MVP: ładowanie...
+    </div>
+    
     <div class="card">
     <h2>📜 Instrukcja</h2>
 
@@ -119,17 +117,6 @@
     <!-- PANELE -->
     <div id="panels"></div>
 
-    <!--<div class="card">
-      <h3>🏆 MVP dnia</h3>
-
-      <input type="date" id="mvpDate">
-      <select id="mvpPlayer"></select>
-
-      <button onclick="addMVP()">Dodaj MVP</button>
-
-      <div id="mvpStats"></div>
-    </div>-->
-
     <!-- DODAJ GRACZA -->
     <div class="card">
       <h2>Dodaj gracza</h2>
@@ -160,14 +147,6 @@
       <span class="close" onclick="closeProfile()">&times;</span>
       <div id="profileContent"></div>
     </div>
-    </div>
-
-    <div id="toast" class="toast hidden">
-      <div class="loader"></div>
-      <span id="toastText">Zapisywanie...</span>
-    </div>
-    <div id="globalLoader" class="loader-overlay hidden">
-      <div class="loader"></div>
     </div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
