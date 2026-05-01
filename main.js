@@ -547,31 +547,33 @@ window.goToProfile = function(id) {
   /* ================= Ostatni MVP ================= */
 
   async function loadLastMVP() {
-
-  const box = document.getElementById("lastMvpBox");
+  const box = document.getElementById("lastMVP");
   if (!box) return;
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("mvp_history")
     .select(`
-      *,
-      players (
-        name,
-        avatar
-      )
+      gain,
+      player_id,
+      round_id,
+      players(name, avatar),
+      rounds(round_date)
     `)
-    .order("created_at", { ascending: false })
+    .gt("gain", 0)
+    .order("round_id", { ascending: false })
     .limit(1)
     .maybeSingle();
 
-  if (!data) {
-    box.innerHTML = "🏆 Ostatni MVP: brak danych";
+  if (error || !data) {
+    box.innerHTML = "🏆 Ostatni MVP: brak";
     return;
   }
 
   box.innerHTML = `
     🏆 Ostatni MVP:
-    <b>${data.players.avatar || "👤"} ${data.players.name}</b>
+    ${data.players?.avatar || "👤"}
+    ${data.players?.name || "Nieznany"}
+    (+${Math.round(data.gain)})
   `;
 }
   
