@@ -110,13 +110,46 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    rankingList.innerHTML = ranking.map((p, i) => `
-      <div class="ranking-row" onclick="goToProfile('${p.player_id}')">
-        <span class="rank">${i + 1}</span>
-        <span class="name">${playerMap[p.player_id] || "?"}</span>
-        <span class="points">${p.points.toFixed(1)}</span>
+    const maxPoints = ranking[0]?.points || 1000;
+
+rankingList.innerHTML = ranking.map((p, i) => {
+  let medal = `${i + 1}`;
+
+  if (i === 0) medal = "🥇";
+  if (i === 1) medal = "🥈";
+  if (i === 2) medal = "🥉";
+
+  const width = Math.max(
+    8,
+    (p.points / maxPoints) * 100
+  );
+
+  return `
+    <div class="monthly-row" onclick="goToProfile('${p.player_id}')">
+
+      <div class="monthly-top">
+        <div class="monthly-left">
+          <span class="monthly-rank">${medal}</span>
+          <span class="monthly-name">
+            ${playerMap[p.player_id] || "?"}
+          </span>
+        </div>
+
+        <div class="monthly-points">
+          ${p.points.toFixed(1)} pkt
+        </div>
       </div>
-    `).join("");
+
+      <div class="monthly-bar-wrap">
+        <div
+          class="monthly-bar"
+          style="width:${width}%"
+        ></div>
+      </div>
+
+    </div>
+  `;
+}).join("");
   }
 
 });
