@@ -25,11 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadRanking();
 
   function calculateDailyPoints(avg) {
-    if (avg >= 6) {
-      return (avg - 6) * (220 / 5);
-    } else {
-      return (avg - 6) * (150 / 4);
-    }
+    return (avg - 6) * 74.5;
   }
 
   async function loadRanking() {
