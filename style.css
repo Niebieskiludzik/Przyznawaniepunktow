@@ -1253,18 +1253,18 @@ h1 {
 }
 
 .monthly-rank {
-  font-size: 28px;
+  font-size: 50px;
   font-weight: 700;
   min-width: 40px;
 }
 
 .monthly-name {
-  font-size: 22px;
+  font-size: 58px;
   font-weight: 600;
 }
 
 .monthly-points {
-  font-size: 18px;
+  font-size: 40px;
   font-weight: 700;
   opacity: 0.9;
 }
