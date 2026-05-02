@@ -42,10 +42,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 /////
     // 🏅 osiągnięcia
     const { data: achievements, error } = await supabase
-      .from("achievements")
-      .select("*")
-      .eq("player_id", playerId)
-      .order("obtained_at", { ascending: false });
+  .from("achievements")
+  .select("*")
+  .eq("player_id", playerId);
+
+const rarityOrder = {
+  gold: 5,
+  purple: 4,
+  blue: 3,
+  green: 2,
+  gray: 1
+};
+
+achievements.sort((a, b) => {
+  const rarityDiff =
+    (rarityOrder[b.rarity] || 0) -
+    (rarityOrder[a.rarity] || 0);
+
+  if (rarityDiff !== 0) return rarityDiff;
+
+  return new Date(b.obtained_at) - new Date(a.obtained_at);
+});
 
     if (error) {
       console.error(error);
@@ -60,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const mvpCount = achievements.filter(a => a.code?.startsWith("mvp_")).length;
-
+    const header = document.getElementById("playerHeader");
       if (mvpCount > 0) {
          header.innerHTML += `
           <div class="profile-box">
@@ -68,7 +85,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `;
       }
-    const header = document.getElementById("playerHeader");
 
     async function checkTop1(playerId) {
 
