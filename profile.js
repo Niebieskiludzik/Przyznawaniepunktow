@@ -205,14 +205,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     <div class="profile-section-title">
       <a href="achievements.html?id=${playerId}" class="achievements-btn">
-        🏅 Osiągnięcia: <span id="achievements-count">0/0</span>
+        🏅 Osiągnięcia: <span id="achievements-count"></span>
+        
       </a>
     </div>
     <div id="achievements-list" class="achievements-list">
       <!-- Odznaki będą dodawane przez JS -->
     </div>
   `;
-
+//0/0 <--- było w przycisku do achievements
   // 🔹 Funkcja średniej ocen (ostatnie 30 dni)
   async function loadAverageRating(playerId) {
     const { data: votes } = await supabase
