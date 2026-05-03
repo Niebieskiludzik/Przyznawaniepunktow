@@ -269,13 +269,13 @@ window.goToProfile = function(id) {
     selectedDate.setHours(0,0,0,0);
     today.setHours(0,0,0,0);
 
-    const threeDaysBefore = new Date(selectedDate);
-    threeDaysBefore.setDate(selectedDate.getDate() - 3);
+    const threeDaysAfter = new Date(selectedDate);
+    threeDaysAfter.setDate(selectedDate.getDate() + 3);
 
     let votingAllowed = role === "admin"
       ? true
-      : !(today > selectedDate || today < threeDaysBefore);
-
+      : !(today < selectedDate || today > threeDaysAfter);
+    
     const voters = role === "admin"
       ? players
       : [currentPlayer];
