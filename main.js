@@ -389,6 +389,7 @@ window.goToProfile = function(id) {
 
       await supabase.rpc("calculate_all");
       await supabase.rpc("update_players_rating");
+      await supabase.rpc("calculate_daily_mvp");
 
       await loadPlayers();
       await calculateAndSaveMVP();
@@ -609,18 +610,19 @@ window.giveBonus = async function () {
   const { data, error } = await supabase
     .from("mvp_history")
     .select(`
-      gain,
+      points_gain,
       player_id,
       round_id,
       players(name, avatar),
       rounds(round_date)
     `)
-    .gt("gain", 0)
-    .order("round_id", { ascending: false })
+    .gt("points_gain", 0)
+    .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
   if (error || !data) {
+    console.error("MVP ERROR:", error);
     box.innerHTML = "🏆 Ostatni MVP: brak";
     return;
   }
@@ -629,7 +631,7 @@ window.giveBonus = async function () {
     🏆 Ostatni MVP:
     ${data.players?.avatar || "👤"}
     ${data.players?.name || "Nieznany"}
-    (+${Math.round(data.gain)})
+    (↑ ${Math.round(data.points_gain)})
   `;
 }
   
