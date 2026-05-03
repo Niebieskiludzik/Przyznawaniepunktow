@@ -146,10 +146,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cardEl = document.getElementById("profileCard");
   if (!cardEl) return;
 
+
+  // 🔹 Historia głosów z datami
+  const { data: nationality } = await supabase
+    .from("players")
+    .select(`nationality`)
+    .eq("player_id", playerId);
+
+  
+
   cardEl.innerHTML = `
     <div class="profile-avatar-circle">
       ${player.avatar || "👤"}
     </div>
+
+
+    <div class="nationality">
+      ${nationality}
+    </div>
+
+
+    
     <div class="profile-name">${player.name}</div>
     <div class="profile-points">
       Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
