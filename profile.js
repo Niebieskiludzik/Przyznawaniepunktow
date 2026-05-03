@@ -147,11 +147,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!cardEl) return;
 
 
-  // 🔹 Historia głosów z datami
-  const { data: nationality } = await supabase
-    .from("players")
-    .select(`nationality`)
-    .eq("player_id", playerId);
+  // 🔹 Narodowości
+  const { data: player, error } = await supabase
+  .from("players")
+  .select("nationality")
+  .eq("player_id", playerId)
+  .single();
 
   
 
@@ -161,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     </div>
 
 
-    <div class="nationality">
+    <div class="nationalityFlag">
       ${nationality}
     </div>
 
