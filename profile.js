@@ -148,11 +148,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   // 🔹 Narodowości
-  const { data: player, error } = await supabase
+  const { data: player } = await supabase
   .from("players")
-  .select("nationality")
-  .eq("player_id", playerId)
+  .select("*")
+  .eq("id", playerId)
   .single();
+
+  const nationality = player.nationality;
 
   
 
@@ -163,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     <div class="nationalityFlag">
-      ${nationality}
+      ${player.nationality}
     </div>
 
 
