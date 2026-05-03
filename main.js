@@ -324,7 +324,40 @@ window.goToProfile = function(id) {
     });
   }
 
+//-------------MVP-------------------//
+  
+async function calculateAndSaveMVP() {
+  if (!currentRoundId) return;
 
+  const { data: history, error } = await supabase
+    .from("ranking_history")
+    .select("player_id, points")
+    .eq("round_id", currentRoundId)
+    .gt("points", 0)
+    .order("points", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !history) {
+    console.error("MVP SAVE ERROR:", error);
+    return;
+  }
+
+  await supabase
+    .from("mvp_history")
+    .delete()
+    .eq("round_id", currentRoundId);
+
+  await supabase
+    .from("mvp_history")
+    .insert({
+      round_id: currentRoundId,
+      player_id: history.player_id,
+      points_gain: history.points
+    });
+}
+
+  
   /* ================= SAVE ================= */
 
   window.saveVotes = async function (voterName) {
