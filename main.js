@@ -324,7 +324,7 @@ window.goToProfile = function(id) {
     });
   }
 
-//-------------MVP-------------------//
+/*------------------MVP-------------------*/
   
 async function calculateAndSaveMVP() {
   if (!currentRoundId) return;
