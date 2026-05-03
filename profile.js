@@ -153,11 +153,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       ${player.avatar || "👤"}
     </div>
 
+    <div class="profile-name"> 
+      ${player.name} 
     <div class="nationalityFlag">
       ${player.nationality}
     </div>
-
-    <div class="profile-name">${player.name}</div>
+    </div>
     <div class="profile-points">
       Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
     </div>
