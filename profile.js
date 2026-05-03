@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 🔹 Ranking średniej
   const { data: allVotes } = await supabase.from("votes").select("player_id, score");
+
   const avgMap = {};
   allVotes.forEach(v => {
     if (!avgMap[v.player_id]) avgMap[v.player_id] = { sum: 0, count: 0 };
@@ -100,31 +101,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   async function loadAchievements(playerId) {
-  const supabase = window.supabaseClient;
+    const supabase = window.supabaseClient;
 
-  const { data: achievements } = await supabase
-    .from("achievements")
-    .select("*")
-    .eq("player_id", playerId)
-    .order("obtained_at", { ascending: false });
+    const { data: achievements } = await supabase
+      .from("achievements")
+      .select("*")
+      .eq("player_id", playerId)
+      .order("obtained_at", { ascending: false });
 
-  const listEl = document.getElementById("achievements-list");
-  const countEl = document.getElementById("achievements-count");
-  if (!listEl || !countEl) return;
+    const listEl = document.getElementById("achievements-list");
+    const countEl = document.getElementById("achievements-count");
+    if (!listEl || !countEl) return;
 
-  listEl.innerHTML = achievements.map(a => `
-    <div class="achievement-badge ${a.rarity}" title="${a.description}">
-      ${a.name}<br><small>${new Date(a.obtained_at).toLocaleDateString("pl-PL")}</small>
-    </div>
-  `).join("");
+    listEl.innerHTML = achievements.map(a => `
+      <div class="achievement-badge ${a.rarity}" title="${a.description}">
+        ${a.name}<br><small>${new Date(a.obtained_at).toLocaleDateString("pl-PL")}</small>
+      </div>
+    `).join("");
 
-  countEl.innerText = `${achievements.length}/${achievements.length}`; // można dopracować jeśli lista wszystkich osiągnięć jest większa
-}
+    countEl.innerText = `${achievements.length}/${achievements.length}`;
+  }
 
   const averages = Object.entries(avgMap).map(([id, val]) => ({
     player_id: id,
     avg: val.sum / val.count
   }));
+
   averages.sort((a, b) => b.avg - a.avg);
   const avgRank = averages.findIndex(a => a.player_id == playerId) + 1;
 
@@ -146,30 +148,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cardEl = document.getElementById("profileCard");
   if (!cardEl) return;
 
-
-  // 🔹 Narodowości
-  const { data: player } = await supabase
-  .from("players")
-  .select("*")
-  .eq("id", playerId)
-  .single();
-
-  const nationality = player.nationality;
-
-  
-
   cardEl.innerHTML = `
     <div class="profile-avatar-circle">
       ${player.avatar || "👤"}
     </div>
 
-
     <div class="nationalityFlag">
       ${player.nationality}
     </div>
 
-
-    
     <div class="profile-name">${player.name}</div>
     <div class="profile-points">
       Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
@@ -177,31 +164,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     <div class="profile-highlight">
       📅 Przez ostatnie 30 dni zdobył <b>${last30.toFixed(1).replace(".", ",")}</b> punktów
     </div>
-    
+
     <div class="profile-average">
       🗳 Średnia ocen: <b id="avg-rating">${avgRating}</b> <span class="divider">|</span> <span id="avg-count">${ratingCount}</span> ocen
     </div>
-    
+
     <div class="profile-box">
       🗳 Oddane głosy średnia: <b>${givenAvg.toFixed(2).replace(".", ",")}</b>
       <span class="divider">|</span>
       ${givenCount} ocen
     </div>
-    
+
     <div class="profile-box">
       🎯 Oddane głosy na siebie: <b>${selfAvg.toFixed(2).replace(".", ",")}</b>
       <span class="divider">|</span>
       ${selfCount} ocen
     </div>
+
     <div class="profile-box">
       📅 Dni aktywności: <b>${activeDays}</b>
     </div>
+
     <div class="profile-box">
       🏆 Ranking średniej: <b>#${avgRank}</b>
     </div>
+
     <div class="profile-section-title">
       📊 Najwyższe i najniższe oceny (14 dni)
     </div>
+
     <div class="votes-section">
       <div class="votes-column">
         <h3>🔥 Najwyższe</h3>
@@ -212,6 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `).join("")}
       </div>
+
       <div class="votes-column">
         <h3>❄️ Najniższe</h3>
         ${low3.map(v => `
@@ -226,26 +218,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     <div class="profile-section-title">
       <a href="achievements.html?id=${playerId}" class="achievements-btn">
         🏅 Osiągnięcia <span id="achievements-count"></span>
-        
       </a>
     </div>
-    <div id="achievements-list" class="achievements-list">
-      <!-- Odznaki będą dodawane przez JS -->
-    </div>
+
+    <div id="achievements-list" class="achievements-list"></div>
   `;
-//0/0 <--- było w przycisku do achievements
+
   // 🔹 Funkcja średniej ocen (ostatnie 30 dni)
   async function loadAverageRating(playerId) {
     const { data: votes } = await supabase
       .from("votes")
       .select("score, created_at")
       .eq("player_id", playerId)
-      .gte("created_at", new Date(Date.now() - 30*24*60*60*1000).toISOString());
+      .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
 
     if (!votes || votes.length === 0) return { avg: "0,00", count: 0 };
 
     const sum = votes.reduce((acc, v) => acc + v.score, 0);
     const avg = sum / votes.length;
+
     return { avg: avg.toFixed(2).replace(".", ","), count: votes.length };
   }
 
