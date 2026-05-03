@@ -391,6 +391,7 @@ async function calculateAndSaveMVP() {
 
       await loadPlayers();
       await calculateAndSaveMVP();
+      await loadLastMVP();
 
       hideLoaderSuccess();
 
