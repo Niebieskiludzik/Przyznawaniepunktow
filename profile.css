@@ -138,3 +138,30 @@
   background: #2a1740;
   transform: scale(1.05);
 }
+
+.mvp-box {
+  position: relative;
+  cursor: pointer;
+}
+
+.mvp-big {
+  font-size: 28px;
+}
+
+.mvp-hover {
+  display: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #111;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mvp-box:hover .mvp-hover {
+  display: block;
+}
