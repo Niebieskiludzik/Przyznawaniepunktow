@@ -662,7 +662,7 @@ window.giveBonus = async function () {
       rounds(round_date)
     `)
     .gt("points_gain", 0)
-    .order("created_at", { ascending: false })
+    .order("rounds(round_date)", { ascending: false }) // 🔥 KLUCZOWA ZMIANA
     .limit(1)
     .maybeSingle();
 
