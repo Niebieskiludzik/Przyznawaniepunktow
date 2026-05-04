@@ -76,16 +76,37 @@ achievements.sort((a, b) => {
       return;
     }
 
-    
-    const header = document.getElementById("playerHeader");
-      if (mvpCount > 0) {
-         header.innerHTML += `
-          <div class="profile-box">
-            🏆 MVP: <b>${mvpCount}</b> razy
-          </div>
-        `;
-      }
 
+const header = document.getElementById("playerHeader");
+
+// 🔥 najpierw pobierz MVP
+const { data: mvpList } = await supabase
+  .from("mvp_history")
+  .select(`
+    round_id,
+    rounds(round_date)
+  `)
+  .eq("player_id", playerId)
+  .gt("points_gain", 0)
+  .order("rounds(round_date)", { ascending: false });
+
+const mvpCount = mvpList?.length || 0;
+
+// 🔥 dopiero teraz używaj
+if (mvpCount > 0) {
+  header.innerHTML += `
+    <div class="profile-box mvp-box">
+      🏆 MVP: <b class="mvp-big">${mvpCount}</b>
+      <div class="mvp-hover">
+        ${mvpList.map(m => `
+          <div>
+            ${new Date(m.rounds.round_date).toLocaleDateString("pl-PL")}
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
     async function checkTop1(playerId) {
 
   const { data: rounds } = await supabase
@@ -121,33 +142,6 @@ achievements.sort((a, b) => {
   if (daysTop1 >= 10)
     addAchievement(playerId, "top1_10", "Dominacja", "10 dni na 1 miejscu", "purple");
 
-}
-
-const { data: mvpList } = await supabase
-  .from("mvp_history")
-  .select(`
-    round_id,
-    rounds(round_date)
-  `)
-  .eq("player_id", playerId)
-  .gt("points_gain", 0)
-  .order("rounds(round_date)", { ascending: false });
-
-const mvpCount = mvpList?.length || 0;
-
-if (mvpCount > 0) {
-  header.innerHTML += `
-    <div class="profile-box mvp-box">
-      🏆 MVP: <b class="mvp-big">${mvpCount}</b>
-      <div class="mvp-hover">
-        ${mvpList.map(m => `
-          <div>
-            ${new Date(m.rounds.round_date).toLocaleDateString("pl-PL")}
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
 }
     
 ///
