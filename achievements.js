@@ -76,7 +76,7 @@ achievements.sort((a, b) => {
       return;
     }
 
-    const mvpCount = achievements.filter(a => a.code?.startsWith("mvp_")).length;
+    
     const header = document.getElementById("playerHeader");
       if (mvpCount > 0) {
          header.innerHTML += `
