@@ -119,9 +119,13 @@ const header = document.getElementById("playerHeader");
 // 🔥 policz MVP z historii
 const { data: mvpList } = await supabase
   .from("mvp_history")
-  .select("id")
+  .select(`
+    round_id,
+    rounds!inner(round_date)
+  `)
   .eq("player_id", playerId)
-  .gt("points_gain", 0);
+  .gt("points_gain", 0)
+  .order("rounds.round_date", { ascending: false });
 
 const mvpCount = mvpList?.length || 0;
 
@@ -137,7 +141,7 @@ if (mvpAchievement && mvpCount > 0) {
   <div class="mvp-hover">
     ${mvpList.map(m => `
       <div>
-        ${new Date(m.created_at || m.rounds?.round_date).toLocaleDateString("pl-PL")}
+        ${new Date(m.rounds.round_date).toLocaleDateString("pl-PL")}
       </div>
     `).join("")}
   </div>
