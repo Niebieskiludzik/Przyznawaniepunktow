@@ -133,8 +133,15 @@ if (mvpAchievement && mvpCount > 0) {
   mvpAchievement.name = "MVP dnia";
 
   mvpAchievement.description = `
-    Zdobyto ${mvpCount} MVP dnia
-  `;
+  Zdobyto ${mvpCount} MVP dnia
+  <div class="mvp-hover">
+    ${mvpList.map(m => `
+      <div>
+        ${new Date(m.created_at || m.rounds?.round_date).toLocaleDateString("pl-PL")}
+      </div>
+    `).join("")}
+  </div>
+`;
 
   // 🔥 kolor zależny od ilości
   if (mvpCount >= 20) mvpAchievement.rarity = "gold";
