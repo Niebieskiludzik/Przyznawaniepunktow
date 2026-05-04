@@ -310,14 +310,14 @@ window.goToProfile = function(id) {
 
       html += `</div>`;
 
-      if (role === "admin") {
-        html += `
-          <div class="panel-buttons">
-            <button onclick="saveVotes('${voter.name}')">Zapisz oceny</button>
-            <button class="absence-btn" onclick="markAbsent('${voter.id}')">Nieobecność</button>
-          </div>
-        `;
-      }
+     if (role === "admin" || role === "player") {
+      html += `
+        <div class="panel-buttons">
+          <button onclick="saveVotes('${voter.name}')">Zapisz oceny</button>
+          <button class="absence-btn" onclick="markAbsent('${voter.id}')">Nieobecność</button>
+        </div>
+      `;
+    }
 
       card.innerHTML = html;
       panelsDiv.appendChild(card);
