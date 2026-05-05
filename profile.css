@@ -88,6 +88,7 @@
   grid-template-columns: repeat(3, 1fr); /* 🔥 3 kolumny */
   gap: 12px;
   margin-top: 15px;
+  overflow: visible;
 }
 
 .achievement-card {
