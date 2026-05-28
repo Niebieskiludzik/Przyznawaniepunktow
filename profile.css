@@ -99,6 +99,10 @@
   overflow: visible;
 }
 
+.achievement-card:hover {
+  z-index: 1000;
+}
+
 /* kolory */
 .achievement-card.gray { background: linear-gradient(90deg,rgba(148, 148, 148, 1) 0%, rgba(79, 79, 79, 1) 100%); }
 .achievement-card.green { background: linear-gradient(90deg,rgba(106, 176, 40, 1) 0%, rgba(19, 110, 29, 1) 100%); }
@@ -174,7 +178,7 @@
 
   box-shadow: 0 8px 25px rgba(0,0,0,0.4);
 
-  z-index: 999; /* 🔥 NAJWAŻNIEJSZE */
+  z-index: 1001; /* 🔥 NAJWAŻNIEJSZE */
 }
 
 .mvp-box:hover .mvp-hover {
