@@ -139,7 +139,10 @@ if (mvpList?.length) {
     roundMap[r.id] = r.round_date;
   });
 
-  dates = mvpList.map(m => roundMap[m.round_id]).filter(Boolean);
+  dates = mvpList
+  .map(m => roundMap[m.round_id])
+  .filter(Boolean)
+  .sort((a, b) => new Date(b) - new Date(a));
 }
 
 const mvpCount = mvpList?.length || 0;
