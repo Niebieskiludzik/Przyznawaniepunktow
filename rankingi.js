@@ -51,10 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     {
       key: "last30",
       label: "Ostatnie 30 dni",
-      summary: "Suma ocen zdobytych przez gracza w ostatnich 30 dniach.",
+      summary: "Punkty rankingowe z ostatnich 30 dni liczone jak w rankingu głównym: (średnia dnia - 6) × 40.",
       value: player => player.last30,
-      note: player => `średnia ${formatNumber(player.avgDaily)} | ${player.activeDays} dni ogółem`,
-      format: value => `${formatNumber(value)} pkt`
+      note: player => `${player.last30Days} dni | średnia z tych dni ${formatNumber(player.last30Avg)}`,
+      format: value => `${formatSignedNumber(value)} pkt`
     },
     {
       key: "givenAvg",
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     summaryEl.innerText = ranking.summary;
 
     const rows = [...stats]
-      .filter(player => Number.isFinite(ranking.value(player)) && ranking.value(player) > 0)
+      .filter(player => Number.isFinite(ranking.value(player)) && ranking.value(player) !== 0)
       .sort((a, b) => ranking.value(b) - ranking.value(a));
 
     if (rows.length === 0) {
@@ -142,18 +142,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       const givenVotes = votes.filter(vote => vote.voter_name === player.name && vote.player_id !== player.id);
       const selfVotes = votes.filter(vote => vote.voter_name === player.name && vote.player_id === player.id);
       const dailyAverages = getDailyAverages(receivedVotes);
-      const avgDaily = average(dailyAverages);
-      const stdDev = standardDeviation(dailyAverages, avgDaily);
+      const avgDaily = average(dailyAverages.map(day => day.average));
+      const stdDev = standardDeviation(dailyAverages.map(day => day.average), avgDaily);
       const consistency = dailyAverages.length ? Math.max(0.55, 1 - (stdDev / 4)) : 0;
       const activityFactor = Math.min(1, Math.sqrt(dailyAverages.length / 20));
       const marketValue = Math.round(avgDaily * 1000000 * consistency * activityFactor);
       const past30 = new Date();
+      past30.setHours(0, 0, 0, 0);
       past30.setDate(past30.getDate() - 30);
 
-      const last30 = receivedVotes.reduce((sum, vote) => {
-        const date = vote.rounds?.round_date ? new Date(vote.rounds.round_date) : null;
-        return date && date >= past30 ? sum + Number(vote.score || 0) : sum;
-      }, 0);
+      const last30Days = dailyAverages.filter(day => new Date(day.date) >= past30);
+      const last30 = last30Days.reduce((sum, day) => sum + calculateMainRankingPoints(day.average), 0);
+      const last30Avg = average(last30Days.map(day => day.average));
 
       return {
         ...player,
@@ -164,12 +164,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         consistency,
         marketValue,
         last30,
+        last30Days: last30Days.length,
+        last30Avg,
         givenCount: givenVotes.length,
         givenAvg: average(givenVotes.map(vote => Number(vote.score))),
         selfCount: selfVotes.length,
         selfAvg: average(selfVotes.map(vote => Number(vote.score)))
       };
     });
+  }
+
+  function calculateMainRankingPoints(dailyAverage) {
+    return (dailyAverage - 6) * 40;
   }
 
   function getDailyAverages(votes) {
@@ -185,7 +191,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       days[date].push(score);
     });
 
-    return Object.values(days).map(scores => average(scores));
+    return Object.entries(days).map(([date, scores]) => ({
+      date,
+      average: average(scores)
+    }));
   }
 
   function average(values) {
@@ -204,6 +213,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function formatNumber(value) {
     return Number(value || 0).toFixed(2).replace(".", ",");
+  }
+
+  function formatSignedNumber(value) {
+    const rounded = Number(value || 0).toFixed(1).replace(".", ",");
+    return value > 0 ? `+${rounded}` : rounded;
   }
 
   function formatPercent(value) {
