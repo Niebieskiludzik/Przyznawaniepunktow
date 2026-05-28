@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     .select(`score, rounds (round_date)`)
     .eq("player_id", playerId);
 
+  const playerValue = calculatePlayerValue(votesHistory || []);
+
   // 🔹 Punkty w ostatnich 30 dniach
   let last30 = 0;
   const now = new Date();
@@ -162,6 +164,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     <div class="profile-points">
       Punkty: <b>${totalPoints.toFixed(3).replace(".", ",")}</b>
     </div>
+    <div class="profile-box player-value">
+      💰 Wartość piłkarza: <b>${formatPlayerValue(playerValue.value)}</b>
+    </div>
     <div class="profile-highlight">
       📅 Przez ostatnie 30 dni zdobył <b>${last30.toFixed(1).replace(".", ",")}</b> punktów
     </div>
@@ -224,6 +229,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     <div id="achievements-list" class="achievements-list"></div>
   `;
+
+  function calculatePlayerValue(votesHistory) {
+    const dailyScores = {};
+
+    votesHistory.forEach(vote => {
+      const date = vote.rounds?.round_date;
+      const score = Number(vote.score);
+
+      if (!date || Number.isNaN(score)) return;
+      if (!dailyScores[date]) dailyScores[date] = [];
+
+      dailyScores[date].push(score);
+    });
+
+    const dailyAverages = Object.values(dailyScores).map(scores => {
+      const sum = scores.reduce((acc, score) => acc + score, 0);
+      return sum / scores.length;
+    });
+
+    if (dailyAverages.length === 0) {
+      return { value: 0, average: 0, consistency: 0 };
+    }
+
+    const average = dailyAverages.reduce((acc, avg) => acc + avg, 0) / dailyAverages.length;
+    const variance = dailyAverages.reduce((acc, avg) => acc + Math.pow(avg - average, 2), 0) / dailyAverages.length;
+    const standardDeviation = Math.sqrt(variance);
+
+    const consistencyFactor = Math.max(0.55, 1 - (standardDeviation / 4));
+    const activityFactor = Math.min(1, Math.sqrt(dailyAverages.length / 20));
+
+    return {
+      value: Math.round(average * 1000000 * consistencyFactor * activityFactor),
+      average,
+      consistency: consistencyFactor
+    };
+  }
+
+  function formatPlayerValue(value) {
+    if (!value) return "brak danych";
+
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(2).replace(".", ",")} mln €`;
+    }
+
+    return `${Math.round(value / 1000)} tys. €`;
+  }
 
   // 🔹 Funkcja średniej ocen (ostatnie 30 dni)
   async function loadAverageRating(playerId) {
