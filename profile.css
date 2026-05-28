@@ -99,8 +99,13 @@
   overflow: visible;
 }
 
-.achievement-card:hover {
+.achievement-card:hover,
+.achievement-card.mvp-open {
   z-index: 1000;
+}
+
+.achievement-card.mvp-card {
+  cursor: pointer;
 }
 
 /* kolory */
@@ -159,7 +164,7 @@
   display: none;
 
   position: absolute;
-  top: 110%; /* pod kartą */
+  top: 100%; /* bez przerwy między kartą i listą */
   left: 50%;
   transform: translateX(-50%);
 
@@ -185,7 +190,8 @@
   display: block;
 }
 
-.achievement-card:hover .mvp-hover {
+.achievement-card:hover .mvp-hover,
+.achievement-card.mvp-open .mvp-hover {
   display: block;
 }
 
