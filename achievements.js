@@ -173,7 +173,7 @@ if (mvpAchievement && mvpCount > 0) {
     
 ///
     grid.innerHTML = achievements.map(a => `
-      <div class="achievement-card ${a.rarity}">
+      <div class="achievement-card ${a.rarity} ${a.code === "mvp_first" ? "mvp-card" : ""}">
         <div class="ach-icon">🏅</div>
         <div class="ach-title">${a.name}</div>
         <div class="ach-desc">${a.description || ""}</div>
@@ -182,6 +182,27 @@ if (mvpAchievement && mvpCount > 0) {
         </div>
       </div>
     `).join("");
+
+    grid.querySelectorAll(".mvp-card").forEach(card => {
+      card.addEventListener("click", event => {
+        event.stopPropagation();
+
+        const wasOpen = card.classList.contains("mvp-open");
+        grid.querySelectorAll(".mvp-open").forEach(openCard => {
+          openCard.classList.remove("mvp-open");
+        });
+
+        if (!wasOpen) {
+          card.classList.add("mvp-open");
+        }
+      });
+    });
+
+    document.addEventListener("click", () => {
+      grid.querySelectorAll(".mvp-open").forEach(openCard => {
+        openCard.classList.remove("mvp-open");
+      });
+    });
 
   } catch (err) {
     console.error(err);
