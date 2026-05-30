@@ -228,9 +228,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!value) return "brak";
 
     if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(2).replace(".", ",")} mln €`;
+      return `${(value / 1000000).toFixed(2).replace(".", ",")} mln zł`;
     }
 
-    return `${Math.round(value / 1000)} tys. €`;
+    return `${Math.round(value / 1000)} tys. zł`;
   }
 });
