@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     {
       key: "last30",
       label: "Ostatnie 30 dni",
-      summary: "Punkty rankingowe z ostatnich 30 dni liczone jak w rankingu głównym: (średnia dnia - 6) × 40.",
+      summary: "Punkty rankingowe z ostatnich 30 dni liczone jak w rankingu głównym: (średnia dnia - 6) × 10.",
       value: player => player.last30,
       note: player => `${player.last30Days} dni | średnia z tych dni ${formatNumber(player.last30Avg)}`,
       format: value => `${formatSignedNumber(value)} pkt`
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const stdDev = standardDeviation(dailyAverages.map(day => day.average), avgDaily);
       const consistency = dailyAverages.length ? Math.max(0.55, 1 - (stdDev / 4)) : 0;
       const activityFactor = Math.min(1, Math.sqrt(dailyAverages.length / 20));
-      const marketValue = Math.round(avgDaily * 1000000 * consistency * activityFactor);
+      const marketValue = Math.round(avgDaily * 10 * consistency * activityFactor); //zmień 10 na inną wartość np. 1000000(standardowo)
       const past30 = new Date();
       past30.setHours(0, 0, 0, 0);
       past30.setDate(past30.getDate() - 30);
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function calculateMainRankingPoints(dailyAverage) {
-    return (dailyAverage - 6) * 40;
+    return (dailyAverage - 6) * 10;
   }
 
   function getDailyAverages(votes) {
@@ -227,10 +227,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   function formatPlayerValue(value) {
     if (!value) return "brak";
 
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(2).replace(".", ",")} mln zł`;
+    if (value >= 10) {
+      return `${(value / 10).toFixed(2).replace(".", ",")} mln zł`; //(przed zł na " mln zł"
     }
 
-    return `${Math.round(value / 1000)} tys. zł`;
+    return `${Math.round(value / 1000)} tys. zł`; // wszystkie 10 na 1000000
   }
 });
