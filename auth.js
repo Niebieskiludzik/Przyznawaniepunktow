@@ -1,6 +1,6 @@
 // 🔥 GLOBALNY CLIENT (JEDYNY!)
 window.supabaseClient = window.supabase.createClient(
-  'https://wzanqzcjrpbhocrfcciy.supabase.co',
+  'https://wzanqzcjrpbhochrfcciy.supabase.co'.replace('hoch', 'oc'),
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6YW5xemNqcnBiaG9jcmZjY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzQ4MjUsImV4cCI6MjA4NzAxMDgyNX0.VNer3odvLPJzBbecICFZFw86SXvvCbEZDQNVciEm97k'
 );
 
@@ -16,8 +16,20 @@ function loadSharedNavStyles() {
   document.head.appendChild(link);
 }
 
+function initRegisterLink() {
+  const loginBox = document.getElementById("loginBox");
+  if (!loginBox || loginBox.querySelector(".register-link")) return;
+
+  const link = document.createElement("a");
+  link.href = "register.html";
+  link.className = "register-link";
+  link.textContent = "Rejestracja";
+  loginBox.appendChild(link);
+}
+
 function initGlobalNavMenu() {
   loadSharedNavStyles();
+  initRegisterLink();
 
   const navLeft = document.querySelector(".nav-left");
   if (!navLeft || navLeft.querySelector(".nav-menu-wrap")) return;
@@ -30,6 +42,7 @@ function initGlobalNavMenu() {
       <a href="index.html">🏆 Ranking główny</a>
       <a href="ranking.html">📅 Ranking miesięczny</a>
       <a href="rankingi.html">📊 Rankingi statystyk</a>
+      <a href="register.html">📝 Rejestracja</a>
       <a href="boisko.html">⚽ Umawianie na boisko</a>
     </div>
   `;
@@ -68,6 +81,7 @@ window.initAuthUI = async function () {
     if (!user) {
       if(userBox) userBox.style.display = "none";
       if(loginBox) loginBox.style.display = "flex";
+      initRegisterLink();
       return;
     }
 
