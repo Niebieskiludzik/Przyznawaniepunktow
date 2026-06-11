@@ -1,154 +1,171 @@
-:root{
-
---gold:#d4af37;
---red:#8b0000;
---green:#0e5a36;
---dark:#0f172a;
---light:#f8fafc;
-
+.page-header{
+    text-align:center;
 }
 
-body{
-
-background:
-linear-gradient(
-135deg,
-#0f172a,
-#111827,
-#7f1d1d
-);
-
-color:white;
-
-font-family:
-Segoe UI,
-sans-serif;
-
-margin:0;
+.page-header h1{
+    margin-bottom:10px;
 }
 
-.worldcup-header{
-
-padding:30px;
-
-text-align:center;
-
-background:
-linear-gradient(
-90deg,
-#8b0000,
-#d4af37
-);
-
+.admin-form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
-.container{
-
-max-width:1200px;
-
-margin:auto;
-
-padding:20px;
-}
-
-.card{
-
-background:rgba(255,255,255,.06);
-
-backdrop-filter:blur(12px);
-
-border:1px solid rgba(255,255,255,.1);
-
-border-radius:20px;
-
-padding:20px;
-
-margin-bottom:20px;
+.admin-form select,
+.admin-form input{
+    padding:10px;
 }
 
 .match-card{
 
-display:flex;
+    background:#1f2937;
 
-justify-content:space-between;
+    border-radius:15px;
 
-align-items:center;
+    padding:20px;
 
-gap:20px;
+    margin-bottom:20px;
 
-margin-bottom:15px;
+    border:1px solid rgba(255,255,255,.1);
+}
+
+.match-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
 }
 
 .teams{
 
-font-size:22px;
+    display:flex;
 
-font-weight:700;
+    align-items:center;
+
+    gap:20px;
+
+    font-size:24px;
+
+    font-weight:bold;
 }
 
-.status{
-
-padding:6px 12px;
-
-border-radius:10px;
+.team{
+    text-align:center;
 }
 
-.scheduled{
-
-background:#0e5a36;
+.flag{
+    font-size:42px;
 }
 
-.finished{
-
-background:#8b0000;
+.vs{
+    font-size:26px;
+    color:#fbbf24;
 }
 
-input{
+.countdown{
 
-padding:10px;
+    margin-top:10px;
 
-border:none;
+    color:#fbbf24;
 
-border-radius:10px;
-}
-
-button{
-
-background:#d4af37;
-
-border:none;
-
-padding:10px 16px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-border-radius:10px;
-}
-
-button:hover{
-
-transform:scale(1.03);
+    font-weight:bold;
 }
 
 .prediction-box{
 
-display:flex;
+    margin-top:15px;
 
-gap:10px;
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
 }
 
 .prediction-box input{
 
-width:60px;
+    width:70px;
+
+    padding:10px;
+
+    text-align:center;
+}
+
+.prediction-box button{
+
+    background:#fbbf24;
+
+    border:none;
+
+    padding:10px 20px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+}
+
+.my-tip{
+
+    margin-top:12px;
+
+    color:#4ade80;
+
+    font-weight:bold;
 }
 
 .result{
 
-font-size:28px;
+    margin-top:15px;
 
-font-weight:bold;
+    font-size:30px;
 
-color:#d4af37;
+    color:#fbbf24;
+
+    font-weight:bold;
+}
+
+.locked{
+
+    margin-top:15px;
+
+    color:#ef4444;
+
+    font-weight:bold;
+}
+
+.admin-score{
+
+    margin-top:15px;
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+.admin-score input{
+
+    width:70px;
+}
+
+.status-badge{
+
+    background:#14532d;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+}
+
+.finished{
+
+    background:#7f1d1d;
 }
