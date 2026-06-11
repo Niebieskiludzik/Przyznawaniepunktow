@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+<meta charset="UTF-8">
+
+<title>⚽ Mundial Typowania</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="typowanie.css">
+
+</head>
+
+<body>
+
+<div class="worldcup-header">
+
+  <h1>🏆 Mundial Typowania</h1>
+
+</div>
+
+<div class="container">
+
+  <div id="adminPanel" class="card admin-panel" style="display:none;">
+
+    <h2>Panel Admina</h2>
+
+    <input id="homeTeam" placeholder="Gospodarz">
+
+    <input id="awayTeam" placeholder="Gość">
+
+    <input id="matchDate" type="datetime-local">
+
+    <button id="addMatchBtn">
+      Dodaj mecz
+    </button>
+
+  </div>
+
+  <div id="matchesList"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="typowanie.js"></script>
+
+</body>
+</html>
