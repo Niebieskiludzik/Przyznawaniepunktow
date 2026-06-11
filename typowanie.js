@@ -4,14 +4,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const supabase = window.supabaseClient;
 
+  const navbarDate =
+    document.getElementById("navbarDate");
+
+  navbarDate.innerText =
+    "📅 " +
+    new Date().toLocaleDateString("pl-PL");
+
   let currentPlayer = null;
   let role = "guest";
 
-  await resolveUser();
+  await loadUser();
+  await loadCountries();
+  await loadMatches();
 
-  loadMatches();
+  document
+    .getElementById("addMatchBtn")
+    ?.addEventListener("click", addMatch);
 
-  async function resolveUser() {
+  async function loadUser(){
 
     const { data:{ user } } =
       await supabase.auth.getUser();
@@ -32,33 +43,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     role = player.role || "player";
 
     if(role === "admin"){
-      document
-      .getElementById("adminPanel")
-      .style.display = "block";
+      document.getElementById(
+        "adminPanel"
+      ).style.display = "block";
     }
   }
 
-  document
-  .getElementById("addMatchBtn")
-  ?.addEventListener("click", addMatch);
+  async function loadCountries(){
 
-  async function addMatch(){
+    const { data:countries } =
+      await supabase
+      .from("countries")
+      .select("*")
+      .order("name");
 
     const home =
-      document.getElementById("homeTeam").value;
+      document.getElementById("homeCountry");
 
     const away =
-      document.getElementById("awayTeam").value;
+      document.getElementById("awayCountry");
 
-    const date =
-      document.getElementById("matchDate").value;
+    countries.forEach(country => {
+
+      const html =
+      `<option value="${country.id}">
+        ${country.flag} ${country.name}
+      </option>`;
+
+      home.insertAdjacentHTML(
+        "beforeend",
+        html
+      );
+
+      away.insertAdjacentHTML(
+        "beforeend",
+        html
+      );
+
+    });
+
+  }
+
+  async function addMatch(){
 
     await supabase
       .from("matches")
       .insert({
-        home_team:home,
-        away_team:away,
-        match_date:date
+
+        home_country_id:
+          Number(
+            homeCountry.value
+          ),
+
+        away_country_id:
+          Number(
+            awayCountry.value
+          ),
+
+        match_date:
+          matchDate.value,
+
+        status:"scheduled"
+
       });
 
     loadMatches();
@@ -69,142 +115,273 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data:matches } =
       await supabase
       .from("matches")
-      .select("*")
+      .select(`
+      *,
+      home:countries!home_country_id(*),
+      away:countries!away_country_id(*)
+      `)
       .order("match_date");
 
+    const { data:predictions } =
+      await supabase
+      .from("predictions")
+      .select("*");
+
     const box =
-      document.getElementById("matchesList");
+      document.getElementById(
+        "matchesList"
+      );
 
     box.innerHTML = "";
 
-    for(const match of matches){
+    matches.forEach(match => {
 
-      const card =
-      document.createElement("div");
-
-      card.className =
-      "card match-card";
-
-      let predictionHTML = "";
-
-      if(
+      const myPrediction =
+      predictions?.find(
+        p =>
         currentPlayer &&
-        match.status === "scheduled"
-      ){
+        p.player_id === currentPlayer.id &&
+        p.match_id === match.id
+      );
 
-        predictionHTML = `
-        <div class="prediction-box">
+      const deadline =
+        new Date(match.match_date);
 
-          <input id="h${match.id}" type="number">
+      deadline.setMinutes(
+        deadline.getMinutes()-1
+      );
 
-          <input id="a${match.id}" type="number">
+      const canBet =
+        new Date() < deadline;
 
-          <button
-          onclick="savePrediction(${match.id})">
-          Typuj
-          </button>
+      const div =
+        document.createElement("div");
 
-        </div>
-        `;
-      }
+      div.className =
+        "match-card";
 
-      let adminHTML = "";
+      div.innerHTML = `
 
-      if(
-        role==="admin" &&
-        match.status==="scheduled"
-      ){
-
-        adminHTML = `
-        <div>
-
-          <input id="fh${match.id}" type="number">
-
-          <input id="fa${match.id}" type="number">
-
-          <button
-          onclick="finishMatch(${match.id})">
-          Zakończ
-          </button>
-
-        </div>
-        `;
-      }
-
-      card.innerHTML = `
-
-      <div>
+      <div class="match-top">
 
         <div class="teams">
-          ${match.home_team}
-          vs
-          ${match.away_team}
+
+          <div class="team">
+            <div class="flag">
+              ${match.home.flag}
+            </div>
+
+            ${match.home.name}
+          </div>
+
+          <div class="vs">VS</div>
+
+          <div class="team">
+            <div class="flag">
+              ${match.away.flag}
+            </div>
+
+            ${match.away.name}
+          </div>
+
         </div>
 
-        <div class="status ${match.status}">
+        <div class="status-badge ${match.status}">
           ${match.status}
         </div>
 
       </div>
 
-      ${
-      match.status==="finished"
-      ?
-      `<div class="result">
-      ${match.home_score}:${match.away_score}
-      </div>`
-      :
-      predictionHTML
-      }
+      <div class="countdown"
+           id="countdown-${match.id}">
+      </div>
 
-      ${adminHTML}
+      ${renderPrediction(
+        match,
+        myPrediction,
+        canBet
+      )}
+
+      ${renderAdmin(match)}
+
       `;
 
-      box.appendChild(card);
+      box.appendChild(div);
+
+      startCountdown(match);
+
+    });
+
+  }
+
+  function renderPrediction(
+    match,
+    prediction,
+    canBet
+  ){
+
+    if(match.status === "finished"){
+
+      return `
+      <div class="result">
+
+      ${match.home_score}
+      :
+      ${match.away_score}
+
+      </div>
+
+      ${
+      prediction
+      ?
+      `
+      <div class="my-tip">
+      🎯 Twój typ:
+      ${prediction.predicted_home}
+      :
+      ${prediction.predicted_away}
+      (${prediction.points} pkt)
+      </div>
+      `
+      :
+      ""
+      }
+      `;
     }
+
+    if(!currentPlayer){
+
+      return `
+      <div class="locked">
+      Zaloguj się aby typować
+      </div>
+      `;
+    }
+
+    if(!canBet){
+
+      return `
+      <div class="locked">
+      🔒 Typowanie zamknięte
+      </div>
+      `;
+    }
+
+    return `
+
+    <div class="prediction-box">
+
+      <input
+      id="h${match.id}"
+      type="number">
+
+      <input
+      id="a${match.id}"
+      type="number">
+
+      <button
+      onclick="savePrediction(${match.id})">
+      Zapisz typ
+      </button>
+
+    </div>
+
+    ${
+    prediction
+    ?
+    `
+    <div class="my-tip">
+    🎯 Twój typ:
+    ${prediction.predicted_home}
+    :
+    ${prediction.predicted_away}
+    </div>
+    `
+    :
+    ""
+    }
+
+    `;
+  }
+
+  function renderAdmin(match){
+
+    if(role !== "admin") return "";
+
+    if(match.status === "finished")
+      return "";
+
+    return `
+
+    <div class="admin-score">
+
+      <input
+      id="fh${match.id}"
+      type="number">
+
+      <input
+      id="fa${match.id}"
+      type="number">
+
+      <button
+      onclick="finishMatch(${match.id})">
+      Ustaw wynik
+      </button>
+
+    </div>
+
+    `;
   }
 
   window.savePrediction =
   async function(matchId){
 
     const home =
-      Number(document.getElementById(
-      `h${matchId}`
+      Number(
+        document.getElementById(
+        `h${matchId}`
       ).value);
 
     const away =
-      Number(document.getElementById(
-      `a${matchId}`
+      Number(
+        document.getElementById(
+        `a${matchId}`
       ).value);
 
     await supabase
       .from("predictions")
       .upsert({
 
-        match_id:matchId,
+        player_id:
+          currentPlayer.id,
 
-        player_id:currentPlayer.id,
+        match_id:
+          matchId,
 
-        predicted_home:home,
+        predicted_home:
+          home,
 
-        predicted_away:away
+        predicted_away:
+          away
 
       });
 
-    alert("Typ zapisany");
+    loadMatches();
   }
 
   window.finishMatch =
   async function(matchId){
 
     const home =
-      Number(document.getElementById(
-      `fh${matchId}`
+      Number(
+        document.getElementById(
+        `fh${matchId}`
       ).value);
 
     const away =
-      Number(document.getElementById(
-      `fa${matchId}`
+      Number(
+        document.getElementById(
+        `fa${matchId}`
       ).value);
 
     await supabase
@@ -227,103 +404,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadMatches();
   }
 
-function startCountdown(match){
-
-  const box =
-  document.getElementById(
-    `countdown-${match.id}`
-  );
-
-  function update(){
-
-    const now =
-      new Date().getTime();
-
-    const start =
-      new Date(
-        match.match_date
-      ).getTime();
-
-    const diff =
-      start - now;
-
-    if(diff <= 0){
-
-      box.innerHTML =
-      "⚽ Mecz trwa";
-
-      return;
-    }
-
-    const days =
-      Math.floor(
-        diff / 86400000
-      );
-
-    const hours =
-      Math.floor(
-        (diff % 86400000)
-        / 3600000
-      );
-
-    const minutes =
-      Math.floor(
-        (diff % 3600000)
-        / 60000
-      );
-
-    box.innerHTML =
-      `⏳ ${days}d ${hours}h ${minutes}m`;
-  }
-
-  update();
-
-  setInterval(update,60000);
-}
-  
   async function calculatePoints(
     matchId,
     home,
     away
   ){
 
-    const { data: predictions } =
+    const { data:list } =
       await supabase
       .from("predictions")
       .select("*")
       .eq("match_id", matchId);
 
-    for(const p of predictions){
+    for(const p of list){
 
       let points = 0;
 
       if(
-        p.predicted_home===home &&
-        p.predicted_away===away
+        p.predicted_home === home &&
+        p.predicted_away === away
       ){
         points = 3;
       }
-
       else{
 
-        const winnerPrediction =
+        const real =
+          Math.sign(home-away);
+
+        const pred =
           Math.sign(
             p.predicted_home -
             p.predicted_away
           );
 
-        const winnerMatch =
-          Math.sign(
-            home -
-            away
-          );
-
-        if(
-          winnerPrediction===
-          winnerMatch
-        ){
+        if(real === pred)
           points = 1;
-        }
       }
 
       await supabase
@@ -331,6 +446,53 @@ function startCountdown(match){
         .update({ points })
         .eq("id", p.id);
     }
+  }
+
+  function startCountdown(match){
+
+    const box =
+      document.getElementById(
+        `countdown-${match.id}`
+      );
+
+    function update(){
+
+      const diff =
+      new Date(match.match_date)
+      -
+      new Date();
+
+      if(diff <= 0){
+
+        box.innerHTML =
+        "⚽ Mecz rozpoczęty";
+
+        return;
+      }
+
+      const d =
+      Math.floor(
+        diff/86400000
+      );
+
+      const h =
+      Math.floor(
+        diff%86400000/3600000
+      );
+
+      const m =
+      Math.floor(
+        diff%3600000/60000
+      );
+
+      box.innerHTML =
+      `⏳ ${d}d ${h}h ${m}m`;
+
+    }
+
+    update();
+
+    setInterval(update,60000);
   }
 
 });
