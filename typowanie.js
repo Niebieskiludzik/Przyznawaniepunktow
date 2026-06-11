@@ -227,6 +227,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadMatches();
   }
 
+function startCountdown(match){
+
+  const box =
+  document.getElementById(
+    `countdown-${match.id}`
+  );
+
+  function update(){
+
+    const now =
+      new Date().getTime();
+
+    const start =
+      new Date(
+        match.match_date
+      ).getTime();
+
+    const diff =
+      start - now;
+
+    if(diff <= 0){
+
+      box.innerHTML =
+      "⚽ Mecz trwa";
+
+      return;
+    }
+
+    const days =
+      Math.floor(
+        diff / 86400000
+      );
+
+    const hours =
+      Math.floor(
+        (diff % 86400000)
+        / 3600000
+      );
+
+    const minutes =
+      Math.floor(
+        (diff % 3600000)
+        / 60000
+      );
+
+    box.innerHTML =
+      `⏳ ${days}d ${hours}h ${minutes}m`;
+  }
+
+  update();
+
+  setInterval(update,60000);
+}
+  
   async function calculatePoints(
     matchId,
     home,
