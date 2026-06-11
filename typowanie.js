@@ -168,7 +168,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           <div class="team">
             <div class="flag">
-              ${match.home.flag}
+              ${match.home?.flag || "🏳️"}
+              ${match.home?.name || match.home_team || "Brak"}
             </div>
 
             ${match.home.name}
@@ -178,7 +179,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           <div class="team">
             <div class="flag">
-              ${match.away.flag}
+              ${match.away?.flag || "🏳️"}
+              ${match.away?.name || match.away_team || "Brak"}
             </div>
 
             ${match.away.name}
