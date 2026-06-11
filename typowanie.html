@@ -4,10 +4,13 @@
 
 <meta charset="UTF-8">
 
-<title>⚽ Mundial Typowania</title>
+<title>⚽ Typowanie Mundialu</title>
 
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nav.css">
 <link rel="stylesheet" href="typowanie.css">
+
+<link rel="icon" type="image/png" href="favicon.png">
 
 </head>
 
@@ -26,11 +29,26 @@
   <div class="nav-right">
 
     <div id="loginBox">
-      ...
+
+      <input id="email" placeholder="email">
+
+      <input id="password"
+             type="password"
+             placeholder="hasło">
+
+      <button onclick="login()">
+        Zaloguj
+      </button>
+
+      <div id="loginError"></div>
+
     </div>
 
     <div id="userBox" style="display:none;">
-      ...
+      <span id="userName"></span>
+      <button onclick="logout()">
+        Wyloguj
+      </button>
     </div>
 
   </div>
@@ -39,30 +57,49 @@
 
 <div class="container">
 
-  <div id="adminPanel" class="card admin-panel" style="display:none;">
+  <div class="card page-header">
 
-    <h2>Panel Admina</h2>
+    <h1>🏆 Typowanie Mundialu</h1>
 
-    <input id="homeTeam" placeholder="Gospodarz">
+    <p>
+      Typuj wyniki spotkań i walcz o miano najlepszego eksperta.
+    </p>
 
-    <input id="awayTeam" placeholder="Gość">
+  </div>
 
-    <input id="matchDate" type="datetime-local">
+  <div
+    id="adminPanel"
+    class="card admin-panel"
+    style="display:none;"
+  >
 
-    <button id="addMatchBtn">
-      Dodaj mecz
-    </button>
+    <h2>⚙️ Panel Admina</h2>
+
+    <div class="admin-form">
+
+      <select id="homeCountry"></select>
+
+      <select id="awayCountry"></select>
+
+      <input
+        id="matchDate"
+        type="datetime-local"
+      >
+
+      <button id="addMatchBtn">
+        Dodaj mecz
+      </button>
+
+    </div>
 
   </div>
 
   <div id="matchesList"></div>
-  <div class="countdown" id="countdown-15">
-    ⏳ Ładowanie...
-  </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="auth.js"></script>
 <script src="typowanie.js"></script>
 
