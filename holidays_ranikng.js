@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const maxPoints = ranking[0]?.points || 1000;
 
-rankingList.innerHTML = ranking.map((p, i) => {
+hRankingList.innerHTML = ranking.map((p, i) => {
   let medal = `${i + 1}`;
 
   if (i === 0) medal = "🥇";
